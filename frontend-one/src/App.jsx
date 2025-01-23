@@ -1,0 +1,108 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "./index.css";
+import Layout from "./containers/Layout";
+import Home from "./components/home/Home";
+import About from "./components/about/About";
+import NewsPage from "./components/News/NewsPage";
+import LoginPage from "./components/loginpage/LoginPage"; 
+import ProtectedRoute from "./components/loginpage/ProtectedRoute";
+import LayoutPage1 from "./containerpage1/Layoutpage1";
+import FirstPage1 from "./componentspage1/homepage1/FirstPage1";
+import UserProfile from "./containerpage1/UserProfile";
+import AddNews from "./components/News/AddNews";
+import NewsContent from "./components/News/NewsContent";
+import EmployeesAddData from "./componentspage1/EmployeesUser/EmployeesAddData";
+import MemoPage from "./componentspage1/memo/MemoPage";
+import JobPosition from "./componentspage1/ManageOrganization/JobPosition";
+import Department from "./componentspage1/ManageOrganization/Department";
+import JobSection from "./componentspage1/ManageOrganization/JobSection";
+import Branch from "./componentspage1/ManageOrganization/Branch";
+import EmployeesShowtable from "./componentspage1/EmployeesUser/Employees.Show.table";
+import EmployeesResing from "./componentspage1/EmployeesUser/Employeesresing";
+import EmployeesAccess from "./componentspage1/EmployeesUser/EmployeesAccess";
+import MemoDetails from "./componentspage1/memo/MemoDetails";
+import Calendar from "./components/calendar/Calendar";
+import BookingRoom from "./componentspage1/bookingroom/BookingRoom";
+import Homepage from "./containerpage1/Homepage";
+import Companypolicy from "./componentspage1/companypolicy/Companypolicy";
+import Call from "./componentspage1/coll/call";
+import MemoManagerRights from "./componentspage1/memo/MemoManageRights";
+import { UserContext } from "./componentspage1/localstorage/UserContext";
+import BookingRoomDetails from "./componentspage1/bookingroom/BookingRoomDetails";
+import BookingRoomAdd from "./componentspage1/bookingroom/MeetingRoomAdd";
+import MeetingRoomAdd from "./componentspage1/bookingroom/MeetingRoomAdd";
+import LoginTruck from "./components_truck/loginTruck";
+import LayoutTruck from "./containers_truck/LayoutTruck";
+import TruckHome from "./components_truck/TruckHome";
+import Driver from "./components_truck/driver/driver";
+import VehicleManagement from "./components_truck/truck/Vehicle/VehicleManagement";
+import VehicleFrom from "./components_truck/truck/Vehicle/VehicleForm";
+import OrganizationManagmen from "./components_truck/organization/OrganizationManagment";
+
+function App() {
+  return (
+    <>
+      <Router>
+        <Routes>
+          {/* เข้าสู่ระบบ Truck */}
+        <Route path="logintruck" element={<LoginTruck/>} />
+
+
+          <Route path="/" element={<Layout />}>
+            {" "}
+            {/*  //เว็บเพจแรกเข้า */}
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="loginpage" element={<LoginPage />} />
+            <Route path="newspage" element={<NewsPage />} />
+            <Route path="calendar" element={<Calendar/>} />
+            <Route path="policy" element={<Companypolicy/>} />
+          </Route>
+          <Route path="/page1" element={<LayoutPage1 />}>
+          <Route index element={<FirstPage1 />} /> {/* Default for /page1 */}
+          <Route path="userProfile" element={<UserProfile />} /> {/* /page1/userProfile */}
+            <Route path="addNews" element={<AddNews />} />
+            <Route path="newContent" element={<NewsContent />} />
+            {/* <Route path="employeesadddata" element={<EmployeesAddData />} /> */}
+            <Route path="memopage" element={<MemoPage />} />
+            <Route path="memodetails" element={<MemoDetails/>} />
+            <Route path="memomanagerrights"element={<MemoManagerRights/>} />
+            <Route path="jobposition" element={<JobPosition />} />
+            <Route path="department" element={<Department/>} />
+            <Route path="jobsection" element={<JobSection/>} />
+            <Route path="branch" element={<Branch/>} />
+            
+            <Route path="employeesaccess" element={<EmployeesAccess/>} />
+            <Route path="bookingroom/:id" element={<BookingRoom/>} />
+            <Route path="bookingroomdetails" element={<BookingRoomDetails/>} />\
+            
+            <Route path="bookingroomadd" element={<BookingRoomAdd/>} />
+            <Route path="meetingroomadd" element={<MeetingRoomAdd/>} />
+            <Route path="homepage" element={<Homepage/>} />
+            <Route path="companypolicy" element={<Companypolicy/>} />
+            <Route path="call" element={<Call />} />
+            <Route path="calendarcompany" element={<Calendar/>} />
+            
+            
+          </Route>
+          <Route path="/truck" element={<LayoutTruck />}>
+          <Route index element={<TruckHome />} /> {/* Default for /page1 */}
+          <Route path="employeesadddata" element={<EmployeesAddData />} />
+          <Route path="employeesshowtable" element={<EmployeesShowtable/>} />
+          <Route path="employeesresing" element={<EmployeesResing/>} /> {/* หน้าข้อมูลพนักงานลาออก */}
+          <Route path="driver" element={<Driver />} />
+          <Route path="vehiclemanagement" element={<VehicleManagement/>} /> {/* หน้าจัดการข้อมูล 'รถ' ทั้งหมด */}
+          <Route path="vehiclefrom" element={<VehicleFrom/>} /> 
+          <Route path="organizationmanagment" element={<OrganizationManagmen/>} /> {/* หน้าจัดการข้อมูลภายในสองค์กร */}
+          </Route>
+        </Routes>
+      </Router>
+    </>
+  );
+}
+
+export default App;
