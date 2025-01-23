@@ -35,14 +35,12 @@ const VehicleForm = () => {
     const fetchVehicleUsageType = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            console.log("Stored Token:", token); // ✅ ตรวจสอบ Token
-
             if (!token) {
                 console.error("No access token found");
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailscartype", {
+            const response = await axios.get("http://localhost:3333/api/detailsvehicleusagetype", {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -63,9 +61,9 @@ const VehicleForm = () => {
         fetchVehicleUsageType();
     }, []);
 
-    useEffect(() => {
-        console.log("Updated isCarType:", isCarType); // ✅ ตรวจสอบ State
-    }, [isCarType]);
+    // useEffect(() => {
+    //     console.log("Updated isCarType:", isCarType); // ✅ ตรวจสอบ State
+    // }, [isCarType]);
 
 
     return (
@@ -110,9 +108,9 @@ const VehicleForm = () => {
                                     <select className="form-select">
                                         <option value="">เลือกประเภทรถ</option>
                                         {isUsageType.length > 0 ? (
-                                            isCarType.map((rowUsageType) => (
+                                            isUsageType.map((rowUsageType) => (
                                                 <option key={rowUsageType.usage_id} value={rowUsageType.usage_id}>
-                                                    {rowUsageType.usage_name}
+                                                    {rowUsageType.usage_type}
                                                 </option>
                                             ))
                                         ) : (
@@ -122,7 +120,18 @@ const VehicleForm = () => {
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_province" className="form-label fw-medium">ลักษณะ / มาตรฐาน</label>
-                                    <input type="text" name="province" id="input_province" className="form-control" placeholder="" />
+                                    <select className="form-select">
+                                        <option value="">เลือกประเภทรถ</option>
+                                        {isUsageType.length > 0 ? (
+                                            isUsageType.map((rowUsageType) => (
+                                                <option key={rowUsageType.usage_id} value={rowUsageType.usage_id}>
+                                                    {rowUsageType.usage_type}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option disabled>กำลังโหลด...</option>
+                                        )}
+                                    </select>
                                 </div>
                             </div>
 
