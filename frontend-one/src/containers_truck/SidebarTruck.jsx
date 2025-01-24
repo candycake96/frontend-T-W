@@ -266,7 +266,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
             <ul className="list-unstyled ps-4">
               <li>
                 <Link
-                  to="/truck/vehiclemanagement"
+                  to="/truck/vehicleaddform"
                   className="nav-link text-dark hover:text-primary"
                 >
                   ข้อมูลรถ

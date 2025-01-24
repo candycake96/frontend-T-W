@@ -42,6 +42,7 @@ import Driver from "./components_truck/driver/driver";
 import VehicleManagement from "./components_truck/truck/Vehicle/VehicleManagement";
 import VehicleFrom from "./components_truck/truck/Vehicle/VehicleForm";
 import OrganizationManagmen from "./components_truck/organization/OrganizationManagment";
+import VehicleAddForm from "./components_truck/truck/Vehicle/VehicleAddForm";
 
 function App() {
   return (
@@ -97,7 +98,9 @@ function App() {
           <Route path="driver" element={<Driver />} />
           <Route path="vehiclemanagement" element={<VehicleManagement/>} /> {/* หน้าจัดการข้อมูล 'รถ' ทั้งหมด */}
           <Route path="vehiclefrom" element={<VehicleFrom/>} /> 
+          <Route path="vehicleaddform" element={<VehicleAddForm/>} /> {/* หน้ารวมฟร์อมจัดเก็บข้อมูลรถ */}
           <Route path="organizationmanagment" element={<OrganizationManagmen/>} /> {/* หน้าจัดการข้อมูลภายในสองค์กร */}
+
           </Route>
         </Routes>
       </Router>
