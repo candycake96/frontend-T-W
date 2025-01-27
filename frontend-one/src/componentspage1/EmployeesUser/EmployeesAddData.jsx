@@ -152,49 +152,49 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
       setMessageType("success");
 
       // Reset input values after successful submission
-    // setEmployeeInfo({
-    //   code: '',
-    //   date_job: '',
-    //   fname: '',
-    //   lname: '',
-    //   nickname: '',
-    //   identification_number: '',
-    //   email: '',
-    //   password: '',
-    //   phone: '',
-    //   gender: '',
-    //   id_position: '',
-    //   id_department: '',
-    //   id_branch: '',
-    //   company_id: '',
-    //   status: 'Active',
-    //   image: null,
-    // });
-    // setCurrentAddress({
-    //   country: '',
-    //   postal_code: '',
-    //   house_number: '',
-    //   street: '',
-    //   city: '',
-    //   province: ''
-    // });
-    // setPermanentAddress({
-    //   country: '',
-    //   postal_code: '',
-    //   house_number: '',
-    //   street: '',
-    //   city: '',
-    //   province: ''
-    // });
-    // setDriverLicenses([{
-    //   license_number: '',
-    //   issued_date: '',
-    //   expiry_date: '',
-    //   license_type: '',
-    //   issuing_authority: '',
-    //   status: 'Active'
-    // }]);
-    // setRoles([]);
+    setEmployeeInfo({
+      code: '',
+      date_job: '',
+      fname: '',
+      lname: '',
+      nickname: '',
+      identification_number: '',
+      email: '',
+      password: '',
+      phone: '',
+      gender: '',
+      id_position: '',
+      id_department: '',
+      id_branch: '',
+      company_id: '',
+      status: 'Active',
+      image: null,
+    });
+    setCurrentAddress({
+      country: '',
+      postal_code: '',
+      house_number: '',
+      street: '',
+      city: '',
+      province: ''
+    });
+    setPermanentAddress({
+      country: '',
+      postal_code: '',
+      house_number: '',
+      street: '',
+      city: '',
+      province: ''
+    });
+    setDriverLicenses([{
+      license_number: '',
+      issued_date: '',
+      expiry_date: '',
+      license_type: '',
+      issuing_authority: '',
+      status: 'Active'
+    }]);
+    setRoles([]);
 
 
       // Hide message after 3 seconds

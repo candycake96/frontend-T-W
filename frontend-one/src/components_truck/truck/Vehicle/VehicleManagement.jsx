@@ -39,7 +39,7 @@ const VehicleManagement = () => {
                     </div>
 
                     <div className="col-lg-3">
-                        <Link to="/truck/vehiclefrom" className="btn btn-primary w-100"><i class="bi bi-truck-front-fill"></i> เพิ่มข้อมูลรถ</Link>
+                        <Link to="/truck/vehicleaddform" className="btn btn-primary w-100"><i class="bi bi-truck-front-fill"></i> เพิ่มข้อมูลรถ</Link>
                     </div>
                 </div>
             </div>

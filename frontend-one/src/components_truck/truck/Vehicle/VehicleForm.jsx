@@ -1,49 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const VehicleForm = () => {
+const VehicleForm = (formData, setFormdata) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
-    const [formData, setFormdata] = useState({
-        reg_date: "",
-        reg_number: "",
-        province: "",
-        fuel: "",
-        car_type_id: "",
-        chassis_number: "",
-        usage_type_id: "",
-        car_brand: "",
-        model_no: "",
-        color: "",
-        engine_brand: "",
-        engine_no: "",
-        cylinders: "",
-        veh_weight: "",
-        max_load: "",
-        gross_weight: "",
-        possession_date: "",
-        operators: "",
-        reg_doc: "",
-        nation: "",
-        addr: "",
-        trans_type: "",
-        license_no: "",
-        license_expiry: "",
-        rights_to_use: "",
-        owner_name: "",
-        address: "",
-        passenger_count: "",
-        file_download: null,
-        vehicle_type_id: "",
-        chassis_number_location: "",
-        engine_on_location: "",
-        engine_power: "",
-        document_order: "",
-        reg_doc_number: "",
-        inspection_code: ""
 
-    })
     const [isCarType, setCarType] = useState([]);
     const [isVehicleType, setVehicleType] = useState([]);
     const [isUsageType, setUsageType] = useState([]);
@@ -241,7 +203,6 @@ const VehicleForm = () => {
                                 </div>
                             </div>
                         )}
-                        <form action="" onSubmit={handleSubmit}>
                             <div className="text-center mb-3">
                                 <p className="fw-bolder">รายการจดทะเบียน</p>
                             </div>
@@ -744,17 +705,7 @@ const VehicleForm = () => {
                                 </div>
                             </div>
 
-
-           
-
-                            
-
-
-
-                            <div className="text-center mb-3">
-                                <button type="submit" className="btn" style={{ background: "#4cbec5", color: "#ffffff" }}>บันทึก</button>
-                            </div>
-                        </form>
+                          
                     </div>
                 </div>
             </div>

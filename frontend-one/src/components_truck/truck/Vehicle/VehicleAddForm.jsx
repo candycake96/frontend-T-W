@@ -22,6 +22,51 @@ const VehicleAddForm = () => {
         file_finance: ""
     });
 
+    const [formData, setFormdata] = useState({
+        reg_date: "",
+        reg_number: "",
+        province: "",
+        fuel: "",
+        car_type_id: "",
+        chassis_number: "",
+        usage_type_id: "",
+        car_brand: "",
+        model_no: "",
+        color: "",
+        engine_brand: "",
+        engine_no: "",
+        cylinders: "",
+        veh_weight: "",
+        max_load: "",
+        gross_weight: "",
+        possession_date: "",
+        operators: "",
+        nation: "",
+        addr: "",
+        trans_type: "",
+        license_no: "",
+        license_expiry: "",
+        rights_to_use: "",
+        owner_name: "",
+        address: "",
+        passenger_count: "",
+        file_download: null,
+        vehicle_type_id: "",
+        chassis_number_location: "",
+        engine_on_location: "",
+        engine_power: "",
+        document_order: "",
+        reg_doc_number: "",
+        inspection_code: "",
+        id_branch: "",
+        tax_end: "",
+        cmi_start: "",
+        cmi_end: "",
+        insurance_start: "",
+        insurance_end: "",
+        insurance_name: ""
+    })
+
     return (
         <>
             <div className="container p-3">
@@ -67,16 +112,20 @@ const VehicleAddForm = () => {
                         <form action="">
 
                             {activeForm === 'vehicleForm' && (
-                                <VehicleForm />
+                                <VehicleForm formData={formData} setFormdata={setFormdata}  />
                             )}
 
                             {activeForm === 'financeForm' && (
-                                <FinanceForm />
+                                <FinanceForm isFinance={isFinance} setFinance={setFinance} />
                             )}
 
                             {activeForm === 'taxForm' && (
-                                <TaxForm />
+                                <TaxForm formData={formData} setFormdata={setFormdata}  />
                             )}
+
+                            <div className="text-center mb-3">
+                                <button type="submit" className="btn" style={{ background: "#4cbec5", color: "#ffffff" }}>บันทึก</button>
+                            </div>
 
                         </form>
 

@@ -181,7 +181,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </li>
                 <li>
                   <Link
-                    to="/page1/JobPosition"
+                    to="/truck/companymanagement"
                     className="nav-link text-dark hover:text-primary"
                   >
                     เพิ่มข้อมูลจัดการองค์กร
@@ -266,7 +266,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
             <ul className="list-unstyled ps-4">
               <li>
                 <Link
-                  to="/truck/vehicleaddform"
+                  to="/truck/vehiclemanagement"
                   className="nav-link text-dark hover:text-primary"
                 >
                   ข้อมูลรถ
@@ -305,7 +305,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               e.currentTarget.style.color = "#343a40"; // Reset text color
             }}
           >
-            เกี่ยวกับพนักงานขับรถ
+            พนักงานขับรถ
             <span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

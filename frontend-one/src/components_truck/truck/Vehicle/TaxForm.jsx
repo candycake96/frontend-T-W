@@ -1,6 +1,6 @@
 import React from "react";
 
-const TaxForm = () => {
+const TaxForm = (formData, setFormdata) => {
     return (
         <>
                                     <div className="mb-3">
@@ -75,6 +75,18 @@ const TaxForm = () => {
                                 <label htmlFor="input_address" className="form-label fw-medium">วันที่หมดอายุ</label>
                                     <input
                                         type="date"
+                                        name="address"
+                                        id="input_address"
+                                        className="form-control"
+                                        // value={formData.address}
+                                        // onChange={(e) => setFormdata({ ...formData, address: e.target.value })}
+                                        placeholder=""
+                                     />
+                                </div>
+                                <div className="col-lg-4">
+                                <label htmlFor="input_address" className="form-label fw-medium">บริษัทประกันภัย</label>
+                                    <input
+                                        type="text"
                                         name="address"
                                         id="input_address"
                                         className="form-control"
