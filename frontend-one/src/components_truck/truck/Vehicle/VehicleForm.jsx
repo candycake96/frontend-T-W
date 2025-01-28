@@ -1,10 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const VehicleForm = (formData, setFormdata) => {
+const VehicleForm = ({formData, setFormdata}) => {
 
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
 
     const [isCarType, setCarType] = useState([]);
     const [isVehicleType, setVehicleType] = useState([]);
@@ -138,45 +136,6 @@ const VehicleForm = (formData, setFormdata) => {
     };
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const formDataToSend = new FormData();
-
-        // Append all form fields except file
-        Object.keys(formData).forEach((key) => {
-            if (key !== "file_download") {
-                formDataToSend.append(key, formData[key]);
-            }
-        });
-
-        // Append file if it exists
-        if (formData.file_download) {
-            formDataToSend.append("file_download", formData.file_download);
-        }
-
-        try {
-            const response = await axios.post(
-                "http://localhost:3333/api/upload",
-                formDataToSend,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                }
-            );
-
-            // Handle successful submission
-            setMessage(response.data.message || "Data submitted successfully.");
-            setMessageType("success");
-
-        } catch (error) {
-            console.error("Upload Error:", error);
-            setMessage("Failed to add driver license or submit data.");
-            setMessageType("error");
-        }
-    };
 
 
     return (
@@ -189,20 +148,7 @@ const VehicleForm = (formData, setFormdata) => {
 
                 <div className="">
                     <div className="">
-                        {message && (
-                            <div className="p-1">
-                                <div
-                                    className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
-                                    style={{
-                                        backgroundColor: messageType === "success" ? "#d4edda" : "#f8d7da",
-                                        color: messageType === "success" ? "#155724" : "#721c24",
-                                        border: `1px solid ${messageType === "success" ? "#c3e6cb" : "#f5c6cb"}`,
-                                    }}
-                                >
-                                    {message}
-                                </div>
-                            </div>
-                        )}
+                      
                             <div className="text-center mb-3">
                                 <p className="fw-bolder">รายการจดทะเบียน</p>
                             </div>
@@ -212,6 +158,7 @@ const VehicleForm = (formData, setFormdata) => {
                                     <label htmlFor="input_reg_date" className="form-label fw-medium">วันที่จดทะเบียน</label>
                                     <input
                                         type="date"
+                                        id="input_reg_date"
                                         name="reg_date"
                                         className="form-control"
                                         value={formData.reg_date}
@@ -246,11 +193,11 @@ const VehicleForm = (formData, setFormdata) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-3">
-                                    <label htmlFor="inputfuel" className="form-label fw-medium">เชื้อเพลิง</label>
+                                    <label htmlFor="input_fuel" className="form-label fw-medium">เชื้อเพลิง</label>
                                     <select
-                                        id="input_vehicle_type_id"
+                                        id="input_fuel"
                                         className="form-select"
-                                        name="vehicle_type_id"
+                                        name="fuel"
                                         value={formData.fuel}
                                         onChange={(e) => setFormdata({ ...formData, fuel: e.target.value })}
                                     >

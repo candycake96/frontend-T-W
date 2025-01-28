@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import VehicleForm from "./VehicleForm";
 import FinanceForm from "./FinanceForm";
 import TaxForm from "./TaxForm";
+import axios from "axios";
 
 const VehicleAddForm = () => {
 
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
     const [activeForm, setActiveForm] = useState('vehicleForm');
 
     useEffect(() => {
         setActiveForm('vehicleForm');
     }, []);
-
 
     const [isFinance, setFinance] = useState({
         loan_amount: "",
@@ -19,7 +21,7 @@ const VehicleAddForm = () => {
         start_date: "",
         end_date: "",
         insurance_company: "",
-        file_finance: ""
+        file_finance: null
     });
 
     const [formData, setFormdata] = useState({
@@ -67,6 +69,90 @@ const VehicleAddForm = () => {
         insurance_name: ""
     })
 
+    useEffect(() => {
+        console.log("Updated formData:", formData);
+    }, [formData]);
+    
+    useEffect(() => {
+        console.log("Updated isFinance:", isFinance);
+    }, [isFinance]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('FormData before submission:', formData);
+        console.log('IsFinance before submission:', isFinance);
+    
+        const formDataToSend = new FormData();
+    
+        // Append fields from formData
+        Object.keys(formData).forEach((key) => {
+            if (key === "file_download" && formData[key]) {
+                formDataToSend.append(key, formData[key]);
+            } else if (key !== "file_download") {
+                formDataToSend.append(key, formData[key]);
+            }
+        });
+    
+        // Append fields from isFinance
+        Object.keys(isFinance).forEach((key) => {
+            if (key === "file_finance" && isFinance[key]) {
+                formDataToSend.append(key, isFinance[key]);
+            } else if (key !== "file_finance") {
+                formDataToSend.append(key, isFinance[key]);
+            }
+        });
+    
+        // Log the FormData manually
+        for (let pair of formDataToSend.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+    
+        
+        console.log("FormData to be sent:", formDataToSend);
+    
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            setMessage("Access token is missing. Please log in.");
+            setMessageType("error");
+            return; // Stop form submission
+        }
+
+        
+formDataToSend.append('formData', JSON.stringify(formData)); // ใช้ JSON.stringify()
+formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON.stringify()
+    
+        try {
+            const response = await axios.post(
+                "http://localhost:3333/api/vehicleAdd",
+                formDataToSend,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+    
+            console.log("Response from the server:", response.data);
+    
+            // Handle successful submission
+            if (response.data.success) {
+                setMessage(response.data.message || "Data submitted successfully.");
+                setMessageType("success");
+    
+                // Optionally reset form after submission
+            }
+        } catch (error) {
+            console.error("Upload Error:", error.response ? error.response.data : error.message);
+            setMessage(error.response ? error.response.data.message : "Failed to add vehicle or submit data.");
+            setMessageType("error");
+        }
+    };
+    
+    
+    
+    
+    
     return (
         <>
             <div className="container p-3">
@@ -108,11 +194,25 @@ const VehicleAddForm = () => {
                 </ul>
                 <div className="card rounded-0 mb-3">
                     <div className="card-body">
+                        {message && (
+                            <div className="p-1">
+                                <div
+                                    className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
+                                    style={{
+                                        backgroundColor: messageType === "success" ? "#d4edda" : "#f8d7da",
+                                        color: messageType === "success" ? "#155724" : "#721c24",
+                                        border: `1px solid ${messageType === "success" ? "#c3e6cb" : "#f5c6cb"}`,
+                                    }}
+                                >
+                                    {message}
+                                </div>
+                            </div>
+                        )}
 
-                        <form action="">
+                        <form onSubmit={handleSubmit}>
 
                             {activeForm === 'vehicleForm' && (
-                                <VehicleForm formData={formData} setFormdata={setFormdata}  />
+                                <VehicleForm formData={formData} setFormdata={setFormdata} />
                             )}
 
                             {activeForm === 'financeForm' && (
@@ -120,7 +220,7 @@ const VehicleAddForm = () => {
                             )}
 
                             {activeForm === 'taxForm' && (
-                                <TaxForm formData={formData} setFormdata={setFormdata}  />
+                                <TaxForm formData={formData} setFormdata={setFormdata} />
                             )}
 
                             <div className="text-center mb-3">
@@ -129,16 +229,11 @@ const VehicleAddForm = () => {
 
                         </form>
 
-
                     </div>
                 </div>
             </div>
-
-
-
         </>
-    )
-}
-
+    );
+};
 
 export default VehicleAddForm;
