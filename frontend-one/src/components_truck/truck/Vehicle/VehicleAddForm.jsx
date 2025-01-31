@@ -66,7 +66,8 @@ const VehicleAddForm = () => {
         cmi_end: "",
         insurance_start: "",
         insurance_end: "",
-        insurance_name: ""
+        insurance_name: "",
+        status: "active"
     })
 
     useEffect(() => {
@@ -116,7 +117,11 @@ const VehicleAddForm = () => {
             setMessageType("error");
             return; // Stop form submission
         }
-
+    // Filter driver licenses that have a license number
+    // const filteredisFinance = isFinance.filter(
+    //     (license) => license.insurance_company && license.insurance_company.trim() !== ""
+    //   );
+      
         
 formDataToSend.append('formData', JSON.stringify(formData)); // ใช้ JSON.stringify()
 formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON.stringify()
@@ -135,13 +140,10 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
     
             console.log("Response from the server:", response.data);
     
-            // Handle successful submission
-            if (response.data.success) {
+  
                 setMessage(response.data.message || "Data submitted successfully.");
                 setMessageType("success");
-    
-                // Optionally reset form after submission
-            }
+
         } catch (error) {
             console.error("Upload Error:", error.response ? error.response.data : error.message);
             setMessage(error.response ? error.response.data.message : "Failed to add vehicle or submit data.");

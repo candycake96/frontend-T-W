@@ -172,7 +172,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
         >
             <div className="p-3">
                 <div className="mb-3 text-center">
-                    <p className="fs-5 fw-bold"><i class="bi bi-pencil-square"></i> แก้ไขข้อมูลพนักงาน</p>
+                    <p className="fs-5 fw-bold"><i className="bi bi-pencil-square"></i> แก้ไขข้อมูลพนักงาน</p>
                     {/* <hr className=""/> */}
                 </div>
                 <form>

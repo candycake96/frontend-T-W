@@ -137,7 +137,7 @@ const DriverLicensesForm = ({ driverLicenses, setDriverLicenses }) => {
                             onClick={() => removeDriverLicenseForm(index)}
                             style={{background: "#dc3545"}}
                         >
-                          <i class="bi bi-trash-fill"></i>  ลบใบขับขี่
+                          <i className="bi bi-trash-fill"></i>  ลบใบขับขี่
                         </button>
                     </div>
                     <hr />

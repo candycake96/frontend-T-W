@@ -1,0 +1,406 @@
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import './ShowVhicleDetailsExpanded.css';
+
+// ฟังก์ชันแปลงวันที่
+const formatDate = (dateString) => {
+    const date = new Date(dateString); // สร้างอ็อบเจกต์ Date จากวันที่ที่ได้รับ
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('th-TH', options); // แสดงผลในรูปแบบวัน เดือน ปี (ภาษาไทย)
+};
+
+
+const CardDetailsVehicle = ({ dataVehicle }) => {
+    if (!dataVehicle) return null;
+
+    const [actionShow, setActiveShow] = useState("vehicleInfo");
+    const [isDataVehicle, setDataVahicle] = useState(null);
+    const [error, setError] = useState(null);
+
+
+    const fetchDetailsVehicle = async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3333/api/vehicledetailgetid/${dataVehicle.reg_id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            const data = response.data;
+            data.reg_date = formatDate(data.reg_date);  // แปลงวันที่ที่ได้รับ
+            setDataVahicle(data);  // เก็บข้อมูลที่ได้
+
+        } catch (error) {
+            console.error("Error fetching license types:", error);
+            setError("เกิดข้อผิดพลาดในการดึงข้อมูล");
+        }
+    };
+
+    useEffect(() => {
+        fetchDetailsVehicle();
+    }, [dataVehicle.reg_id]);
+
+    return (
+        <div className="card h-100">
+            <div className="card-header d-flex justify-content-center align-items-center bg-white border-bottom-0">
+                <div className="btn-group btn-group-sm" role="group">
+                    <button
+                        className={`btn btn-outline-primary btn-sm ${actionShow === "vehicleInfo" ? "active" : ""}`}
+                        style={actionShow === "vehicleInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
+                        onClick={() => setActiveShow("vehicleInfo")}
+                    >
+                        ข้อมูลรถ
+                    </button>
+                    <button
+                        className={`btn btn-outline-primary btn-sm ${actionShow === "insuranceInfo" ? "active" : ""}`}
+                        style={actionShow === "insuranceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
+                        onClick={() => setActiveShow("insuranceInfo")}
+                    >
+                        พรบ / ประกัน
+                    </button>
+                    <button
+                        className={`btn btn-outline-primary btn-sm ${actionShow === "FinanceInfo" ? "active" : ""}`}
+                        style={actionShow === "FinanceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
+                        onClick={() => setActiveShow("FinanceInfo")}
+                    >
+                        สินเชื่อรถ
+                    </button>
+                    <button
+                        className={`btn btn-outline-primary btn-sm ${actionShow === "maintenanceInfo" ? "active" : ""}`}
+                        style={actionShow === "maintenanceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
+                        onClick={() => setActiveShow("maintenanceInfo")}
+                    >
+                        บำรุงรักษา
+                    </button>
+                </div>
+            </div>
+
+            <div className="card-body p-2">
+                {/* ตรวจสอบว่า isDataVehicle เป็นอาเรย์ก่อน */}
+                {Array.isArray(isDataVehicle) && isDataVehicle.length > 0 && (
+                    <div>
+                        {isDataVehicle.map((vehicle, index) => (
+                            <div key={index}>
+                                {actionShow === "insuranceInfo" && <InsuranceInfo dataVehicle={vehicle} />}
+                                {actionShow === "vehicleInfo" && <VehicleDtails dataVehicle={vehicle} />}
+                                {actionShow === "FinanceInfo" && <FinanceInfo dataVehicle={vehicle} />}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const VehicleDtails = ({ dataVehicle }) => {
+    if (!dataVehicle) return null;
+    return (
+        <div className="p-2">
+            <div className="d-flex justify-content-center position-relative">
+                <strong>รายการจดทะเบียน</strong>
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                    <i className="bi bi-pencil-square"></i>
+                </button>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-4">
+                    <p><strong>จดทะเบียน:</strong> {formatDate(dataVehicle.reg_date)}</p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>เลขทะเบียน:</strong> {(dataVehicle.reg_number)}</p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>จังหวัด:</strong> {(dataVehicle.province)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-4">
+                    <p><strong>เชื้อเพลิง:</strong> {dataVehicle.fuel} </p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>ตรวจสภาพ:</strong> {dataVehicle.inspection_code} </p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>ประเภท:</strong> {dataVehicle.vehicle_type_name} </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-7">
+                    <p><strong>ลักษณะ/มาตรฐาน:</strong> {dataVehicle.usage_type} </p>
+                </div>
+
+                <div className="col-lg-5">
+                    <p><strong>ยี่ห้อ:</strong> {dataVehicle.car_brand} </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-7">
+                    <p><strong>แบบ/รุ่น:</strong> {dataVehicle.model_no} </p>
+                </div>
+
+                <div className="col-lg-5">
+                    <p><strong>สี:</strong> {dataVehicle.color} </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-7">
+                    <p><strong>เลขตัวรถ:</strong> {dataVehicle.chassis_number} </p>
+                </div>
+
+                <div className="col-lg-5">
+                    <p><strong>อยู่ที่:</strong> {dataVehicle.chassis_number_location} </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-4">
+                    <p><strong>ยี่ห้อเครื่องยนต์:</strong> {dataVehicle.engine_brand} </p>
+                </div>
+                <div className="col-lg-5">
+                    <p><strong>เลขเครื่องยนต์:</strong> {dataVehicle.engine_no} </p>
+                </div>
+                <div className="col-lg-3">
+                    <p><strong>ที่อยู่:</strong> {dataVehicle.engine_on_location} </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-2">
+                    <p><strong>จำนวนสูบ:</strong> {dataVehicle.cylinders} </p>
+                </div>
+                <div className="col-lg-2">
+                    <p><strong>แรงม้า:</strong> {dataVehicle.engine_power} </p>
+                </div>
+                <div className="col-lg-2">
+                    <p><strong>กิโลวัตต์:</strong> {dataVehicle.cylinders} </p>
+                </div>
+                <div className="col-lg-2">
+                    <p><strong>เพลา:</strong> {dataVehicle.cylinders} <strong>ล้อ</strong></p>
+                </div>
+                <div className="col-lg-2">
+                    <p><strong>ยาง:</strong> {dataVehicle.cylinders} <strong>เส้น</strong> </p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-3">
+                    <p><strong>น้ำหนักรถ:</strong> {dataVehicle.veh_weight} </p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>จำนวนที่นั่งผู้โดยสาร:</strong> {dataVehicle.passenger_count} </p>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-lg-6">
+                    <p><strong>น้ำหนักบรรทุกหรือน้ำหนักลงเพลา:</strong> {dataVehicle.max_load} </p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>น้ำหนักรวม:</strong> {dataVehicle.gross_weight} </p>
+                </div>
+            </div>
+
+            {dataVehicle.file_download && dataVehicle.file_download.trim() !== "" && (
+                <div className="mb-3" >
+                    <a href={dataVehicle.file_download} className="" target="_blank" rel="noopener noreferrer" id="btn-animated" style={{ color: '#c0392b' }}>
+                        <i className="bi bi-file-earmark-pdf-fill"></i> ไฟล์เอกสาร
+                    </a>
+                </div>
+            )}
+
+            <hr className="mb-2 " />
+
+            <div className="text-center"><strong>เจ้าของรถ</strong></div>
+            <div className="row">
+                <div className="col-lg-6 text-center">
+                    <p><strong>ลำดับ:</strong> {(dataVehicle.document_order)} </p>
+                </div>
+                <div className="col-lg-6">
+                    <p><strong>วันเดือนปี ที่ครอบครอง:</strong> {formatDate(dataVehicle.possession_date)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-12">
+                    <p><strong>ผู้ประกอบการขนส่ง:</strong> {(dataVehicle.operators)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-9 ">
+                    <p><strong>หนังสือสำคัญแสดงการจดทะเบียน/บัตรประจำตัวเลขที่:</strong> {(dataVehicle.reg_doc_number)} </p>
+                </div>
+                <div className="col-lg-3">
+                    <p><strong>สัญชาติ:</strong> {(dataVehicle.nation)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-12">
+                    <p><strong>ที่อยู่:</strong> {(dataVehicle.addr)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-7 ">
+                    <p><strong>ประกอบการขนส่งประเภท:</strong> {(dataVehicle.trans_type)} </p>
+                </div>
+                <div className="col-lg-5">
+                    <p><strong>ใบอนุญาตเลขที่:</strong> {(dataVehicle.license_no)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-7 ">
+                    <p><strong>วันสิ้อายุใบอนุญาต:</strong> {formatDate(dataVehicle.license_expiry)} </p>
+                </div>
+                <div className="col-lg-5">
+                    <p><strong>มีสิทธิครอบครองและใช้รถโดย:</strong> {(dataVehicle.rights_to_use)}</p>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-lg-12">
+                    <p><strong>ผู้ถือกรรมสิทธิ์:</strong> {(dataVehicle.owner_name)}</p>
+                </div>
+            </div>
+
+            <div className="row mb-3">
+                <div className="col-lg-12">
+                    <p><strong>ที่อยู่:</strong> {(dataVehicle.address)}</p>
+                </div>
+            </div>
+
+            <hr className="mb-2" />
+            <div className="d-flex justify-content-center position-relative">
+                <strong>ข้อมูลเพิ่มเติม</strong>
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                    <i className="bi bi-pencil-square"></i>
+                </button>
+            </div>
+            <div className="row">
+                <div className="col-lg-4 ">
+                    <p><strong>ประเภทรถ:</strong> {(dataVehicle.car_type_name)} </p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>สถานะ:</strong> {(dataVehicle.status)}</p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>สาขาที่ดูแล:</strong> {(dataVehicle.name_branch)}</p>
+                </div>
+            </div>
+
+        </div>
+    );
+}
+
+
+// พรบ ประกัน
+const InsuranceInfo = ({ dataVehicle }) => {
+    if (!dataVehicle) return null;
+    return (
+        <div className="p-2">
+            <div className="mb-3">
+                <strong>ภาษี</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <div className="row">
+                    <div className="col-lg-12">
+                        <p>
+                            <strong>หมดอายุวันที่:</strong> {formatDate(dataVehicle.tax_end)}
+                        </p>
+                        {getTaxStatusMessage(dataVehicle.tax_end)}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-3">
+                <strong>พรบ</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <div className="row">
+                    <div className="col-lg-4">
+                        <p><strong>วันที่เริ่มต้น:</strong> {formatDate(dataVehicle.cmi_start)}</p>
+                    </div>
+                    <div className="col-lg-6">
+                        <p><strong>หมดอายุวันที่:</strong> {formatDate(dataVehicle.cmi_end)} </p>
+                        {ActInsuranceStatusMessage(dataVehicle.cmi_end)}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-3">
+                <strong>ประกันภัย</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <div className="row">
+                    <div className="col-lg-4">
+                        <p><strong>วันที่เริ่มต้น:</strong> {formatDate(dataVehicle.insurance_start)}</p>
+                    </div>
+                    <div className="col-lg-4">
+                        <p><strong>หมดอายุวันที่:</strong> {formatDate(dataVehicle.insurance_end)}</p>
+                        {InsuranceStatusMessage(dataVehicle.insurance_end)}
+                    </div>
+                    <div className="col-lg-4">
+                        <p><strong>บริษัท:</strong> {(dataVehicle.insurance_name)}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    );
+    // ฟังก์ชันตรวจสอบสถานะภาษี
+    function getTaxStatusMessage(taxEndDate) {
+        const today = new Date();
+        const taxEnd = new Date(taxEndDate);
+        const diffDays = (taxEnd - today) / (1000 * 60 * 60 * 24); // คำนวณจำนวนวัน
+
+        if (diffDays < 0) {
+            return <p className="text-danger fw-bold">⚠️ ภาษีหมดอายุแล้ว โปรดต่ออายุ</p>;
+        } else if (diffDays <= 30) {
+            return <p className="text-warning fw-bold">⚠️ ภาษีใกล้หมดอายุ โปรดต่ออายุ</p>;
+        } else {
+            return <p className="text-success fw-bold">✅ ภาษียังไม่หมดอายุ</p>;
+        }
+    }
+    function ActInsuranceStatusMessage(taxEndDate) {
+        const today = new Date();
+        const taxEnd = new Date(taxEndDate);
+        const diffDays = (taxEnd - today) / (1000 * 60 * 60 * 24); // คำนวณจำนวนวัน
+
+        if (diffDays < 0) {
+            return <p className="text-danger fw-bold">⚠️ พรบ.หมดอายุแล้ว โปรดต่ออายุ</p>;
+        } else if (diffDays <= 30) {
+            return <p className="text-warning fw-bold">⚠️ พรบ.ใกล้หมดอายุ โปรดต่ออายุ</p>;
+        } else {
+            return <p className="text-success fw-bold">✅ พรบ.ยังไม่หมดอายุ</p>;
+        }
+    }
+    function InsuranceStatusMessage(taxEndDate) {
+        const today = new Date();
+        const taxEnd = new Date(taxEndDate);
+        const diffDays = (taxEnd - today) / (1000 * 60 * 60 * 24); // คำนวณจำนวนวัน
+
+        if (diffDays < 0) {
+            return <p className="text-danger fw-bold">⚠️ ประกันภัยหมดอายุแล้ว โปรดต่ออายุ</p>;
+        } else if (diffDays <= 30) {
+            return <p className="text-warning fw-bold">⚠️ ประกันภัยใกล้หมดอายุ โปรดต่ออายุ</p>;
+        } else {
+            return <p className="text-success fw-bold">✅ ประกันภัยยังไม่หมดอายุ</p>;
+        }
+    }
+};
+
+const FinanceInfo = ({ dataVehicle }) => {
+    if (!dataVehicle) return null;
+
+    return (
+        <div>
+            <strong>ข้อมูลการสินเชื่อรถ</strong>
+            {/* เพิ่มข้อมูลสินเชื่อที่นี่ */}
+        </div>
+    );
+};
+
+export default CardDetailsVehicle;

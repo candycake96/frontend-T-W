@@ -362,7 +362,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               e.currentTarget.style.color = "#343a40"; // Reset text color
             }}
           >
-            <i class="bi bi-wrench-adjustable"></i> แจ้งซ่อมรถ
+            <i className="bi bi-wrench-adjustable"></i> แจ้งซ่อมรถ
           </Link>
         </li>
       </ul>
