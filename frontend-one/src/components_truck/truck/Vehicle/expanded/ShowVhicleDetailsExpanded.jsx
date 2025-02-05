@@ -6,29 +6,33 @@ import CardVehiclePairing from "./CardVehiclePairing";
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
-    
+
     return (
         <>
             <div className="p-2">
 
                 <div className="row mb-3">
                     <div className="col-lg-7 d-flex flex-column">
-                                <CardDetailsVehicle dataVehicle={dataVehicle}/>                        
+                        <CardDetailsVehicle dataVehicle={dataVehicle} />
                     </div>
 
                     <div className="col-lg-5 d-flex flex-column">
                         <div className="mb-3">
                             <div className="">
-                                <button className="btn " style={{background: "Teal", color: '#ffffff'}}><i class="bi bi-tools"></i> แจ้งซ่อม</button>
+                                <button className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i> แจ้งซ่อม</button>
                             </div>
                         </div>
-                            <CardVehiclePairing  dataVehicle={dataVehicle}/>
-                            <CardDriverRelation dataVehicle={dataVehicle} />
+
+                        {(dataVehicle.car_type_id === 1 || dataVehicle.car_type_id === 2) && (
+                            <CardVehiclePairing dataVehicle={dataVehicle} />
+                        )}
+
+                        <CardDriverRelation dataVehicle={dataVehicle} />
                     </div>
                 </div>
 
 
-               
+
             </div>
 
         </>

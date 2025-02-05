@@ -17,6 +17,17 @@
     transition: all 0.3s ease-in-out;
 }
 
+/* ปุ่มบันทึก */
+.save-btn {
+    background-color: blue;
+    color: aliceblue;
+    border: none;
+}
+.save-btn:hover {
+    background-color: darkblue;
+    color: hsl(0, 3%, 71%);
+}
+
 /* ปุ่มลบ */
 .delete-btn {
     background-color: red;

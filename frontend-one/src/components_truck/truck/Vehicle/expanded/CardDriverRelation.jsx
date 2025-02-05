@@ -100,6 +100,13 @@ const CardDriverRelation = ({ dataVehicle }) => {
             setError("Error canceling driver relation: " + (err.response?.data?.message || err.message));
         }
     };
+
+    // ฟังก์ชันแปลงวันที่
+const formatDate = (dateString) => {
+    const date = new Date(dateString); // สร้างอ็อบเจกต์ Date จากวันที่ที่ได้รับ
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('th-TH', options); // แสดงผลในรูปแบบวัน เดือน ปี (ภาษาไทย)
+};
     
     return (
         <>
@@ -117,14 +124,18 @@ const CardDriverRelation = ({ dataVehicle }) => {
     ) : (
         showDrivers.map((rowD, index) => (
                         <div key={index}>
-                            <div className="mb-2">
-                                <p className=""> 🚛 {rowD.reg_number} </p>
-                                <p>👨‍✈️ คนขับ: <button className="" onClick={() => handleOpenModal({ id_emp: rowD.driver_id })} style={{ color: 'Blue', textDecoration: 'underline' }}>{rowD.fname} {rowD.lname}</button></p>
-                                <p>📞 เบอร์โทรติดต่อ: {rowD.phone}</p>
-                                <p>📅 วันที่มอบหมาย: {rowD.assigned_date} </p>
-                                <p>😊 หมายเหตุ: {rowD.notes}</p>
+                            <div className="row">
+                                <div className="col-lg-2 d-flex align-items-center justify-content-center border-end">
+                                <i class="bi bi-person-vcard-fill fs-3"></i>
+                                </div>
+                                <div className="mb-2 col-lg-9">
+                                <p className=""> ทะเบียนรถ: {rowD.reg_number} </p>
+                                <p> คนขับ: <button className="" onClick={() => handleOpenModal({ id_emp: rowD.driver_id })} style={{ color: 'Blue', textDecoration: 'underline' }}>{rowD.fname} {rowD.lname}</button></p>
+                                <p> เบอร์โทรติดต่อ: {rowD.phone}</p>
+                                <p>วันที่มอบหมาย: {formatDate(rowD.assigned_date)} </p>
+                                <p> หมายเหตุ: {rowD.notes}</p>
                                 <p>
-                                    🛠
+                                   
                                     <button
                                         className="btn btn-sm mx-1 action-btn delete-btn"
                                         onClick={() => handleDelete(rowD.driver_assignment_id)}
@@ -144,6 +155,8 @@ const CardDriverRelation = ({ dataVehicle }) => {
 
 
                             </div>
+                            </div>
+                            
 
                             <hr />
                         </div>
