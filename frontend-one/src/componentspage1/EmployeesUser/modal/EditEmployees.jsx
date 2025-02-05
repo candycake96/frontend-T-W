@@ -166,6 +166,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
                 },
                 overlay: {
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 9999, // ให้ overlay อยู่บนทุกอย่าง
                 },
             }}
 

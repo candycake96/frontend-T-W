@@ -85,6 +85,7 @@ const EditAddress = ({ isOpen, onClose, row }) => {
                 },
                 overlay: {
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 9999,
                 },
             }}
         >

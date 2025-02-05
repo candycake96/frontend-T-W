@@ -1,4 +1,5 @@
 import React from "react";
+import Modal from "react-modal";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -45,6 +46,8 @@ import VehicleFrom from "./components_truck/truck/Vehicle/VehicleForm";
 import VehicleAddForm from "./components_truck/truck/Vehicle/VehicleAddForm";
 import OrganizationMenagement from "./componentspage1/ManageOrganization/OrganizationManagement";
 import CompanyManagement from "./componentspage1/ManageOrganization/CompanyManagement";
+
+Modal.setAppElement("#root");
 
 function App() {
   return (

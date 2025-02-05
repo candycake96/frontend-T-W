@@ -392,14 +392,86 @@ const InsuranceInfo = ({ dataVehicle }) => {
     }
 };
 
+// สินเชื่อ
 const FinanceInfo = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
 
+    const [financeData, setFinanceData] = useState(null); // เปลี่ยนจาก [] เป็น null
+    const id = dataVehicle.reg_id;
+
+    const fetchFinanceInfo = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get(`http://localhost:3333/api/autocardetails/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            console.log("API Response:", response.data);
+            setFinanceData(response.data.length > 0 ? response.data[0] : null); // แสดงเฉพาะข้อมูลแรก ถ้าไม่มีให้เป็น null
+        } catch (error) {
+            console.error("Error fetching fetchFinanceInfo:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
+            setFinanceData(null);
+        }
+    };
+
+    useEffect(() => {
+        if (id) fetchFinanceInfo();
+    }, [id]); // เพิ่ม id เป็น dependency
+
     return (
         <div>
-            <strong>ข้อมูลการสินเชื่อรถ</strong>
-            {/* เพิ่มข้อมูลสินเชื่อที่นี่ */}
+    {financeData ? (
+        <>
+            {/* รายการข้อมูลสินเชื่อรถ */}
+            <div className="d-flex justify-content-center position-relative">
+                <strong>สินเชื่อรถ</strong>
+                {/* ปุ่ม Edit อยู่มุมขวาบน */}
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                    <i className="bi bi-pencil-square"></i>
+                </button>
+            </div>
+            {/* ข้อมูลของสินเชื่อ */}
+            <div className="row mb-2">
+                <div className="col-lg-4">
+                    <p><strong>บริษัท:</strong> {financeData.insurance_company}</p>
+                </div>
+            </div>
+            <div className="row mb-2">
+                <div className="col-lg-4">
+                    <p><strong>จำนวนเต็ม:</strong> {financeData.loan_amount} <strong>บาท</strong></p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>ดอกเบี้ย:</strong> {financeData.interest_rate} <strong>%</strong></p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>ค่างวดต่อเดือน :</strong> {financeData.monthly_payment} <strong>บาท</strong></p>
+                </div>
+            </div>
+            <div className="row mb-2">
+                <div className="col-lg-4">
+                    <p><strong>วันที่เริ่มต้น:</strong> {formatDate(financeData.start_date)}</p>
+                </div>
+                <div className="col-lg-4">
+                    <p><strong>วันที่สิ้นสุด :</strong> {formatDate(financeData.end_date)}</p>
+                </div>
+            </div>
+        </>
+    ) : (
+        <div className="text-center">
+            <p style={{ color: 'red' }}>ไม่มีข้อมูลสินเชื่อรถ</p>
         </div>
+    )}
+</div>
+
     );
 };
 

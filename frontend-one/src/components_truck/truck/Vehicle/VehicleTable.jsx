@@ -55,11 +55,15 @@ const VehicleTable = () => {
                                 <td>{rowVD.car_type_name}</td>
                                 <td className="col-1">{rowVD.status}</td>
                                 <td>{rowVD.name_branch}</td>
-                                <td>xxxxx</td>
+                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+    <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span> 
+    xxxxx
+</td>
+
                                 <td className="col-lg-1">
                                     {/* <button className="btn col-lg-6" style={{ color: '#f4d03f' }}>
                                         <i className="bi bi-pencil-fill"></i>
-                                    </button> */}
+                                    </button> */} 
                                     <button
                                         className="btn col-lg-6"
                                         style={{ color: '#2980b9' }}

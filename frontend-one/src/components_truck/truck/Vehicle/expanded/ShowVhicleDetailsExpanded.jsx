@@ -1,6 +1,8 @@
 import React from "react";
 import './ShowVhicleDetailsExpanded.css'
 import CardDetailsVehicle from "./CardDetailsVehicle";
+import CardDriverRelation from "./CardDriverRelation";
+import CardVehiclePairing from "./CardVehiclePairing";
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
@@ -15,28 +17,13 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
                     </div>
 
                     <div className="col-lg-5 d-flex flex-column">
-                        <div className="card mb-3 flex-grow-1">
-                            <div className="card-header d-flex justify-content-between align-items-center">
-                                <p className="fw-medium">หัว + หาง</p>
-                                <button className="btn-animated">
-                                    <i className="bi bi-pencil-fill"></i>
-                                </button>
-                            </div>
-                            <div className="card-body">
-                                {/* เนื้อหาภายใน */}
+                        <div className="mb-3">
+                            <div className="">
+                                <button className="btn " style={{background: "Teal", color: '#ffffff'}}><i class="bi bi-tools"></i> แจ้งซ่อม</button>
                             </div>
                         </div>
-                        <div className="card mb-3 flex-grow-1">
-                            <div className="card-header d-flex justify-content-between align-items-center">
-                                <p className="fw-medium">ข้อมูลคนขับ</p>
-                                <button className="btn-animated">
-                                    <i className="bi bi-pencil-fill"></i>
-                                </button>
-                            </div>
-                            <div className="card-body">
-                                {/* เนื้อหาภายใน */}
-                            </div>
-                        </div>
+                            <CardVehiclePairing  dataVehicle={dataVehicle}/>
+                            <CardDriverRelation dataVehicle={dataVehicle} />
                     </div>
                 </div>
 
