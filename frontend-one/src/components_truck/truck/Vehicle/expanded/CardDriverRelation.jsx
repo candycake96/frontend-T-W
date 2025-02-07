@@ -38,6 +38,7 @@ const CardDriverRelation = ({ dataVehicle }) => {
             setShowDriver(response.data);
         } catch (error) {
             console.error("Error fetching vehicle data:", error);
+            setShowDriver([]);
         }
     };
     

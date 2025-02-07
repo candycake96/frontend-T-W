@@ -1,12 +1,21 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Modal_Department_add from "./modal/Modal_Department_Add";
 
 const Department = () => {
   const [departments, setDepartments] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-  const [departmentName, setDepartmentName] = useState("");
+
   const [modalDepartment, setModalDepartment] = useState(null);
+
+  const [modaldOpenDepartmentAdd, estModalOpenDepartment] = useState(false);
+  const handleOpenModalDepartmentAdd = () => {
+    estModalOpenDepartment(true);
+  }
+  const handleCloseModalDepartmentAdd = () => {
+    estModalOpenDepartment(false);
+  }
 
   const fetchDepartment = async () => {
     try {
@@ -21,35 +30,7 @@ const Department = () => {
     }
   };
 
-  const handleDepartmentInsert = async (e) => {
-    e.preventDefault(); // Prevent form submission from refreshing the page
-
-    if (!departmentName) {
-      setMessage("Department name is required.");
-      setMessageType("error");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "http://localhost:7071/api/insertdepartment",
-        { department_name: departmentName },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setMessage(response.data.message);
-      setMessageType("success");
-      setDepartmentName("");
-      fetchDepartment();
-    } catch (error) {
-      console.error("Error inserting department:", error);
-      setMessage("Failed to add department.");
-      setMessageType("error");
-    }
-  };
-
+  
   useEffect(() => {
     fetchDepartment();
   }, []);
@@ -107,40 +88,21 @@ const Department = () => {
         setMessage(error.response.data.message || 'Something went wrong');
     }
 }
+
   return (
     <>
-      <div className="">
-        <div className="text-center">
-          <p className="fs-3 fw-bolder">ฝ่ายงาน</p>
-        </div>
+      <div className="card mb-3 rounded-0 shadow-sm">
+      <div className="d-flex justify-content-between align-items-center">
+                        <p className="fw-bolder mx-auto">แผนก</p>
+                        <button className="btn-animated " onClick={handleOpenModalDepartmentAdd} ><i class="bi bi-pencil-fill fs-3"></i></button>
+                    </div>
         <div className="p-3">
           {message && (
             <div className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}>
               {message}
             </div>
           )}
-          <div className="">
-            <form onSubmit={handleDepartmentInsert}>
-              <div className="mb-3">
-                <label htmlFor="departmentName" className="form-label">
-                  ชื่อฝ่ายงาน
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="departmentName"
-                  placeholder="ฝ่ายงาน"
-                  value={departmentName}
-                  onChange={(e) => setDepartmentName(e.target.value)}
-                />
-              </div>
-              <div className="text-center">
-                <button type="submit" className="btn btn-success">
-                  เพิ่มข้อมูล
-                </button>
-              </div>
-            </form>
-          </div>
+          
         </div>
         <hr />
 
@@ -223,6 +185,12 @@ const Department = () => {
           </div>
         </div>
       </dialog>
+
+{/*  */}
+{modaldOpenDepartmentAdd && (
+  <Modal_Department_add isOpen={handleOpenModalDepartmentAdd} onClose={handleCloseModalDepartmentAdd} />
+)}
+
     </>
   );
 };

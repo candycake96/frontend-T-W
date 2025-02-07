@@ -1,6 +1,6 @@
 import React from "react";
 import VehicleTable from "./VehicleTable";
-import { Link } from "react-router-dom";
+
 
 const VehicleManagement = () => {
     return (
@@ -12,46 +12,7 @@ const VehicleManagement = () => {
                 <hr />
             </div>
 
-            <div className="p-3">
-                <div className="row d-flex align-items-center gap-2">
-                    <div className="col-lg-3">
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="ค้นหา"
-                                aria-label="ค้นหา"
-                                aria-describedby="button-addon1"
-                            />
-                            <button className="btn btn-outline-secondary" type="button" id="button-addon1">
-                                <i className="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </div>
 
-                    <div className="col-lg-2">
-                        <select className="form-select">
-                            <option selected>เลือกหมวดหมู่รถ</option>
-                            <option value="1">รถบรรทุก</option>
-                            <option value="2">รถยนต์</option>
-                            <option value="3">จักรยานยนต์</option>
-                        </select>
-                    </div>
-
-                    <div className="col-lg-3">
-                        <select className="form-select">
-                            <option selected>เลือกสาขา</option>
-                            <option value="1">รถบรรทุก</option>
-                            <option value="2">รถยนต์</option>
-                            <option value="3">จักรยานยนต์</option>
-                        </select>
-                    </div>
-
-                    <div className="col-lg-3">
-                        <Link to="/truck/vehicleaddform" className="btn btn-primary w-100"><i class="bi bi-truck-front-fill"></i> เพิ่มข้อมูลรถ</Link>
-                    </div>
-                </div>
-            </div>
 
             <div className="">
                 <VehicleTable/>

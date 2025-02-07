@@ -1,10 +1,24 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ShowVhicleDetailsExpanded from "./expanded/ShowVhicleDetailsExpanded";
+import { Link } from "react-router-dom";
 
 const VehicleTable = () => {
     const [isVehicleDetails, setVehicleDetails] = useState([]);
-    const [expandedRow, setExpandedRow] = useState(null); // เก็บ ID ของแถวที่เปิดอยู่
+    const [expandedRow, setExpandedRow] = useState(null);
+    const [branches, setBranches] = useState([]);
+    const [isCarType, setCarType] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchBranch, setSearchBranch] = useState("");
+    const [searchCarType, setSearchCarType] = useState("");
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
 
     const fetchVehicleTable = async () => {
         try {
@@ -27,11 +41,130 @@ const VehicleTable = () => {
     }, []);
 
     const toggleRow = (id) => {
-        setExpandedRow(expandedRow === id ? null : id); // 🔹 สลับเปิด-ปิดแถว
+        setExpandedRow(expandedRow === id ? null : id);
     };
+
+    const fetchBranches = async () => {
+        if (!user) return;
+
+        try {
+            const response = await axios.get(
+                `http://localhost:3333/api/getbranches/${user.company_id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setBranches(response.data);
+        } catch (error) {
+            console.error("Error fetching branches:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBranches();
+    }, [user]);
+
+    const fetchCarType = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:3333/api/detailscartype", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setCarType(response.data);
+        } catch (error) {
+            console.error("Error fetching detailscartype:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchCarType();
+    }, []);
+
+    const handleBranchChange = (e) => {
+        setSearchBranch(e.target.value);
+    };
+
+    const handleCarTypeChange = (e) => {
+        setSearchCarType(e.target.value);
+    };
+
+    const filteredVehicleData = isVehicleDetails.filter((dataRow) => {
+        const reg_Number = dataRow.reg_number.toLowerCase();
+        const branchName = dataRow.name_branch.toLowerCase();
+        const carType = dataRow.car_type_name.toLowerCase();
+
+        return (
+            reg_Number.includes(searchTerm.toLowerCase()) &&
+            branchName.includes(searchBranch.toLowerCase()) &&
+            carType.includes(searchCarType.toLowerCase())
+        );
+    });
 
     return (
         <>
+            <div className="p-3">
+                <div className="row d-flex align-items-center gap-2">
+                    <div className="col-lg-3">
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="ค้นหาทะเบียนรถ"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <button className="btn btn-outline-secondary" type="button">
+                                <i className="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <select className="form-select" onChange={handleCarTypeChange}>
+                            <option value="">เลือกหมวดหมู่รถ</option>
+                            {isCarType.length > 0 ? (
+                                isCarType.map((rowCarType) => (
+                                    <option key={rowCarType.car_type_id} value={rowCarType.car_type_name}>
+                                        {rowCarType.car_type_name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option disabled>กำลังโหลด...</option>
+                            )}
+                        </select>
+                    </div>
+
+                    <div className="col-lg-3">
+                        <select className="form-select" onChange={handleBranchChange}>
+                            <option value="">เลือกสาขา</option>
+                            {branches.map((br) => (
+                                <option key={br.id_branch} value={br.name_branch}>
+                                    {br.name_branch}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="col-lg-3">
+                        <Link to="/truck/vehicleaddform" className="btn btn-primary w-100">
+                            <i className="bi bi-truck-front-fill"></i> เพิ่มข้อมูลรถ
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -46,7 +179,7 @@ const VehicleTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {isVehicleDetails.map((rowVD, index) => (
+                    {filteredVehicleData.map((rowVD, index) => (
                         <React.Fragment key={index}>
                             <tr>
                                 <td className="col-1">{rowVD.reg_number}</td>
@@ -56,18 +189,14 @@ const VehicleTable = () => {
                                 <td className="col-1">{rowVD.status}</td>
                                 <td>{rowVD.name_branch}</td>
                                 <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-    <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span> 
-    xxxxx
-</td>
-
+                                    <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span>
+                                    xxxxx
+                                </td>
                                 <td className="col-lg-1">
-                                    {/* <button className="btn col-lg-6" style={{ color: '#f4d03f' }}>
-                                        <i className="bi bi-pencil-fill"></i>
-                                    </button> */} 
                                     <button
                                         className="btn col-lg-6"
                                         style={{ color: '#2980b9' }}
-                                        onClick={() => toggleRow(rowVD.reg_id)} // 🔹 Toggle แถว
+                                        onClick={() => toggleRow(rowVD.reg_id)}
                                     >
                                         {expandedRow === rowVD.reg_id ? (
                                             <i className="bi bi-chevron-up"></i>
@@ -78,7 +207,6 @@ const VehicleTable = () => {
                                 </td>
                             </tr>
 
-                            {/* ✅ แถวแสดงข้อมูลเพิ่มเติม */}
                             {expandedRow === rowVD.reg_id && (
                                 <tr>
                                     <td colSpan="12">

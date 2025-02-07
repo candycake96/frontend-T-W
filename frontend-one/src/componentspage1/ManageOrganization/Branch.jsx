@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import Modal_Branch_Add from "./modal/Modal_Brcnch_Add";
 
 const Branch = () => {
   const [branches, setBranches] = useState([]);
@@ -8,6 +9,15 @@ const Branch = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null); // For editing
+
+   const [modalOpenBranchAdd, setModalOpenBranchAdd] = useState(false);
+   const handleOpenModalBanchAdd = () => {
+    setModalOpenBranchAdd(true);
+}
+
+const handleCloseModalBanchAdd = () => {
+    setModalOpenBranchAdd(false);
+}
 
   const fetchBranches = async () => {
     try {
@@ -29,38 +39,7 @@ const Branch = () => {
     fetchBranches(); // Fetch branches on component mount
   }, []);
 
-  const branchInsert = async (e) => {
-    e.preventDefault();
 
-    if (!branchName || !branchAddress) {
-      setMessage("Branch name and address are required.");
-      setMessageType("error");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "http://localhost:7071/api/insertbranch",
-        {
-          branch_name: branchName,
-          branch_address: branchAddress,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setMessage(response.data.message);
-      setMessageType("success");
-      setBranchAddress("");
-      setBranchName("");
-      fetchBranches(); // Refresh the branch list
-    } catch (error) {
-      console.error("Error:", error);
-      setMessage(error.response.data.message || "Something went wrong");
-      setMessageType("error");
-    }
-  };
 
   const handleEditClick = (branch) => {
     setSelectedBranch(branch);
@@ -119,10 +98,11 @@ const handleDelete = async (id) => {
 
   return (
     <>
-      <div>
-        <div className="text-center">
-          <p className="fs-3 fw-bolder">สาขา</p>
-        </div>
+      <div className="card mb-3 rounded-0 shadow-sm">
+      <div className="d-flex justify-content-between align-items-center">
+                        <p className="fw-bolder mx-auto">สาขา</p>
+                        <button className="btn-animated " onClick={handleOpenModalBanchAdd}><i class="bi bi-pencil-fill fs-3"></i></button>
+                    </div>
         <div className="p-3">
           {message && (
             <div
@@ -133,41 +113,9 @@ const handleDelete = async (id) => {
               {message}
             </div>
           )}
-          <form onSubmit={branchInsert}>
-            <div className="mb-3">
-              <label htmlFor="branchName" className="form-label">
-                ชื่อสาขา
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="branchName"
-                placeholder="ตัวอย่าง สำนักงานใหญ่ กทม."
-                value={branchName}
-                onChange={(e) => setBranchName(e.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="branchAddress" className="form-label">
-                ที่อยู่
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="branchAddress"
-                placeholder="ถนน เขต จังหวัด.."
-                value={branchAddress}
-                onChange={(e) => setBranchAddress(e.target.value)}
-              />
-            </div>
-            <div className="text-center">
-              <button type="submit" className="btn btn-success">
-                เพิ่มข้อมูล
-              </button>
-            </div>
-          </form>
+
         </div>
-        <hr />
+        
         <div className="p-3">
           <div className="row">
             {branches.map((branch) => (
@@ -196,6 +144,13 @@ const handleDelete = async (id) => {
           </div>
         </div>
       </div>
+
+      {modalOpenBranchAdd && (
+            <Modal_Branch_Add 
+            isOpen = {modalOpenBranchAdd}
+            onClose = {handleCloseModalBanchAdd}
+            />
+        )}
 
       {/* Modal */}
       <dialog id="my_modal_4" className="modal">
