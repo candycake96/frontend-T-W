@@ -102,7 +102,7 @@ const VehicleTable = () => {
 
     const filteredVehicleData = isVehicleDetails.filter((dataRow) => {
         const reg_Number = dataRow.reg_number.toLowerCase();
-        const branchName = dataRow.name_branch.toLowerCase();
+        const branchName = dataRow.branch_name.toLowerCase();
         const carType = dataRow.car_type_name.toLowerCase();
 
         return (
@@ -150,8 +150,8 @@ const VehicleTable = () => {
                         <select className="form-select" onChange={handleBranchChange}>
                             <option value="">เลือกสาขา</option>
                             {branches.map((br) => (
-                                <option key={br.id_branch} value={br.name_branch}>
-                                    {br.name_branch}
+                                <option key={br.id_branch} value={br.branch_name}>
+                                    {br.branch_name}
                                 </option>
                             ))}
                         </select>
@@ -187,7 +187,7 @@ const VehicleTable = () => {
                                 <td>{rowVD.model_no}</td>
                                 <td>{rowVD.car_type_name}</td>
                                 <td className="col-1">{rowVD.status}</td>
-                                <td>{rowVD.name_branch}</td>
+                                <td>{rowVD.branch_name}</td>
                                 <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                                     <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span>
                                     xxxxx

@@ -22,10 +22,10 @@ const JobpositionDelete = ({ id, onDeleteSuccess }) => {
   return (
     <button
       type="button"
-      className="btn btn-danger"
+      className="p-0 btn-icon-Delete"
       onClick={() => positionDelete(id)}
     >
-      ลบข้อมูล
+    <i className="bi bi-trash3-fill"></i> {/* ลบ */}
     </button>
   );
 };

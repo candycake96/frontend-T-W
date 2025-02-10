@@ -10,6 +10,17 @@
     transform: scale(2.5);
 }
 
+.btn-icon-Delete {
+    color: #f63535;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.btn-icon-Delete:hover {
+    transform: scale(2.5);
+}
 .action-btn {
     padding: 4px 8px;
     font-size: 0.875rem;

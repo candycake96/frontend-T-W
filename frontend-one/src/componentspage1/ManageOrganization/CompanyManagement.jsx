@@ -62,13 +62,15 @@ const CompanyManagement = () => {
                                             <p className="fs-5 fw-normal">ข้อมูลหน่วยงาน</p>
                                         </div>
                                         <div className="col-lg-6 d-grid gap-2 d-md-flex justify-content-md-end">
-                                            <button className="btn md-flex Edit-button " >แก้ไข</button>
+                                            <button className="btn md-flex Edit-button " >
+                                            <i class="bi bi-pencil-square"></i> <strong className=""  style={{ fontSize: '12px' }}> แก้ไข </strong>
+                                                </button>
                                             <Link
                                                 to="/truck/organizationmanagment"
                                                 state={rowCompany}
-                                                className="btn Green-button"
+                                                className="btn Teal-button"
                                             >
-                                                ดูข้อมูล
+                                              <i class="bi bi-building-gear"></i>  {/* ดูข้อมูล */}
                                             </Link>
                                         </div>
                                     </div>

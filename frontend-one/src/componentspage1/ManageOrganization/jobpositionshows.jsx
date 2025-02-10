@@ -4,14 +4,14 @@ import JobpositionDelete from "./jobpositiondelete";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const JobPositionShows = ({ onPositionAdded }) => {
+const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
   const [showjobposition, setShowjobposition] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
 
   const fetchJobposition = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:7071/api/jobposition",
+        `http://localhost:3333/api/getpositions/${CompanyID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -51,42 +51,28 @@ const JobPositionShows = ({ onPositionAdded }) => {
 
   
   return (
-    <div className="">
-      <div className="p-3 text-center">
-        <h3>ข้อมูลตำแหน่ง</h3>
-      </div>
-
-      <div className="p-6">
-        <div className="card ">
+    <div className=" ">
+      <div className="">
+        <div className=" ">
           <table className="table table-responsive">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">ชื่อตำแหน่ง</th>
-                <th scope="col">#</th>
-                <th scope="col">#</th>
-              </tr>
-            </thead>
             <tbody>
               {showjobposition.map((ShowsJobPosition, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{ShowsJobPosition.position_name}</td>
-                  <td className="col-2">
+                  <td className="col-1">{index + 1}</td>
+                  <td className="col-9">{ShowsJobPosition.name_position}</td>
+                  <td className="col-1">
                     <JobpositionDelete
-                      id={ShowsJobPosition.position_id}
+                      id={ShowsJobPosition.id_position}
                       onDeleteSuccess={handleDeleteSuccess}
                     />
-                  </td>
-                  <td className="col-2">
                     <button
-                      className="btn btn-warning"
+                      className=" p-0 me-2 btn-animated"
                       onClick={() =>
                         handleEditClick(ShowsJobPosition)
                       }
                     >
                       {" "}
-                      แก้ไข
+                      <i className="bi bi-pencil-square"></i> {/* แก้ไข */}
                     </button>
                   </td>
                 </tr>
@@ -105,11 +91,11 @@ const JobPositionShows = ({ onPositionAdded }) => {
                <input
             type="text"
             className="form-control"
-            value={selectedJob ? selectedJob.position_name : ""}
+            value={selectedJob ? selectedJob.name_position : ""}
             onChange={(e) =>
               setSelectedJob((prev) => ({
                 ...prev,
-                position_name: e.target.value,
+                name_position: e.target.value,
               }))
             }
           />

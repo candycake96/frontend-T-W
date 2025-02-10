@@ -434,7 +434,7 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
                             <option value="">Open this select menu</option>
                             {branches.map((br) => (
                                 <option key={br.id_branch} value={br.id_branch}>
-                                    {br.name_branch}
+                                    {br.branch_name}
                                 </option>
                             ))}
 

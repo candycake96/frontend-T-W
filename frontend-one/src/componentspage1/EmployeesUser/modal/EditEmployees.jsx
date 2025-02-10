@@ -372,7 +372,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
                                 <option value="">Select Branch</option>
                                 {branches.map((branch) => (
                                     <option key={branch.id_branch} value={branch.id_branch}>
-                                        {branch.name_branch}
+                                        {branch.branch_name}
                                     </option>
                                 ))}
                             </select>

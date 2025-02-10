@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_Department_add from "./modal/Modal_Department_Add";
 
-const Department = () => {
+const Department = ({CompanyID}) => {
   const [departments, setDepartments] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
@@ -19,7 +19,7 @@ const Department = () => {
 
   const fetchDepartment = async () => {
     try {
-      const response = await axios.get("http://localhost:7071/api/selectdepartment", {
+      const response = await axios.get(`http://localhost:3333/api/getdepartments/${CompanyID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -104,41 +104,33 @@ const Department = () => {
           )}
           
         </div>
-        <hr />
+        
 
-        <div className="p-3">
-          <div className="card">
-            <div className="card-body">
-              <div className="overflow-x-auto">
-                <table className="table table-striped table-responsive">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>ชื่อฝ่ายงาน</th>
-                      <th>#</th>
-                      <th>#</th>
-                    </tr>
-                  </thead>
+        <div className="p-2">
+          <div className="">
+            <div className="">
+              <div className="">
+                <table className="table  table-responsive">
                   <tbody>
                     {departments.map((department, index) => (
                       <tr key={department.department_id}>
-                        <td>{index + 1}</td>
-                        <td>{department.department_name}</td>
-                        <td className="col-2">
-                          <button
-                            className="btn btn-warning col-12"
-                            onClick={() => openModal(department)}
-                          >
-                            แก้ไข
-                          </button>
-                        </td>
-                        <td className="col-2">
-                          <button
-                           className="btn btn-error col-12"
+                        <td className="col-lg-1">{index + 1}</td>
+                        <td className="col-lg-9">{department.name_department}</td>
+                        <td className="col-1">
+
+                        <button
+                           className="p-0 btn-icon-Delete"
                            onClick={() => handleDelete(department.department_id)}
                           >
-                            ลบ
+                            <i className="bi bi-trash3-fill"></i> {/* ลบ */}
                             </button>
+                          <button
+                            className="p-0 me-2 btn-animated"
+                            onClick={() => openModal(department)}
+                          >
+                            <i className="bi bi-pencil-square"></i>  {/* แก้ไข */}
+                          </button>
+
                         </td>
                       </tr>
                     ))}

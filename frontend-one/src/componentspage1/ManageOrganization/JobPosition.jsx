@@ -4,7 +4,7 @@ import JobPositionShows from "./jobpositionshows";
 import Modal_Jobposition_Add from "./modal/Modal_Jobposition_Add";
 const token = 'accessToken';
 
-const JobPosition = () => {
+const JobPosition = ({CompanyID}) => {
  
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
   const [message, setMessage] = useState("");
@@ -23,7 +23,7 @@ const JobPosition = () => {
     <>
       <div className="">
         <div className="card mb-3 rounded-0 shadow-sm">
-          <div className="col-lg-12">
+          <div className="">
           <div className="d-flex justify-content-between align-items-center">
                         <p className="fw-bolder mx-auto">ตำแหน่ง</p>
                         <button className="btn-animated " onClick={handleModalOpenJobposiotion}><i class="bi bi-pencil-fill fs-3"></i></button>
@@ -41,11 +41,12 @@ const JobPosition = () => {
              
             </div>
           </div> 
-        </div> 
-        <hr />
+          <br />
         <div className="">
-          <JobPositionShows onPositionAdded={positionAdded} /> {/* Pass the state to trigger refresh */}
-        </div>
+          <JobPositionShows onPositionAdded={positionAdded} CompanyID={CompanyID} /> {/* Pass the state to trigger refresh */}
+        </div>          
+        </div> 
+
       </div>
       {modalOpenJobpositionAdd && (
         <Modal_Jobposition_Add isOpen={handleModalOpenJobposiotion} onClose={handleModalCloseAJobposition}/>

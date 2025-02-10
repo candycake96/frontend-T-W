@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal_Branch_Add from "./modal/Modal_Brcnch_Add";
 
-const Branch = () => {
+const Branch = ({CompanyID}) => {
   const [branches, setBranches] = useState([]);
   const [branchName, setBranchName] = useState("");
   const [branchAddress, setBranchAddress] = useState("");
@@ -22,7 +22,7 @@ const handleCloseModalBanchAdd = () => {
   const fetchBranches = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:7071/api/selectbranch",
+        `http://localhost:3333/api/getbranches/${CompanyID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -118,29 +118,43 @@ const handleDelete = async (id) => {
         
         <div className="p-3">
           <div className="row">
-            {branches.map((branch) => (
-              <div className="col-12 col-md-4 mb-3" key={branch.branch_id}>
-                <div className="card" style={{ width: "18rem" }}>
-                  <div className="card-body">
-                    <p className="card-title">{branch.branch_name}</p>
-                    <p className="card-text">{branch.branch_address}</p>
-                    <div className="row">
-                      <div className="col">
-                        <button
-                          className="btn btn-warning col-12"
-                          onClick={() => handleEditClick(branch)}
-                        >
-                          แก้ไข
-                        </button>
-                      </div>
-                      <div className="col">
-                        <button className="btn btn-error col-12" onClick={() => handleDelete(branch.branch_id)}>ลบ</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="container">
+  <div className="row">
+    {branches && (
+      <div className="container">
+      <div className="row">
+        {branches.map((branch) => (
+          <div className="col-12 mb-3" key={branch.branch_id} style={{ borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
+            <div>
+              <p className="d-flex justify-content-between align-items-center mb-1">
+                <span><strong>ชื่อสาขา:</strong> {branch.branch_name}</span>
+                <span>
+                <button
+                    className=" p-0 btn-icon-Delete"
+                    onClick={() => handleDelete(branch.branch_id)}
+                  >
+                    <i className="bi bi-trash3-fill"></i> {/* ลบ */}
+                  </button>
+                  <button
+                    className=" p-0 me-2 btn-animated"
+                    onClick={() => handleEditClick(branch)}
+                  >
+                    <i className="bi bi-pencil-square"></i> {/* แก้ไข */}
+                  </button>
+
+                </span>
+              </p>
+              <p className="mb-1"><strong>ที่อยู่:</strong> {branch.branch_address}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    )}
+  </div>
+</div>
+
           </div>
         </div>
       </div>

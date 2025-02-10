@@ -145,7 +145,7 @@ const ShowDetailEmployee = ({ emp, onEdit }) => {
                     </div>
                     <div className="row mb-3">
                         <div className="col-4 fw-bold">สาขา:</div>
-                        <div className="col-8">{row.name_branch}</div>
+                        <div className="col-8">{row.branch_name}</div>
                     </div>
                 </div>
             ))}

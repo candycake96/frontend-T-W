@@ -43,22 +43,22 @@ const OrganizationMenagement = () => {
 
     return (
         <div className="container p-2">
-            <p>Received Company ID: {receivedData?.company_id}</p>
-            <p>User Company ID: {userCompanyID}</p>
+            {/* <p>Received Company ID: {receivedData?.company_id}</p>
+            <p>User Company ID: {userCompanyID}</p> */}
 
             <Company user={user} CompanyID={userCompanyID} />
             <div className="row">
                 <div className="col-lg-6">
                     <div className="mb-3">
-                        <Branch user={user} />
+                        <Branch user={user} CompanyID={userCompanyID}/>
                     </div>
                     <div className="mb-3">
-                        <JobPosition user={user} />
+                        <JobPosition user={user} CompanyID={userCompanyID}/>
                     </div>
                 </div>
                 <div className="col-lg-6">
                     <div className="mb-3">
-                        <Department user={user} />
+                        <Department user={user} CompanyID={userCompanyID} />
                     </div>
                 </div>
             </div>

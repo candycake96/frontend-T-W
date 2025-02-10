@@ -293,7 +293,7 @@ const VehicleDtails = ({ dataVehicle }) => {
                     <p><strong>สถานะ:</strong> {(dataVehicle.status)}</p>
                 </div>
                 <div className="col-lg-4">
-                    <p><strong>สาขาที่ดูแล:</strong> {(dataVehicle.name_branch)}</p>
+                    <p><strong>สาขาที่ดูแล:</strong> {(dataVehicle.branch_name)}</p>
                 </div>
             </div>
 
