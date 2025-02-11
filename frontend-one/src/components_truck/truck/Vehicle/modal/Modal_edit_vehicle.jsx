@@ -37,7 +37,7 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                     <hr />
                 </div> */}
 
-                <div className="">
+                <div className="p-3">
                     <div className="">
                       
                             <div className="text-center mb-3">
@@ -488,62 +488,12 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                 </div>
                             </div>
 
-                            <div className="row mb-3">
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_car_type_id" className="form-label fw-medium">ประเภทรถ</label>
-                                    <select
-                                        className="form-select"
-                                        id="input_car_type_id"
-                                        name="car_type_id"
-                                        // value={formData.car_type_id}
-                                        // onChange={(e) => setFormdata({ ...formData, car_type_id: e.target.value })}
-                                    >
-                                        <option value="">เลือกประเภทรถ</option>
-                                        {/* {isCarType.length > 0 ? (
-                                            isCarType.map((rowCarType) => (
-                                                <option key={rowCarType.car_type_id} value={rowCarType.car_type_id}>
-                                                    {rowCarType.car_type_name}
-                                                </option>
-                                            ))
-                                        ) : (
-                                            <option disabled>กำลังโหลด...</option>
-                                        )} */}
-                                    </select>
-                                </div>
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_id_branch" className="form-label fw-medium">สาขา</label>
-                                    <select
-                                        className="form-select"
-                                        id="input_id_branch"
-                                        name="id_branch"
-                                        // value={formData.id_branch}
-                                        // onChange={(e) => setFormdata({ ...formData, id_branch: e.target.value })}
-                                    >
-                                        <option value="">สาขา</option>
-                                        {/* {branches.length > 0 ? (
-                                            branches.map((rowBranches) => (
-                                                <option key={rowBranches.id_branch} value={rowBranches.id_branch}>
-                                                    {rowBranches.name_branch}
-                                                </option>
-                                            ))
-                                        ) : (
-                                            <option disabled>กำลังโหลด...</option>
-                                        )} */}
-                                    </select>
-                                </div>
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_file_download" className="form-label fw-medium">ไฟล์สแกนเอกสารรถ (ถ้ามี) </label>
-                                    <input
-                                        type="file"
-                                        id="input_file_download"
-                                        className="form-control"
-                                        name="file_download"
-                                        // onChange={handleFileChange}
-                                    />
-                                </div>
-                            </div>
 
-                          
+                          <div className="text-center mb-4">
+                            <div className="">
+                                <button className="btn Teal-button">บันทึก</button>
+                            </div>
+                          </div>
                     </div>
                 </div>
             </div>

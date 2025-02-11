@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import './ShowVhicleDetailsExpanded.css';
 import Modal_edit_vehicle from "../modal/Modal_edit_vehicle";
+import Modal_edit_vehicle_other from "../modal/Modal_edit_vehicle_other";
 
 // ฟังก์ชันแปลงวันที่
 const formatDate = (dateString) => {
@@ -100,6 +101,15 @@ const VehicleDtails = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
 
     const [isOpenModalEditVehicle, setOpenModaleEditVehicle] = useState(false);
+    const [isOpenModalEditOther, setOpenModalEditOther] = useState(false);
+    const [isDataVehicle, setDataVahicle] = useState(null);
+    const handleOpenModalEditOther = (e) => {
+        setOpenModalEditOther(true);
+        setDataVahicle(e)
+    }
+    const handleCloseModalEditOther = () => {
+        setOpenModalEditOther(false);
+    }
     const handleOpenModalEditVehicle = () => {
         setOpenModaleEditVehicle(true);
     }
@@ -287,10 +297,11 @@ const VehicleDtails = ({ dataVehicle }) => {
                 </div>
             </div>
 
+            {/* ข้อมูลเพิ่มเติม */}
             <hr className="mb-2" />
             <div className="d-flex justify-content-center position-relative">
                 <strong>ข้อมูลเพิ่มเติม</strong>
-                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }} onClick={() => handleOpenModalEditOther(dataVehicle)}>
                     <i className="bi bi-pencil-square"></i>
                 </button>
             </div>
@@ -310,7 +321,9 @@ const VehicleDtails = ({ dataVehicle }) => {
                 <Modal_edit_vehicle isOpen={handleOpenModalEditVehicle} onClose={handleCloseModalEditVehicle} />
             )}
     
-
+            {isOpenModalEditOther && (
+                <Modal_edit_vehicle_other isOpen={handleOpenModalEditOther} onClose={handleCloseModalEditOther} dataVehicle={isDataVehicle} />
+            )}
         </div>
         
 

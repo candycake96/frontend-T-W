@@ -10,7 +10,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
                             </div>
 
                             <div className="col-lg-4 mb-3">
-                            <label htmlFor="input_tax_end" className="form-label fw-medium">วันหมดอายุ</label>
+                            <label htmlFor="input_tax_end" className="form-label fw-medium">วันหมดอายุ <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="tax_end"
@@ -29,7 +29,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                <label htmlFor="input_cmi_start" className="form-label fw-medium">วันที่เริ่มต้น</label>
+                                <label htmlFor="input_cmi_start" className="form-label fw-medium">วันที่เริ่มต้น <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="cmi_start"
@@ -42,7 +42,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
                                     {errors.cmi_start && <p className="text-danger">{errors.cmi_start}</p>}
                                 </div>
                                 <div className="col-lg-4">
-                                <label htmlFor="input_cmi_end" className="form-label fw-medium">วันที่หมดอายุ</label>
+                                <label htmlFor="input_cmi_end" className="form-label fw-medium">วันที่หมดอายุ <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="cmi_end"
@@ -63,7 +63,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
     
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                <label htmlFor="input_insurance_start" className="form-label fw-medium">วันที่เริ่มต้น</label>
+                                <label htmlFor="input_insurance_start" className="form-label fw-medium">วันที่เริ่มต้น <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="insurance_start"
@@ -76,7 +76,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
                                     {errors.insurance_start && <p className="text-danger">{errors.insurance_start}</p>}
                                 </div>
                                 <div className="col-lg-4">
-                                <label htmlFor="input_insurance_end" className="form-label fw-medium">วันที่หมดอายุ</label>
+                                <label htmlFor="input_insurance_end" className="form-label fw-medium">วันที่หมดอายุ <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="insurance_end"
@@ -89,7 +89,7 @@ const TaxForm = ({formData, setFormdata, errors}) => {
                                      {errors.insurance_end && <p className="text-danger">{errors.insurance_end}</p>}
                                 </div>
                                 <div className="col-lg-4">
-                                <label htmlFor="input_insurance_name" className="form-label fw-medium">บริษัทประกันภัย</label>
+                                <label htmlFor="input_insurance_name" className="form-label fw-medium">บริษัทประกันภัย <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="insurance_name"
