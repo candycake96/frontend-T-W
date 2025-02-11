@@ -1,6 +1,6 @@
 import React from "react";
 
-const TaxForm = ({formData, setFormdata}) => {
+const TaxForm = ({formData, setFormdata, errors}) => {
     return (
         <>
                                     <div className="mb-3">
@@ -20,6 +20,7 @@ const TaxForm = ({formData, setFormdata}) => {
                                         onChange={(e) => setFormdata({ ...formData, tax_end: e.target.value })}
                                         placeholder=""
                                     />
+                                    {errors.tax_end && <p className="text-danger">{errors.tax_end}</p>}
                             </div>
 
                             <div className="mb-3">
@@ -38,6 +39,7 @@ const TaxForm = ({formData, setFormdata}) => {
                                         onChange={(e) => setFormdata({ ...formData, cmi_start: e.target.value })}
                                         placeholder=""
                                     />
+                                    {errors.cmi_start && <p className="text-danger">{errors.cmi_start}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                 <label htmlFor="input_cmi_end" className="form-label fw-medium">วันที่หมดอายุ</label>
@@ -50,6 +52,7 @@ const TaxForm = ({formData, setFormdata}) => {
                                         onChange={(e) => setFormdata({ ...formData, cmi_end: e.target.value })}
                                         placeholder=""
                                      />
+                                     {errors.cmi_end && <p className="text-danger">{errors.cmi_end}</p>}
                                 </div>
                             </div>
 
@@ -70,6 +73,7 @@ const TaxForm = ({formData, setFormdata}) => {
                                         onChange={(e) => setFormdata({ ...formData, insurance_start: e.target.value })}
                                         placeholder=""
                                     />
+                                    {errors.insurance_start && <p className="text-danger">{errors.insurance_start}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                 <label htmlFor="input_insurance_end" className="form-label fw-medium">วันที่หมดอายุ</label>
@@ -81,7 +85,8 @@ const TaxForm = ({formData, setFormdata}) => {
                                         value={formData.insurance_end}
                                         onChange={(e) => setFormdata({ ...formData, insurance_end: e.target.value })}
                                         placeholder=""
-                                     />
+                                     /> 
+                                     {errors.insurance_end && <p className="text-danger">{errors.insurance_end}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                 <label htmlFor="input_insurance_name" className="form-label fw-medium">บริษัทประกันภัย</label>
@@ -94,6 +99,7 @@ const TaxForm = ({formData, setFormdata}) => {
                                         onChange={(e) => setFormdata({ ...formData, insurance_name: e.target.value })}
                                         placeholder=""
                                      />
+                                     {errors.insurance_name && <p className="text-danger">{errors.insurance_name}</p>}
                                 </div>
                             </div>  
         </>

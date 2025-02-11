@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const VehicleForm = ({formData, setFormdata}) => {
+const VehicleForm = ({formData, setFormdata, errors}) => {
 
 
     const [isCarType, setCarType] = useState([]);
@@ -180,6 +180,7 @@ const handleCarTypeChange = (e) => {
                                             <option disabled>กำลังโหลด...</option>
                                         )}
                                     </select>
+                                    {errors.car_type_id && <p className="text-danger">{errors.car_type_id}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_id_branch" className="form-label fw-medium">สาขา  <span style={{ color: "red" }}> *</span></label>
@@ -201,6 +202,7 @@ const handleCarTypeChange = (e) => {
                                             <option disabled>กำลังโหลด...</option>
                                         )}
                                     </select>
+                                    {errors.id_branch && <p className="text-danger">{errors.id_branch}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_file_download" className="form-label fw-medium">ไฟล์สแกนเอกสารรถ (ถ้ามี) </label>
@@ -231,6 +233,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.reg_date}
                                         onChange={(e) => setFormdata({ ...formData, reg_date: e.target.value })}
                                     />
+                                    {errors.reg_date && <p className="text-danger">{errors.reg_date}</p>}
                                 </div>
 
                                 <div className="col-md-4 mb-3">
@@ -243,6 +246,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.reg_number}
                                         onChange={(e) => setFormdata({ ...formData, reg_number: e.target.value })}
                                         placeholder="กรอกเลขทะเบียน" />
+                                        {errors.reg_number && <p className="text-danger">{errors.reg_number}</p>}
                                 </div>
 
                                 <div className="col-md-4 mb-3">
@@ -255,6 +259,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.province}
                                         onChange={(e) => setFormdata({ ...formData, province: e.target.value })}
                                         placeholder="กรอกจังหวัด" />
+                                        {errors.province && <p className="text-danger">{errors.province}</p>}
                                 </div>
                             </div>
 
@@ -281,7 +286,7 @@ const handleCarTypeChange = (e) => {
                                         <option value="ไบโอดีเซล B10">ไบโอดีเซล B10</option>
                                         <option value="ไบโอดีเซล B20">ไบโอดีเซล B20</option>
                                     </select>
-
+                                    {errors.fuel && <p className="text-danger">{errors.fuel}</p>}
                                 </div>
                                 <div className="col-lg-3">
                                     <label htmlFor="inputinspection_code" className="form-label fw-medium">รหัสตรวจสภาพ</label>
@@ -293,6 +298,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.inspection_code}
                                         onChange={(e) => setFormdata({ ...formData, inspection_code: e.target.value })}
                                         placeholder="รหัสตรวจสภาพ" />
+                                        {errors.inspection_code && <p className="text-danger">{errors.inspection_code}</p>}
                                 </div>
                                 <div className="col-lg-3">
                                     <label htmlFor="input_vehicle_type_id" className="form-label fw-medium">ประเภท  <span style={{ color: "red" }}> *</span></label>
@@ -314,6 +320,7 @@ const handleCarTypeChange = (e) => {
                                             <option disabled>กำลังโหลด...</option>
                                         )}
                                     </select>
+                                    {errors.vehicle_type_id && <p className="text-danger">{errors.vehicle_type_id}</p>}
                                 </div>
                                 <div className="col-lg-3">
                                     <label htmlFor="input_usage_type_id" className="form-label fw-medium">ลักษณะ / มาตรฐาน  <span style={{ color: "red" }}> *</span></label>
@@ -335,6 +342,7 @@ const handleCarTypeChange = (e) => {
                                             <option disabled>กำลังโหลด...</option>
                                         )}
                                     </select>
+                                    {errors.usage_type_id && <p className="text-danger">{errors.usage_type_id}</p>}
                                 </div>
                             </div>
 
@@ -349,6 +357,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.car_brand}
                                         onChange={(e) => setFormdata({ ...formData, car_brand: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
+                                         {errors.car_brand && <p className="text-danger">{errors.car_brand}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_model_no" className="form-label fw-medium">แบบ / รุ่น  <span style={{ color: "red" }}> *</span></label>
@@ -360,6 +369,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.model_no}
                                         onChange={(e) => setFormdata({ ...formData, model_no: e.target.value })}
                                         placeholder="" />
+                                        {errors.model_no && <p className="text-danger">{errors.model_no}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_color" className="form-label fw-medium">สี  <span style={{ color: "red" }}> *</span></label>
@@ -371,6 +381,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.color}
                                         onChange={(e) => setFormdata({ ...formData, color: e.target.value })}
                                         placeholder="สี" />
+                                        {errors.color && <p className="text-danger">{errors.color}</p>}
                                 </div>
                             </div>
 
@@ -385,6 +396,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.chassis_number}
                                         onChange={(e) => setFormdata({ ...formData, chassis_number: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
+                                        {errors.chassis_number && <p className="text-danger">{errors.chassis_number}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_chassis_number_location" className="form-label fw-medium">อยู่ที่  <span style={{ color: "red" }}> *</span></label>
@@ -396,6 +408,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.chassis_number_location}
                                         onChange={(e) => setFormdata({ ...formData, chassis_number_location: e.target.value })}
                                         placeholder="" />
+                                        {errors.chassis_number_location && <p className="text-danger">{errors.chassis_number_location}</p>}
                                 </div>
                             </div>
 
@@ -410,6 +423,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.engine_brand}
                                         onChange={(e) => setFormdata({ ...formData, engine_brand: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
+                                        {errors.engine_brand && <p className="text-danger">{errors.engine_brand}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_engine_no " className="form-label fw-medium">เลขเครื่องยนต์  {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
@@ -421,6 +435,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.engine_no}
                                         onChange={(e) => setFormdata({ ...formData, engine_no: e.target.value })}
                                         placeholder="" />
+                                        {errors.engine_no && <p className="text-danger">{errors.engine_no}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_engine_on_location" className="form-label fw-medium">อยู่ที่  {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
@@ -432,14 +447,14 @@ const handleCarTypeChange = (e) => {
                                         value={formData.engine_on_location}
                                         onChange={(e) => setFormdata({ ...formData, engine_on_location: e.target.value })}
                                         placeholder=""
-
                                     />
+                                    {errors.engine_on_location && <p className="text-danger">{errors.engine_on_location}</p>}
                                 </div>
                             </div>
 
                             <div className="row mb-3">
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_cylinders" className="form-label fw-medium">จำนวนสูบ  <span style={{ color: "red" }}> *</span></label>
+                                    <label htmlFor="input_cylinders" className="form-label fw-medium">จำนวนสูบ   {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
                                     <input
                                         type="text"
                                         name="cylinders"
@@ -449,9 +464,10 @@ const handleCarTypeChange = (e) => {
                                         onChange={(e) => setFormdata({ ...formData, cylinders: e.target.value })}
                                         placeholder="ยี่ห้อรถ"
                                     />
+                                    {errors.cylinders && <p className="text-danger">{errors.cylinders}</p>}
                                 </div>
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_engine_power" className="form-label fw-medium">แรงม้า  <span style={{ color: "red" }}> *</span></label>
+                                    <label htmlFor="input_engine_power" className="form-label fw-medium">แรงม้า   {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
                                     <input
                                         type="text"
                                         name="engine_power"
@@ -460,6 +476,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.engine_power}
                                         onChange={(e) => setFormdata({ ...formData, engine_power: e.target.value })}
                                         placeholder="" />
+                                        {errors.engine_power && <p className="text-danger">{errors.engine_power}</p>}
                                 </div>
                                 <div className="col-lg-2">
                                     <label htmlFor="input_veh_weight" className="form-label fw-medium">น้ำหนักรถ  <span style={{ color: "red" }}> *</span></label>
@@ -471,6 +488,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.veh_weight}
                                         onChange={(e) => setFormdata({ ...formData, veh_weight: e.target.value })}
                                         placeholder="" />
+                                        {errors.veh_weight && <p className="text-danger">{errors.veh_weight}</p>}
                                 </div>
                                 <div className="col-lg-2">
                                     <label htmlFor="input_passenger_count" className="form-label fw-medium">จำนวนผู้โดยสาร</label>
@@ -482,6 +500,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.passenger_count}
                                         onChange={(e) => setFormdata({ ...formData, passenger_count: e.target.value })}
                                         placeholder="" />
+                                        {errors.passenger_count && <p className="text-danger">{errors.passenger_count}</p>}
                                 </div>
                                 <div className="col-lg-2">
                                     <label htmlFor="input_max_load" className="form-label fw-medium">น้ำหนักบรรทุก(ลงเพลา)  <span style={{ color: "red" }}> *</span></label>
@@ -493,6 +512,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.max_load}
                                         onChange={(e) => setFormdata({ ...formData, max_load: e.target.value })}
                                         placeholder="" />
+                                        {errors.max_load && <p className="text-danger">{errors.max_load}</p>}
                                 </div>
                                 <div className="col-lg-2">
                                     <label htmlFor="input_gross_weight" className="form-label fw-medium">น้ำหนักรวม  <span style={{ color: "red" }}> *</span></label>
@@ -504,6 +524,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.gross_weight}
                                         onChange={(e) => setFormdata({ ...formData, gross_weight: e.target.value })}
                                         placeholder="" />
+                                        {errors.gross_weight && <p className="text-danger">{errors.gross_weight}</p>}
                                 </div>
                             </div>
 
@@ -524,6 +545,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.document_order}
                                         onChange={(e) => setFormdata({ ...formData, document_order: e.target.value })}
                                         placeholder="xxx" />
+                                        {errors.document_order && <p className="text-danger">{errors.document_order}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_possession_date" className="form-label fw-medium">วัน เดือน ปี ที่ครอบครอง  <span style={{ color: "red" }}> *</span></label>
@@ -535,6 +557,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.possession_date}
                                         onChange={(e) => setFormdata({ ...formData, possession_date: e.target.value })}
                                         placeholder="" />
+                                        {errors.possession_date && <p className="text-danger">{errors.possession_date}</p>}
                                 </div>
                             </div>
 
@@ -549,6 +572,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.operators}
                                         onChange={(e) => setFormdata({ ...formData, operators: e.target.value })}
                                         placeholder="xxx" />
+                                        {errors.operators && <p className="text-danger">{errors.operators}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัณแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
@@ -560,6 +584,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.reg_doc_number}
                                         onChange={(e) => setFormdata({ ...formData, reg_doc_number: e.target.value })}
                                         placeholder="" />
+                                        {errors.reg_doc_number && <p className="text-danger">{errors.reg_doc_number}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_nation" className="form-label fw-medium">สัญชาติ  <span style={{ color: "red" }}> *</span></label>
@@ -571,6 +596,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.nation}
                                         onChange={(e) => setFormdata({ ...formData, nation: e.target.value })}
                                         placeholder="" />
+                                        {errors.nation && <p className="text-danger">{errors.nation}</p>}
                                 </div>
                             </div>
 
@@ -585,6 +611,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.addr}
                                         onChange={(e) => setFormdata({ ...formData, addr: e.target.value })}
                                         placeholder="xxx" />
+                                        {errors.addr && <p className="text-danger">{errors.addr}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_trans_type" className="form-label fw-medium">ประกอบการขนส่งประเภท  <span style={{ color: "red" }}> *</span></label>
@@ -596,6 +623,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.trans_type}
                                         onChange={(e) => setFormdata({ ...formData, trans_type: e.target.value })}
                                         placeholder="" />
+                                        {errors.trans_type && <p className="text-danger">{errors.trans_type}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_license_no" className="form-label fw-medium">ใบอนุญาตเลขที่  <span style={{ color: "red" }}> *</span></label>
@@ -607,6 +635,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.license_no}
                                         onChange={(e) => setFormdata({ ...formData, license_no: e.target.value })}
                                         placeholder="" />
+                                        {errors.license_no && <p className="text-danger">{errors.license_no}</p>}
                                 </div>
                             </div>
 
@@ -621,6 +650,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.license_expiry}
                                         onChange={(e) => setFormdata({ ...formData, license_expiry: e.target.value })}
                                     />
+                                    {errors.license_expiry && <p className="text-danger">{errors.license_expiry}</p>}
                                 </div>
                                 <div className="col-lg-4">
                                     <label htmlFor="input_rights_to_use" className="form-label fw-medium">มีสิทธิครอบครองและใช้รถโดย  <span style={{ color: "red" }}> *</span></label>
@@ -632,8 +662,8 @@ const handleCarTypeChange = (e) => {
                                         value={formData.rights_to_use}
                                         onChange={(e) => setFormdata({ ...formData, rights_to_use: e.target.value })}
                                         placeholder=""
-
                                     />
+                                    {errors.rights_to_use && <p className="text-danger">{errors.rights_to_use}</p>}
                                 </div>
 
                             </div>
@@ -649,6 +679,7 @@ const handleCarTypeChange = (e) => {
                                         value={formData.owner_name}
                                         onChange={(e) => setFormdata({ ...formData, owner_name: e.target.value })}
                                         placeholder="xxx" />
+                                        {errors.owner_name && <p className="text-danger">{errors.owner_name}</p>}
                                 </div>
                                 <div className="col-lg-8">
                                     <label htmlFor="input_address" className="form-label fw-medium">ที่อยู่  <span style={{ color: "red" }}> *</span></label>
@@ -661,6 +692,7 @@ const handleCarTypeChange = (e) => {
                                         onChange={(e) => setFormdata({ ...formData, address: e.target.value })}
                                         placeholder=""
                                     />
+                                     {errors.address && <p className="text-danger">{errors.address}</p>}
                                 </div>
                             </div>
 

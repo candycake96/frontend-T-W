@@ -70,6 +70,78 @@ const VehicleAddForm = () => {
         status: "active"
     })
 
+    const [errors, setErrors] = useState({});
+
+    // ใช้ฟังก์ชันตรวจสอบแบบไดนามิก
+    const validateForm = () => {
+      const requiredFields = {
+        reg_date: "กรุณากรอกวันที่จดทะเบียน",
+        reg_number: "กรุณากรอกเลขทะเบียน",
+        province: "กรุณากรอกจังหวัด",
+        fuel: "กรุณาเลือกประเภทเชื้อเพลิง",
+        car_type_id: "กรุณากรอกข้อมูล",
+        chassis_number: "กรุณากรอกข้อมูล",
+        usage_type_id: "กรุณากรอกข้อมูล",
+        car_brand: "กรุณากรอกข้อมูล",
+        model_no: "กรุณากรอกข้อมูล",
+        color: "กรุณากรอกข้อมูล",
+        engine_brand: "กรุณากรอกข้อมูล",
+        engine_no: "กรุณากรอกข้อมูล",
+        cylinders: "กรุณากรอกข้อมูล",
+        veh_weight: "กรุณากรอกข้อมูล",
+        max_load: "กรุณากรอกข้อมูล",
+        gross_weight: "กรุณากรอกข้อมูล",
+        possession_date: "กรุณากรอกข้อมูล",
+        operators: "กรุณากรอกข้อมูล",
+        nation: "กรุณากรอกข้อมูล",
+        addr: "กรุณากรอกข้อมูล",
+        trans_type: "กรุณากรอกข้อมูล",
+        license_no: "กรุณากรอกข้อมูล",
+        license_expiry: "กรุณากรอกข้อมูล",
+        rights_to_use: "กรุณากรอกข้อมูล",
+        owner_name: "กรุณากรอกข้อมูล",
+        address: "กรุณากรอกข้อมูล",
+        // passenger_count: "กรุณากรอกข้อมูลจำนวนผู้โดยสาร", 
+        vehicle_type_id: "กรุณากรอกข้อมูล",
+        chassis_number_location: "กรุณากรอกข้อมูล",
+        engine_on_location: "กรุณากรอกข้อมูล",
+        engine_power: "กรุณากรอกข้อมูล",
+        document_order: "กรุณากรอกข้อมูล",
+        reg_doc_number: "กรุณากรอกข้อมูล",
+        inspection_code: "กรุณากรอกข้อมูล",
+        id_branch: "กรุณากรอกข้อมูล",
+        tax_end: "กรุณากรอกข้อมูล",
+        cmi_start: "กรุณากรอกข้อมูล",
+        cmi_end: "กรุณากรอกข้อมูล",
+        insurance_start: "กรุณากรอกข้อมูล",
+        insurance_end: "กรุณากรอกข้อมูล",
+        insurance_name: "กรุณากรอกข้อมูล",
+      };
+    
+      const newErrors = {};
+    
+      // ✅ ตรวจสอบค่าว่างเฉพาะฟิลด์ที่จำเป็น
+      Object.keys(requiredFields).forEach((field) => {
+        // ถ้า car_type_id === "2" ข้ามการตรวจสอบในบางฟิลด์
+        if (
+          !formData[field] &&
+          !(formData.car_type_id === "2" && ["engine_brand", "engine_no", "engine_on_location", "cylinders", "engine_power"].includes(field))
+        ) {
+          newErrors[field] = requiredFields[field];
+        }
+      });
+    
+      // ✅ ถ้ามีข้อผิดพลาดให้บันทึกและส่งกลับ false
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return false;
+      }
+    
+      return true;
+    };
+    
+
+
     useEffect(() => {
         console.log("Updated formData:", formData);
     }, [formData]);
@@ -78,8 +150,11 @@ const VehicleAddForm = () => {
         console.log("Updated isFinance:", isFinance);
     }, [isFinance]);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
+
         console.log('FormData before submission:', formData);
         console.log('IsFinance before submission:', isFinance);
     
@@ -214,7 +289,7 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
                         <form onSubmit={handleSubmit}>
 
                             {activeForm === 'vehicleForm' && (
-                                <VehicleForm formData={formData} setFormdata={setFormdata} />
+                                <VehicleForm formData={formData} setFormdata={setFormdata} errors={errors} />
                             )}
 
                             {activeForm === 'financeForm' && (
@@ -222,7 +297,7 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
                             )}
 
                             {activeForm === 'taxForm' && (
-                                <TaxForm formData={formData} setFormdata={setFormdata} />
+                                <TaxForm formData={formData} setFormdata={setFormdata} errors={errors} />
                             )}
 
                             <div className="text-center mb-3">

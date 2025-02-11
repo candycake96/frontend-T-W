@@ -111,7 +111,7 @@ const DriverShow = () => {
                             >
                                 <option value="">ค้นหา (สาขาทั้งหมด) </option>
                                 {showBranch.map((row, index) => (
-                                <option value={row.name_branch} key={index}>{row.name_branch}</option> 
+                                <option value={row.branch_name} key={index}>{row.branch_name}</option> 
                                      ))}                          
                             </select>
                         </div>
