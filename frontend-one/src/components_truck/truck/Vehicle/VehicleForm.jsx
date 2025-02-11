@@ -8,6 +8,13 @@ const VehicleForm = ({formData, setFormdata}) => {
     const [isVehicleType, setVehicleType] = useState([]);
     const [isUsageType, setUsageType] = useState([]);
     const [branches, setBranches] = useState([]);
+    const [selectedCarType, setSelectedCarType] = useState(""); // เก็บค่าที่เลือก
+
+const handleCarTypeChange = (e) => {
+  const value = e.target.value;
+  setSelectedCarType(value); // อัปเดตค่าที่เลือก
+  setFormdata({ ...formData, car_type_id: value });
+};
 
     const fetchCarType = async () => {
         try {
@@ -149,13 +156,73 @@ const VehicleForm = ({formData, setFormdata}) => {
                 <div className="">
                     <div className="">
                       
+                      <div className="fw-bolder text-center mb-2">
+                        <p>บันทึกข้อมูลรายการรถ</p>
+                      </div>
+                    <div className="row mb-3">
+                                <div className="col-lg-4">
+                                    <label htmlFor="input_car_type_id" className="form-label fw-medium">ประเภทรถ  <span style={{ color: "red" }}> *</span></label>
+                                    <select
+                                        className="form-select"
+                                        id="input_car_type_id"
+                                        name="car_type_id"
+                                        value={formData.car_type_id}
+                                        onChange={handleCarTypeChange}
+                                    >
+                                        <option value="">เลือกประเภทรถ</option>
+                                        {isCarType.length > 0 ? (
+                                            isCarType.map((rowCarType) => (
+                                                <option key={rowCarType.car_type_id} value={rowCarType.car_type_id}>
+                                                    {rowCarType.car_type_name}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option disabled>กำลังโหลด...</option>
+                                        )}
+                                    </select>
+                                </div>
+                                <div className="col-lg-4">
+                                    <label htmlFor="input_id_branch" className="form-label fw-medium">สาขา  <span style={{ color: "red" }}> *</span></label>
+                                    <select
+                                        className="form-select"
+                                        id="input_id_branch"
+                                        name="id_branch"
+                                        value={formData.id_branch}
+                                        onChange={(e) => setFormdata({ ...formData, id_branch: e.target.value })}
+                                    >
+                                        <option value="">สาขา</option>
+                                        {branches.length > 0 ? (
+                                            branches.map((rowBranches) => (
+                                                <option key={rowBranches.id_branch} value={rowBranches.id_branch}>
+                                                    {rowBranches.branch_name}
+                                                </option>
+                                            ))
+                                        ) : (
+                                            <option disabled>กำลังโหลด...</option>
+                                        )}
+                                    </select>
+                                </div>
+                                <div className="col-lg-4">
+                                    <label htmlFor="input_file_download" className="form-label fw-medium">ไฟล์สแกนเอกสารรถ (ถ้ามี) </label>
+                                    <input
+                                        type="file"
+                                        id="input_file_download"
+                                        className="form-control"
+                                        name="file_download"
+                                        onChange={handleFileChange}
+                                    />
+                                </div>
+                            </div>
+                            <hr className="mb-3"/>
+
+
                             <div className="text-center mb-3">
                                 <p className="fw-bolder">รายการจดทะเบียน</p>
                             </div>
 
                             <div className="row">
                                 <div className="col-md-4 mb-3">
-                                    <label htmlFor="input_reg_date" className="form-label fw-medium">วันที่จดทะเบียน</label>
+                                    <label htmlFor="input_reg_date" className="form-label fw-medium">วันที่จดทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         id="input_reg_date"
@@ -167,7 +234,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                 </div>
 
                                 <div className="col-md-4 mb-3">
-                                    <label htmlFor="input_reg_number" className="form-label fw-medium">เลขทะเบียน</label>
+                                    <label htmlFor="input_reg_number" className="form-label fw-medium">เลขทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="reg_number"
@@ -179,7 +246,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                 </div>
 
                                 <div className="col-md-4 mb-3">
-                                    <label htmlFor="input_province" className="form-label fw-medium">จังหวัด</label>
+                                    <label htmlFor="input_province" className="form-label fw-medium">จังหวัด  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="province"
@@ -193,7 +260,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-3">
-                                    <label htmlFor="input_fuel" className="form-label fw-medium">เชื้อเพลิง</label>
+                                    <label htmlFor="input_fuel" className="form-label fw-medium">เชื้อเพลิง  <span style={{ color: "red" }}> *</span></label>
                                     <select
                                         id="input_fuel"
                                         className="form-select"
@@ -228,7 +295,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="รหัสตรวจสภาพ" />
                                 </div>
                                 <div className="col-lg-3">
-                                    <label htmlFor="input_vehicle_type_id" className="form-label fw-medium">ประเภท</label>
+                                    <label htmlFor="input_vehicle_type_id" className="form-label fw-medium">ประเภท  <span style={{ color: "red" }}> *</span></label>
                                     <select
                                         id="input_vehicle_type_id"
                                         className="form-select"
@@ -249,7 +316,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                     </select>
                                 </div>
                                 <div className="col-lg-3">
-                                    <label htmlFor="input_usage_type_id" className="form-label fw-medium">ลักษณะ / มาตรฐาน</label>
+                                    <label htmlFor="input_usage_type_id" className="form-label fw-medium">ลักษณะ / มาตรฐาน  <span style={{ color: "red" }}> *</span></label>
                                     <select
                                         className="form-select"
                                         id="input_usage_type_id"
@@ -273,7 +340,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_car_brand" className="form-label fw-medium">ยี่ห้อรถ</label>
+                                    <label htmlFor="input_car_brand" className="form-label fw-medium">ยี่ห้อรถ  </label>
                                     <input
                                         type="text"
                                         name="car_brand"
@@ -284,7 +351,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_model_no" className="form-label fw-medium">แบบ / รุ่น</label>
+                                    <label htmlFor="input_model_no" className="form-label fw-medium">แบบ / รุ่น  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="model_no"
@@ -295,7 +362,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_color" className="form-label fw-medium">สี</label>
+                                    <label htmlFor="input_color" className="form-label fw-medium">สี  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="color"
@@ -309,7 +376,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_chassis_number" className="form-label fw-medium">เลขตัวถัง</label>
+                                    <label htmlFor="input_chassis_number" className="form-label fw-medium">เลขตัวถัง  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="chassis_number"
@@ -320,7 +387,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_chassis_number_location" className="form-label fw-medium">อยู่ที่</label>
+                                    <label htmlFor="input_chassis_number_location" className="form-label fw-medium">อยู่ที่  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="chassis_number_location"
@@ -334,7 +401,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_engine_brand" className="form-label fw-medium">ยี่ห้อเครื่องยนต์</label>
+                                    <label htmlFor="input_engine_brand" className="form-label fw-medium">ยี่ห้อเครื่องยนต์  {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)} </label>
                                     <input
                                         type="text"
                                         name="engine_brand"
@@ -345,7 +412,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_engine_no " className="form-label fw-medium">เลขเครื่องยนต์</label>
+                                    <label htmlFor="input_engine_no " className="form-label fw-medium">เลขเครื่องยนต์  {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
                                     <input
                                         type="text"
                                         name="engine_no "
@@ -356,7 +423,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_engine_on_location" className="form-label fw-medium">อยู่ที่</label>
+                                    <label htmlFor="input_engine_on_location" className="form-label fw-medium">อยู่ที่  {selectedCarType !== "2" && (<span style={{ color: "red" }}> *</span>)}</label>
                                     <input
                                         type="text"
                                         name="engine_on_location"
@@ -372,7 +439,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_cylinders" className="form-label fw-medium">จำนวนสูบ</label>
+                                    <label htmlFor="input_cylinders" className="form-label fw-medium">จำนวนสูบ  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="cylinders"
@@ -384,7 +451,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                     />
                                 </div>
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_engine_power" className="form-label fw-medium">แรงม้า</label>
+                                    <label htmlFor="input_engine_power" className="form-label fw-medium">แรงม้า  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="engine_power"
@@ -395,7 +462,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_veh_weight" className="form-label fw-medium">น้ำหนักรถ</label>
+                                    <label htmlFor="input_veh_weight" className="form-label fw-medium">น้ำหนักรถ  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="veh_weight"
@@ -417,7 +484,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_max_load" className="form-label fw-medium">น้ำหนักบรรทุก(ลงเพลา)</label>
+                                    <label htmlFor="input_max_load" className="form-label fw-medium">น้ำหนักบรรทุก(ลงเพลา)  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="max_load"
@@ -428,7 +495,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
-                                    <label htmlFor="input_gross_weight" className="form-label fw-medium">น้ำหนักรวม</label>
+                                    <label htmlFor="input_gross_weight" className="form-label fw-medium">น้ำหนักรวม  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="gross_weight"
@@ -448,7 +515,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_document_order" className="form-label fw-medium">ลำดับที่ </label>
+                                    <label htmlFor="input_document_order" className="form-label fw-medium">ลำดับที่  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="document_order"
@@ -459,7 +526,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_possession_date" className="form-label fw-medium">วัน เดือน ปี ที่ครอบครอง</label>
+                                    <label htmlFor="input_possession_date" className="form-label fw-medium">วัน เดือน ปี ที่ครอบครอง  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="possession_date"
@@ -473,7 +540,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_operators" className="form-label fw-medium">ผู้ประกอบการขนส่ง </label>
+                                    <label htmlFor="input_operators" className="form-label fw-medium">ผู้ประกอบการขนส่ง  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="operators"
@@ -484,7 +551,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัณแสดงการจดทะเบียน</label>
+                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัณแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="reg_doc_number"
@@ -495,7 +562,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_nation" className="form-label fw-medium">สัญชาติ</label>
+                                    <label htmlFor="input_nation" className="form-label fw-medium">สัญชาติ  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="nation"
@@ -509,7 +576,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_addr" className="form-label fw-medium">ที่อยู่ </label>
+                                    <label htmlFor="input_addr" className="form-label fw-medium">ที่อยู่  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="addr"
@@ -520,7 +587,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_trans_type" className="form-label fw-medium">ประกอบการขนส่งประเภท</label>
+                                    <label htmlFor="input_trans_type" className="form-label fw-medium">ประกอบการขนส่งประเภท  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="trans_type"
@@ -531,7 +598,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_license_no" className="form-label fw-medium">ใบอนุญาตเลขที่</label>
+                                    <label htmlFor="input_license_no" className="form-label fw-medium">ใบอนุญาตเลขที่  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="license_no"
@@ -545,7 +612,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_license_expiry" className="form-label fw-medium">วันสิ้นอายุใบอนุญาต </label>
+                                    <label htmlFor="input_license_expiry" className="form-label fw-medium">วันสิ้นอายุใบอนุญาต  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="date"
                                         name="license_expiry"
@@ -556,7 +623,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                     />
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_rights_to_use" className="form-label fw-medium">มีสิทธิครอบครองและใช้รถโดย</label>
+                                    <label htmlFor="input_rights_to_use" className="form-label fw-medium">มีสิทธิครอบครองและใช้รถโดย  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="rights_to_use"
@@ -573,7 +640,7 @@ const VehicleForm = ({formData, setFormdata}) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_owner_name" className="form-label fw-medium">ผู้ถือกรรมสิทธิ์ </label>
+                                    <label htmlFor="input_owner_name" className="form-label fw-medium">ผู้ถือกรรมสิทธิ์  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="owner_name"
@@ -584,7 +651,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-8">
-                                    <label htmlFor="input_address" className="form-label fw-medium">ที่อยู่</label>
+                                    <label htmlFor="input_address" className="form-label fw-medium">ที่อยู่  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="address"
@@ -597,60 +664,7 @@ const VehicleForm = ({formData, setFormdata}) => {
                                 </div>
                             </div>
 
-                            <div className="row mb-3">
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_car_type_id" className="form-label fw-medium">ประเภทรถ</label>
-                                    <select
-                                        className="form-select"
-                                        id="input_car_type_id"
-                                        name="car_type_id"
-                                        value={formData.car_type_id}
-                                        onChange={(e) => setFormdata({ ...formData, car_type_id: e.target.value })}
-                                    >
-                                        <option value="">เลือกประเภทรถ</option>
-                                        {isCarType.length > 0 ? (
-                                            isCarType.map((rowCarType) => (
-                                                <option key={rowCarType.car_type_id} value={rowCarType.car_type_id}>
-                                                    {rowCarType.car_type_name}
-                                                </option>
-                                            ))
-                                        ) : (
-                                            <option disabled>กำลังโหลด...</option>
-                                        )}
-                                    </select>
-                                </div>
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_id_branch" className="form-label fw-medium">สาขา</label>
-                                    <select
-                                        className="form-select"
-                                        id="input_id_branch"
-                                        name="id_branch"
-                                        value={formData.id_branch}
-                                        onChange={(e) => setFormdata({ ...formData, id_branch: e.target.value })}
-                                    >
-                                        <option value="">สาขา</option>
-                                        {branches.length > 0 ? (
-                                            branches.map((rowBranches) => (
-                                                <option key={rowBranches.id_branch} value={rowBranches.id_branch}>
-                                                    {rowBranches.name_branch}
-                                                </option>
-                                            ))
-                                        ) : (
-                                            <option disabled>กำลังโหลด...</option>
-                                        )}
-                                    </select>
-                                </div>
-                                <div className="col-lg-4">
-                                    <label htmlFor="input_file_download" className="form-label fw-medium">ไฟล์สแกนเอกสารรถ (ถ้ามี) </label>
-                                    <input
-                                        type="file"
-                                        id="input_file_download"
-                                        className="form-control"
-                                        name="file_download"
-                                        onChange={handleFileChange}
-                                    />
-                                </div>
-                            </div>
+
 
                           
                     </div>
