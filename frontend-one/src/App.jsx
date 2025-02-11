@@ -46,6 +46,7 @@ import VehicleFrom from "./components_truck/truck/Vehicle/VehicleForm";
 import VehicleAddForm from "./components_truck/truck/Vehicle/VehicleAddForm";
 import OrganizationMenagement from "./componentspage1/ManageOrganization/OrganizationManagement";
 import CompanyManagement from "./componentspage1/ManageOrganization/CompanyManagement";
+import RepairRequestForm from "./components_truck/truck/Repair/RepairRequestForm";
 
 Modal.setAppElement("#root");
 
@@ -106,6 +107,7 @@ function App() {
           <Route path="vehicleaddform" element={<VehicleAddForm/>} /> {/* หน้ารวมฟร์อมจัดเก็บข้อมูลรถ */}
           <Route path="organizationmanagment" element={<OrganizationMenagement/>} /> {/* หน้าจัดการข้อมูลภายในสองค์กร */}
           <Route path="companymanagement" element={<CompanyManagement/>} /> {/* หน้าจัดการข้อมูลองค์กร */}
+          <Route path="RepairRequestForm" element={<RepairRequestForm/>} /> {/* หน้าแจ้งซ่อม */}
           </Route>
         </Routes>
       </Router>

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 
-Modal.setAppElement('#root'); // หรือใช้ ID ของ element หลักของแอป
+Modal.setAppElement("#root");
 
 const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess }) => {
   const [user, setUser] = useState(null);
@@ -11,81 +11,118 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
     code: "",
     assigned_date: "",
     notes: "",
-    assigned_by: "", // กำหนดค่าเริ่มต้นเป็นค่าว่าง
-    id_emp: ""
+    assigned_by: "",
+    id_emp: "",  // Ensure that id_emp is included
   });
 
   const [userDriver, setUserDriver] = useState([]);
-  const [filteredUserDriver, setFilteredUserDriver] = useState([]); // สถานะสำหรับเก็บรายชื่อพนักงานที่ถูกกรอง
+  const [filteredUserDriver, setFilteredUserDriver] = useState([]);
 
   useEffect(() => {
-    // ดึงข้อมูลผู้ใช้จาก localStorage
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
-
-      // อัปเดตค่า assigned_by เมื่อ user ถูกโหลด
-      setDataRelation(prevState => ({
+      setDataRelation((prevState) => ({
         ...prevState,
-        assigned_by: `${parsedUser.fname} ${parsedUser.lname}`
+        assigned_by: `${parsedUser.fname} ${parsedUser.lname}`,
       }));
     }
   }, []);
 
   useEffect(() => {
     if (dataVehicle?.reg_id) {
-      setDataRelation(prevState => ({
+      setDataRelation((prevState) => ({
         ...prevState,
-        reg_id: dataVehicle.reg_id
+        reg_id: dataVehicle.reg_id,
       }));
     }
   }, [dataVehicle]);
 
   useEffect(() => {
-    setDataRelation(prevState => ({
+    setDataRelation((prevState) => ({
       ...prevState,
-      assigned_date: new Date().toISOString().split("T")[0]
+      assigned_date: new Date().toISOString().split("T")[0],
     }));
   }, []);
 
   const fetchUserDriver = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3333/api/getdriver`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      const response = await axios.get(`http://localhost:3333/api/getdriver`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       setUserDriver(response.data);
-      setFilteredUserDriver(response.data); // กำหนดค่าเริ่มต้นให้ filteredUserDriver
+      setFilteredUserDriver(response.data);
     } catch (error) {
       console.error("Error fetching employee details:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchUserDriver();
   }, []);
 
-  const handleSearchInput = (e) => {
-    const codeInput = e.target.value;
-    setDataRelation({ ...dataRelation, code: codeInput });
+  const [searchTerm, setSearchTerm] = useState(""); // เพิ่ม useState สำหรับ searchTerm
 
-    // กรองรายชื่อพนักงานที่มีรหัสพนักงานตรงกับที่พิมพ์
+  const handleSearchInput = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+
+    // กรองรายชื่อคนขับที่ตรงกับรหัสพนักงาน
     const filteredUsers = userDriver.filter((user) =>
-      user.code.toLowerCase().includes(codeInput.toLowerCase())
+      user.code.toLowerCase().includes(searchValue.toLowerCase())
     );
+
+    // ถ้าเจอ 1 คน หรือไม่เจอให้อัปเดตค่าใน dataRelation
+    if (filteredUsers.length === 1) {
+      setDataRelation((prev) => ({
+        ...prev,
+        id_emp: filteredUsers[0].id_emp,
+        code: filteredUsers[0].code,
+      }));
+    } else {
+      setDataRelation((prev) => ({
+        ...prev,
+        id_emp: "",
+        code: searchValue,  // คงค่าของ code ถ้าไม่มีผลลัพธ์
+      }));
+    }
+
+    // อัปเดต filteredUserDriver ให้แสดงผลตาม search
     setFilteredUserDriver(filteredUsers);
-  }
+  };
+
+  const handleSelectChange = (e) => {
+    const selectedIdEmp = e.target.value;
+
+    const foundUser = userDriver.find((user) => user.id_emp === Number(selectedIdEmp));
+
+    if (foundUser) {
+      setDataRelation((prev) => ({
+        ...prev,
+        id_emp: foundUser.id_emp,
+        code: foundUser.code,
+      }));
+    } else {
+      setDataRelation((prev) => ({
+        ...prev,
+        id_emp: "",
+        code: "", // ล้างค่าของ code ถ้าไม่มีการเลือกที่ตรง
+      }));
+    }
+  };
+
+
+
 
   const handleSubmitAddEmpRelation = async (e) => {
     e.preventDefault();
     console.log("📌 Data before sending:", dataRelation);
 
-    if (!dataRelation.code || !dataRelation.reg_id) {
+    // Validate required fields
+    if (!dataRelation.code || !dataRelation.reg_id || !dataRelation.id_emp) {
       alert("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
@@ -104,12 +141,10 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
 
       console.log("✅ Response:", response.data);
       alert("บันทึกข้อมูลสำเร็จ!");
-
-      onSuccess(); // โหลดข้อมูลใหม่
-      onClose(); // ปิดโมดอล
+      onSuccess();
+      onClose();
     } catch (error) {
       console.error("❌ Error saving data:", error);
-      console.log("🚨 Server Response:", error.response?.data);
       alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
     }
   };
@@ -122,7 +157,7 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      ariaHideApp={false} // You can also disable if needed
+      ariaHideApp={false}
       contentLabel="Employee Details"
       style={{
         content: {
@@ -171,45 +206,35 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
             รหัสพนักงาน<span style={{ color: "red" }}> *</span>
           </label>
           <div className="input-group">
-            {/* Input รหัสพนักงาน */}
             <input
               type="text"
               name="code"
               id="input_code"
-              className="form-control text-end"
-              value={dataRelation.code || ""}
-              onChange={handleSearchInput} // เปลี่ยนการเรียกใช้ฟังก์ชัน handleSearchInput
+              className="col-3"
+              value={dataRelation.code}  // Ensure it reflects the updated code
+              onChange={handleSearchInput}  // Update the code when typing
               placeholder="xxxxx"
             />
 
-            {/* Dropdown รายชื่อพนักงาน */}
             <select
               id="userroleSelect"
-              className="form-select"
+              className="form-select "
               value={dataRelation.id_emp || ""}
-              onChange={(e) => {
-                const selectedIdEmp = Number(e.target.value); // แปลงค่าให้เป็นตัวเลข
-                setDataRelation({ ...dataRelation, id_emp: selectedIdEmp });
-
-                // ค้นหา code ที่ตรงกับ id_emp
-                const foundUser = userDriver.find((user) => user.id_emp === selectedIdEmp);
-                if (foundUser) {
-                  setDataRelation(prev => ({ ...prev, code: foundUser.code }));
-                }
-              }}
+              onChange={handleSelectChange}  // Handle change when selecting a user
             >
               {(dataRelation.code === "" || dataRelation.code === "0") && <option value="">เลือกพนักงาน</option>}
-              {filteredUserDriver.map((user) => ( // เปลี่ยนเป็นการใช้ filteredUserDriver
+              {filteredUserDriver.map((user) => (
                 <option key={user.id_emp} value={user.id_emp}>
-                  {user.fname} {user.lname}
+                  {user.fname} {user.lname} ({user.id_emp})
                 </option>
               ))}
             </select>
+
           </div>
         </div>
 
         <div className="col-lg-12 mb-3">
-          <label htmlFor="input_assigned_datee" className="form-label fw-medium">
+          <label htmlFor="input_assigned_date" className="form-label fw-medium">
             วันที่มอบหมาย
           </label>
           <input
@@ -230,8 +255,7 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
             name="note"
             id="input_note"
             className="form-control"
-            placeholder=""
-            rows="4" // กำหนดความสูงของกล่อง
+            rows="4"
             value={dataRelation.notes}
             onChange={(e) => setDataRelation({ ...dataRelation, notes: e.target.value })}
           />

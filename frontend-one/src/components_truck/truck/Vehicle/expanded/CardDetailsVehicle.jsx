@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import './ShowVhicleDetailsExpanded.css';
+import Modal_edit_vehicle from "../modal/Modal_edit_vehicle";
 
 // ฟังก์ชันแปลงวันที่
 const formatDate = (dateString) => {
@@ -97,11 +98,19 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
 
 const VehicleDtails = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
+
+    const [isOpenModalEditVehicle, setOpenModaleEditVehicle] = useState(false);
+    const handleOpenModalEditVehicle = () => {
+        setOpenModaleEditVehicle(true);
+    }
+    const handleCloseModalEditVehicle = () => {
+        setOpenModaleEditVehicle(false);
+    }
     return (
         <div className="p-2">
             <div className="d-flex justify-content-center position-relative">
                 <strong>รายการจดทะเบียน</strong>
-                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }} onClick={handleOpenModalEditVehicle}>
                     <i className="bi bi-pencil-square"></i>
                 </button>
             </div>
@@ -297,7 +306,14 @@ const VehicleDtails = ({ dataVehicle }) => {
                 </div>
             </div>
 
+            {isOpenModalEditVehicle && (
+                <Modal_edit_vehicle isOpen={handleOpenModalEditVehicle} onClose={handleCloseModalEditVehicle} />
+            )}
+    
+
         </div>
+        
+
     );
 }
 
@@ -429,48 +445,48 @@ const FinanceInfo = ({ dataVehicle }) => {
 
     return (
         <div>
-    {financeData ? (
-        <>
-            {/* รายการข้อมูลสินเชื่อรถ */}
-            <div className="d-flex justify-content-center position-relative">
-                <strong>สินเชื่อรถ</strong>
-                {/* ปุ่ม Edit อยู่มุมขวาบน */}
-                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
-                    <i className="bi bi-pencil-square"></i>
-                </button>
-            </div>
-            {/* ข้อมูลของสินเชื่อ */}
-            <div className="row mb-2">
-                <div className="col-lg-4">
-                    <p><strong>บริษัท:</strong> {financeData.insurance_company}</p>
+            {financeData ? (
+                <>
+                    {/* รายการข้อมูลสินเชื่อรถ */}
+                    <div className="d-flex justify-content-center position-relative">
+                        <strong>สินเชื่อรถ</strong>
+                        {/* ปุ่ม Edit อยู่มุมขวาบน */}
+                        <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                            <i className="bi bi-pencil-square"></i>
+                        </button>
+                    </div>
+                    {/* ข้อมูลของสินเชื่อ */}
+                    <div className="row mb-2">
+                        <div className="col-lg-4">
+                            <p><strong>บริษัท:</strong> {financeData.insurance_company}</p>
+                        </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className="col-lg-4">
+                            <p><strong>จำนวนเต็ม:</strong> {financeData.loan_amount} <strong>บาท</strong></p>
+                        </div>
+                        <div className="col-lg-4">
+                            <p><strong>ดอกเบี้ย:</strong> {financeData.interest_rate} <strong>%</strong></p>
+                        </div>
+                        <div className="col-lg-4">
+                            <p><strong>ค่างวดต่อเดือน :</strong> {financeData.monthly_payment} <strong>บาท</strong></p>
+                        </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className="col-lg-4">
+                            <p><strong>วันที่เริ่มต้น:</strong> {formatDate(financeData.start_date)}</p>
+                        </div>
+                        <div className="col-lg-4">
+                            <p><strong>วันที่สิ้นสุด :</strong> {formatDate(financeData.end_date)}</p>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <div className="text-center">
+                    <p style={{ color: 'red' }}>ไม่มีข้อมูลสินเชื่อรถ</p>
                 </div>
-            </div>
-            <div className="row mb-2">
-                <div className="col-lg-4">
-                    <p><strong>จำนวนเต็ม:</strong> {financeData.loan_amount} <strong>บาท</strong></p>
-                </div>
-                <div className="col-lg-4">
-                    <p><strong>ดอกเบี้ย:</strong> {financeData.interest_rate} <strong>%</strong></p>
-                </div>
-                <div className="col-lg-4">
-                    <p><strong>ค่างวดต่อเดือน :</strong> {financeData.monthly_payment} <strong>บาท</strong></p>
-                </div>
-            </div>
-            <div className="row mb-2">
-                <div className="col-lg-4">
-                    <p><strong>วันที่เริ่มต้น:</strong> {formatDate(financeData.start_date)}</p>
-                </div>
-                <div className="col-lg-4">
-                    <p><strong>วันที่สิ้นสุด :</strong> {formatDate(financeData.end_date)}</p>
-                </div>
-            </div>
-        </>
-    ) : (
-        <div className="text-center">
-            <p style={{ color: 'red' }}>ไม่มีข้อมูลสินเชื่อรถ</p>
+            )}
         </div>
-    )}
-</div>
 
     );
 };

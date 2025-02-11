@@ -3,6 +3,7 @@ import './ShowVhicleDetailsExpanded.css'
 import CardDetailsVehicle from "./CardDetailsVehicle";
 import CardDriverRelation from "./CardDriverRelation";
 import CardVehiclePairing from "./CardVehiclePairing";
+import { Link } from "react-router-dom";
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
@@ -19,7 +20,7 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
                     <div className="col-lg-5 d-flex flex-column">
                         <div className="mb-3">
                             <div className="">
-                                <button className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i> แจ้งซ่อม</button>
+                                <Link to="/truck/RepairRequestForm" className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i> แจ้งซ่อม</Link>
                             </div>
                         </div>
 

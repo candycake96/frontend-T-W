@@ -78,7 +78,7 @@ const DriverShow = () => {
     //   ค้นหา
     const filteredDriverData = driverData.filter((dataRow) => {
         const fullName = `${dataRow.lname} ${dataRow.fname}`.toLowerCase();
-        const branchName = dataRow.name_branch.toLowerCase();
+        const branchName = dataRow.branch_name.toLowerCase();
 
         return (
             fullName.includes(searchTerm.toLowerCase()) &&
@@ -137,7 +137,7 @@ const DriverShow = () => {
                                         <td>{dataRow.fname} {dataRow.lname}</td>
                                         {/* <td>{dataRow.nickname}</td> */}
                                         <td>
-                                            {dataRow.name_branch}
+                                            {dataRow.branch_name}
                                         </td>
                                         <td>
                                             {dataRow.license_code}
