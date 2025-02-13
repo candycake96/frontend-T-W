@@ -1,0 +1,32 @@
+/* เพิ่มคลาสเฉพาะเจาะจงมากขึ้น */
+.custom-navbar-brand {
+    font-size: 0.93rem; /* ขนาดตัวอักษรเล็ก */
+  }
+  
+  /* Media Queries สำหรับหน้าจอขนาดเล็ก */
+  @media (max-width: 576px) {
+    .custom-navbar-brand {
+      font-size: 0.6rem; /* ปรับขนาดตัวอักษรสำหรับหน้าจอขนาดเล็ก */
+    }
+  }
+
+  .custom-navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* ระยะห่างระหว่างชื่อและไอคอน */
+    padding: 8px 16px;
+    border-radius: 8px; /* ทำให้ขอบมน */
+    background-color: #f8f9fa; /* สีพื้นหลังอ่อน */
+    color: #083b72; /* สีน้ำเงินเข้ม */
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .custom-navbar-brand:hover {
+    background-color: #083b72; /* เปลี่ยนเป็นสีน้ำเงินเข้ม */
+    color: white;
+    text-decoration: none;
+  }
+  
+  .custom-navbar-brand i {
+    font-size: 1.2rem; /* ปรับขนาดไอคอน */
+  }

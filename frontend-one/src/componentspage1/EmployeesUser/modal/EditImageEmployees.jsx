@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 
-const EditImageEmployees = ({ isOpen, onClose, emp }) => {
-    // ตั้งค่าภาพเริ่มต้นจากข้อมูลพนักงาน
-    const [preview, setPreview] = useState(null);
+const EditImageEmployees = ({ isOpen, onClose, emp, employeeId }) => {
+    // เปลี่ยนชื่อ state เป็น previewImageEmp
+    const [previewImageEmp, setPreviewImageEmp] = useState(null);
 
     // อัปเดต preview เมื่อ emp เปลี่ยนค่า
     useEffect(() => {
         if (emp?.image) {
-            setPreview(`/uploads/${emp.image}`);
+            setPreviewImageEmp(`/uploads/${emp.image}`);
         } else {
-            setPreview(null);
+            setPreviewImageEmp(null);
         }
     }, [emp]);
 
-    // ฟังก์ชันจัดการอัปโหลดรูป
+    // ฟังก์ชันจัดการการอัปโหลดรูป
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
             const imageUrl = URL.createObjectURL(file);
-            setPreview(imageUrl);
+            setPreviewImageEmp(imageUrl); // อัปเดต previewImageEmp เมื่อเลือกรูป
         }
     };
 
@@ -45,12 +45,14 @@ const EditImageEmployees = ({ isOpen, onClose, emp }) => {
                 },
                 overlay: {
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 9999,
                 },
             }}
         >
             <div className="mb-3">
                 <p><i className="bi bi-image-fill"></i> กรุณาเลือกรูปภาพ </p>
             </div>
+
             <div style={{ textAlign: "center" }} className="mb-3">
                 <div
                     style={{
@@ -67,9 +69,9 @@ const EditImageEmployees = ({ isOpen, onClose, emp }) => {
                         backgroundColor: "#f8f8f8",
                     }}
                 >
-                    {preview ? (
+                    {previewImageEmp ? (
                         <img
-                            src={preview}
+                            src={previewImageEmp}
                             alt="Preview"
                             style={{
                                 width: "100%",
@@ -84,7 +86,7 @@ const EditImageEmployees = ({ isOpen, onClose, emp }) => {
 
                     {/* ปุ่มอัปโหลดรูป */}
                     <label
-                        htmlFor="image-upload"
+                        htmlFor={`image-upload-${employeeId}`} // ให้ id เป็น unique ตาม employeeId
                         style={{
                             position: "absolute",
                             bottom: "20px",
@@ -107,7 +109,7 @@ const EditImageEmployees = ({ isOpen, onClose, emp }) => {
                     </label>
 
                     <input
-                        id="image-upload"
+                        id={`image-upload-${employeeId}`} // ให้ id เป็น unique ตาม employeeId
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
@@ -117,7 +119,13 @@ const EditImageEmployees = ({ isOpen, onClose, emp }) => {
             </div>
 
             <div>
-                <button className="btn" style={{ background: "#4CAF50" }}>บันทึก</button>
+                <button 
+                    className="btn" 
+                    style={{ background: "#4CAF50", color: "white", borderRadius: "5px" }}
+                    onClick={onClose} // ปิด modal เมื่อคลิกปุ่มบันทึก
+                >
+                    บันทึก
+                </button>
             </div>
         </Modal>
     );

@@ -15,10 +15,12 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
       style={{ height: "100%", zIndex: 1050, transition: "width 0.3s", overflowY: "auto" }}>
       
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <Link to="/truck" className="navbar-brand text-decoration-none fw-bolder">NCL Thailand (TMS)</Link>
-        <button onClick={toggleSidebar} className="btn btn-link">
-          <i className="bi bi-chevron-double-left"></i>
-        </button>
+        <Link to="/truck" className="navbar-brand text-decoration-none fw-bolder" style={{color: "#083b72"}}>NCL Thailand (TMS)</Link>
+        <i 
+  onClick={toggleSidebar} 
+  className={`bi bi-chevron-double-left sidebar-toggle-icon ${isSidebarOpen ? "" : "collapsed"}`}
+></i>
+
       </div>
 
       <ul className="nav flex-column mb-auto sidebar-nav">
@@ -77,7 +79,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
             <ul className="list-unstyled ps-4">
               <li>
                 <Link to="/truck/vehiclemanagement"
-                      className={`nav-link ${location.pathname === "/truck/vehiclemanagement" ? "active" : ""}`}>
+                      className={`nav-link ${["/truck/vehiclemanagement","/truck/vehicleaddform"].includes(location.pathname) ? "active" : ""}`}>
                   ข้อมูลรถ
                 </Link>
               </li>

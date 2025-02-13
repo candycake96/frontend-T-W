@@ -55,3 +55,26 @@
     width: 240px; /* ลดขนาด Sidebar ถ้ากว้างเกินไป */
     padding: 10px 0px; /* ปรับ padding ให้พอดี */
   }
+
+  /* icon */
+  .sidebar-toggle-icon {
+    font-size: 1rem; /* ขนาดไอคอนใหญ่ขึ้น */
+    color: #083b72; /* สีไอคอน */
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+  
+  .sidebar-toggle-icon:hover {
+    color: #0a4c98; /* เปลี่ยนสีไอคอนเมื่อ hover */
+    transform: scale(1.5); /* ขยายขึ้นเล็กน้อย */
+  }
+  
+  .sidebar-toggle-icon:active {
+    transform: scale(0.9); /* กดแล้วหดลง */
+  }
+  
+  /* หมุนไอคอนตอน Sidebar ปิด */
+  .sidebar-toggle-icon.collapsed {
+    transform: rotate(180deg);
+  }
+  

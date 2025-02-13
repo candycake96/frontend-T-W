@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import EmployeeShowModal from '../componentspage1/EmployeesUser/modal/EmployeeShowModal';
+import './NavbarTruck.css'
 
 const NavbarPage1 = ({ toggleSidebar }) => {
   const navigate = useNavigate();
@@ -86,9 +87,15 @@ const NavbarPage1 = ({ toggleSidebar }) => {
           </svg>
         </button>
         <div className="d-flex">
-          <Link onClick={() => handleOpenModal(user)} className="navbar-brand" role="button">
-            {user.fname} {user.lname} <i className="bi bi-person-fill"></i>
-          </Link>
+        <Link 
+  onClick={() => handleOpenModal(user)} 
+  className="navbar-brand custom-navbar-brand fw-bolder" 
+  role="button">
+  {user.fname} {user.lname} <i className="bi bi-person-fill"></i>
+</Link>
+
+
+
           <button
             type="button"
             className="navbar-brand"
