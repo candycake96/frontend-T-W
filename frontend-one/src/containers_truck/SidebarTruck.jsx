@@ -43,6 +43,12 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                   ข้อมูลพนักงาน (แก้ไข)
                 </Link>
               </li>
+              <li>
+                <Link to="/truck/employeesresing"
+                      className={`nav-link ${location.pathname === "/truck/employeesresing" ? "active" : ""}`}>
+                  ข้อมูลพนักงานลาออก
+                </Link>
+              </li>
             </ul>
           )}
         </li>

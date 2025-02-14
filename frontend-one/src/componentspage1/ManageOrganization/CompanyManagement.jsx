@@ -3,11 +3,21 @@ import './CompanyManagement.css';
 import axios from "axios";
 import Modal_Company_add from "./modal/Modal_Company_Add";
 import { Link } from "react-router-dom";
+import Modal_Company_Edit from "./modal/Modal_Company_Edit";
 
 const CompanyManagement = () => {
-
+    const [modalOpentCompanyEdit, setModalOpenCompanyEdit] = useState(false);
+    const [dataModalCompanyEdit, setDataModalCompanyEdit] = useState(null);
     const [isCompany, setCompany] = useState([]);
     const [modalOpenCompany, setModalOpenCompany] = useState(false);
+
+    const handleOpenModalCompanyEdit = (dataModal) => {
+        setModalOpenCompanyEdit(true);
+        setDataModalCompanyEdit(dataModal)
+    }
+    const handleCloseModalCompanyEdit = () => {
+        setModalOpenCompanyEdit(false);
+    }
 
     const handleOpenModalCompany = () => {
         setModalOpenCompany(true);
@@ -62,9 +72,9 @@ const CompanyManagement = () => {
                                             <p className="fs-5 fw-normal">ข้อมูลหน่วยงาน</p>
                                         </div>
                                         <div className="col-lg-6 d-grid gap-2 d-md-flex justify-content-md-end">
-                                            <button className="btn md-flex Edit-button " >
-                                            <i class="bi bi-pencil-square"></i> <strong className=""  style={{ fontSize: '12px' }}> แก้ไข </strong>
-                                                </button>
+                                        <button className="btn md-flex Edit-button " onClick={() => handleOpenModalCompanyEdit(rowCompany)} >
+                                        <i class="bi bi-building-fill-gear"></i> แก้ไข
+                                            </button>
                                             <Link
                                                 to="/truck/organizationmanagment"
                                                 state={rowCompany}
@@ -103,6 +113,9 @@ const CompanyManagement = () => {
                     onClose={handleCloseModalCompany}
                 />
             )}
+             {modalOpentCompanyEdit && dataModalCompanyEdit && (
+            <Modal_Company_Edit isOpen={modalOpentCompanyEdit} onClose={handleCloseModalCompanyEdit} dataCompany={dataModalCompanyEdit}/>
+        )}
         </>
     )
 }
