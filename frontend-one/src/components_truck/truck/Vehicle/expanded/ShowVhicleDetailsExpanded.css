@@ -60,3 +60,16 @@
     background-color: #E6A600;
     /* transform: scale(1.1); */
 }
+
+/*  */
+.active-btn {
+    background-color: #083b72 !important;
+    color: white !important;
+    /* border-color: rgb(27, 27, 87) !important; */
+  }
+  
+  .inactive-btn {
+    /* color: gray !important;
+    border-color: gray !important; */
+  }
+  

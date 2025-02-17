@@ -47,37 +47,34 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
     return (
         <div className="card h-100">
             <div className="card-header d-flex justify-content-center align-items-center bg-white border-bottom-0">
-                <div className="btn-group btn-group-sm" role="group">
-                    <button
-                        className={`btn btn-outline-primary btn-sm ${actionShow === "vehicleInfo" ? "active" : ""}`}
-                        style={actionShow === "vehicleInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
-                        onClick={() => setActiveShow("vehicleInfo")}
-                    >
-                        ข้อมูลรถ
-                    </button>
-                    <button
-                        className={`btn btn-outline-primary btn-sm ${actionShow === "insuranceInfo" ? "active" : ""}`}
-                        style={actionShow === "insuranceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
-                        onClick={() => setActiveShow("insuranceInfo")}
-                    >
-                        พรบ / ประกัน
-                    </button>
-                    <button
-                        className={`btn btn-outline-primary btn-sm ${actionShow === "FinanceInfo" ? "active" : ""}`}
-                        style={actionShow === "FinanceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
-                        onClick={() => setActiveShow("FinanceInfo")}
-                    >
-                        สินเชื่อรถ
-                    </button>
-                    <button
-                        className={`btn btn-outline-primary btn-sm ${actionShow === "maintenanceInfo" ? "active" : ""}`}
-                        style={actionShow === "maintenanceInfo" ? { backgroundColor: "blue", color: "white" } : { color: "gray" }}
-                        onClick={() => setActiveShow("maintenanceInfo")}
-                    >
-                        บำรุงรักษา
-                    </button>
-                </div>
-            </div>
+  <div className="btn-group btn-group-sm" role="group">
+    <button
+      className={`btn btn-outline-primary btn-sm ${actionShow === "vehicleInfo" ? "active-btn" : "inactive-btn"}`}
+      onClick={() => setActiveShow("vehicleInfo")}
+    >
+      ข้อมูลรถ
+    </button>
+    <button
+      className={`btn btn-outline-primary btn-sm ${actionShow === "insuranceInfo" ? "active-btn" : "inactive-btn"}`}
+      onClick={() => setActiveShow("insuranceInfo")}
+    >
+      พรบ / ประกัน
+    </button>
+    <button
+      className={`btn btn-outline-primary btn-sm ${actionShow === "FinanceInfo" ? "active-btn" : "inactive-btn"}`}
+      onClick={() => setActiveShow("FinanceInfo")}
+    >
+      สินเชื่อรถ
+    </button>
+    <button
+      className={`btn btn-outline-primary btn-sm ${actionShow === "maintenanceInfo" ? "active-btn" : "inactive-btn"}`}
+      onClick={() => setActiveShow("maintenanceInfo")}
+    >
+      บำรุงรักษา
+    </button>
+  </div>
+</div>
+
 
             <div className="card-body p-2">
                 {/* ตรวจสอบว่า isDataVehicle เป็นอาเรย์ก่อน */}

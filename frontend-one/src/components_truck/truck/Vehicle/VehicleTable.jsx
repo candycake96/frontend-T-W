@@ -174,7 +174,7 @@ const VehicleTable = () => {
                         <th>ประเภทรถ</th>
                         <th>สถานะ</th>
                         <th>สาขา</th>
-                        <th>พขร.ขับล่าสุด</th>
+                        {/* <th>พขร.ขับล่าสุด</th> */}
                         <th>#</th>
                     </tr>
                 </thead>
@@ -188,10 +188,10 @@ const VehicleTable = () => {
                                 <td>{rowVD.car_type_name}</td>
                                 <td className="col-1">{rowVD.status}</td>
                                 <td>{rowVD.branch_name}</td>
-                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                                {/* <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                                     <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span>
                                     xxxxx
-                                </td>
+                                </td> */}
                                 <td className="col-lg-1">
                                     <button
                                         className="btn col-lg-6"

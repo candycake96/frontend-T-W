@@ -223,7 +223,7 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
           <h3>เพิ่มข้อมูลพนักงาน</h3>
         </div>
 
-        <div className="card container">
+        <div className="card container mb-3">
           {message && (
             <div className="p-1">
               <div
@@ -323,7 +323,7 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
         </div>
 
         <div className="mb-3 text-center">
-          <button type="submit" className="btn" style={{ background: "#17a2b8" }}>
+          <button type="submit" className="btn Teal-button" >
             บันทึก
           </button>
         </div>

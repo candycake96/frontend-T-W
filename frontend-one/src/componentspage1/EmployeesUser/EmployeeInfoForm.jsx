@@ -104,6 +104,17 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
         }
     };
 
+    const renderCompanySelection = (employeeInfo) => {
+        if (!employeeInfo.company_id) {
+            return (
+                <div className="" style={{color: 'red'}}>
+                    <p>กรุณาเลือก องค์กร</p>
+                </div>
+            );
+        }
+        return null;
+    };
+
 
 
     useEffect(() => {
@@ -250,30 +261,30 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
                 />
             </div>
 
-<div className="row">
-<div className="mb-3 col-lg-6">
-                <label htmlFor="inputNickname">เลขประจำตัวประชาชน <span style={{ color: "red" }}> *</span></label>
-                <input
-                    type="text"
-                    className='form-control'
-                    value={employeeInfo.identification_number}
-                    onChange={(e) => setEmployeeInfo({ ...employeeInfo, identification_number: e.target.value })}
-                    placeholder="National identification number"
-                />
+            <div className="row">
+                <div className="mb-3 col-lg-6">
+                    <label htmlFor="inputNickname">เลขประจำตัวประชาชน <span style={{ color: "red" }}> *</span></label>
+                    <input
+                        type="text"
+                        className='form-control'
+                        value={employeeInfo.identification_number}
+                        onChange={(e) => setEmployeeInfo({ ...employeeInfo, identification_number: e.target.value })}
+                        placeholder="National identification number"
+                    />
+                </div>
+
+                <div className="mb-3 col-lg-6">
+                    <label htmlFor="passport">เลขพาสปอร์ต / หนังสือเดินทาง (ถ้ามี)</label>
+                    <input
+                        type="text"
+                        className='form-control'
+                        value={employeeInfo.passport}
+                        onChange={(e) => setEmployeeInfo({ ...employeeInfo, passport: e.target.value })}
+                        placeholder="Passport"
+                    />
+                </div>
             </div>
 
-            <div className="mb-3 col-lg-6">
-                <label htmlFor="passport">เลขพาสปอร์ต / หนังสือเดินทาง (ถ้ามี)</label>
-                <input
-                    type="text"
-                    className='form-control'
-                    value={employeeInfo.passport}
-                    onChange={(e) => setEmployeeInfo({ ...employeeInfo, passport: e.target.value })}
-                    placeholder="Passport"
-                />
-            </div>
-</div>
-            
 
             <div className="row">
                 <div className="col-lg-6 mb-3">
@@ -392,7 +403,9 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
                                 </option>
                             ))}
                         </select>
-
+                        {
+                            renderCompanySelection(employeeInfo)
+                        }
                     </div>
                 </div>
                 <div className="col-lg-4">
@@ -416,6 +429,9 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
                                 </option>
                             ))}
                         </select>
+                        {
+                            renderCompanySelection(employeeInfo)
+                        }
                     </div>
                 </div>
                 <div className="col-lg-4">
@@ -437,9 +453,10 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
                                     {br.branch_name}
                                 </option>
                             ))}
-
-
                         </select>
+                        {
+                            renderCompanySelection(employeeInfo)
+                        }
                     </div>
                 </div>
             </div>

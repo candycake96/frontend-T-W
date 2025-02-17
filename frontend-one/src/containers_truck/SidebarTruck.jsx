@@ -26,6 +26,12 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
       <ul className="nav flex-column mb-auto sidebar-nav">
         {/* 📌 เมนูพนักงาน */}
         <li className="nav-item">
+        <Link to="/truck"
+                      className={`nav-link ${location.pathname === "/truck" ? "active" : ""}`}>
+                  <i class="bi bi-robot"></i> หน้าแรก
+                </Link>
+        </li>
+        <li className="nav-item">
           <button onClick={() => toggleDropdown("employee")} className="nav-link">
           <i class="bi bi-person-fill-gear"></i> จัดการข้อมูลพนักงาน
           </button>
@@ -87,6 +93,24 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 <Link to="/truck/vehiclemanagement"
                       className={`nav-link ${["/truck/vehiclemanagement","/truck/vehicleaddform"].includes(location.pathname) ? "active" : ""}`}>
                   ข้อมูลรถ
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/vehiclemanagement"
+                      className={`nav-link ${["/truck/vehiclemanagement1","/truck/1"].includes(location.pathname) ? "active" : ""}`}>
+                  ข้อมูลรถต่อทะเบียน
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/RepairRequestForm"
+                      className={`nav-link ${["/truck/RepairRequestForm","/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  รายงานการซ่อมรถ
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/CarMileageShow"
+                      className={`nav-link ${["/truck/CarMileageShow","/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  รายงานเลขไมล์รถ
                 </Link>
               </li>
             </ul>

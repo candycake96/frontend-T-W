@@ -135,7 +135,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
             setMessageType("success");
 
             // Call fetchDriverLicenses to update the driver license list on the parent page
-            fetchDriverLicenses();
+            // fetchDriverLicenses();
 
             onClose(); // Close modal after success
         } catch (error) {

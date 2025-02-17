@@ -1,28 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import './ShowVhicleDetailsExpanded.css'
 import CardDetailsVehicle from "./CardDetailsVehicle";
 import CardDriverRelation from "./CardDriverRelation";
 import CardVehiclePairing from "./CardVehiclePairing";
 import { Link } from "react-router-dom";
+import Modal_RepairRequestForm from "./modal/Modal_RepairRequestForm";
+import Modal_CarMileageForm from "./modal/Modal_CarMileageForm";
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
+    const [isOpenModalRepairRequest, setOpenModalRepairRequest] = useState(false);
+    const handleOpenModalRepairRequest = () => {
+        setOpenModalRepairRequest(true);
+    }
+    const handleCloseModalRepairRequest = () => {
+        setOpenModalRepairRequest(false);
+    }
+
+    const [isOpenModalCarMileageForm, setOpenModalCarMileageForm] = useState(false);
+    const handleOpenModalCarMileageForm = () => {
+        setOpenModalCarMileageForm(true);
+    }
+    const handleCloseModalCarMileageForm = () => {
+        setOpenModalCarMileageForm(false);
+    }
 
     return (
         <>
             <div className="p-2">
-
+                <div className="">
+                    <div className="mb-2">
+                        <Link
+                            // to="/truck/RepairRequestForm"
+                            className="btn "
+                            onClick={()=>handleOpenModalCarMileageForm()}
+                            style={{ background: "Teal", color: '#ffffff' }}
+                            >
+                            <i class="bi bi-speedometer"></i> เลขไมล์รถ
+                        </Link>
+                        <button
+                            className="btn "
+                            style={{ background: "Teal", color: '#ffffff' }}
+                            onClick={() => handleOpenModalRepairRequest()}
+                        ><i class="bi bi-tools"></i> แจ้งซ่อม
+                        </button>
+                    </div>
+                </div>
                 <div className="row mb-3">
                     <div className="col-lg-7 d-flex flex-column">
                         <CardDetailsVehicle dataVehicle={dataVehicle} />
                     </div>
 
                     <div className="col-lg-5 d-flex flex-column">
-                        <div className="mb-3">
+                        {/* <div className="mb-3">
                             <div className="">
-                                <Link to="/truck/RepairRequestForm" className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i> แจ้งซ่อม</Link>
+                                <Link to="/truck/RepairRequestForm" className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i>เลขไมล์รถ</Link>
                             </div>
-                        </div>
+                            <div className="">
+                                <button
+                                    className="btn "
+                                    style={{ background: "Teal", color: '#ffffff' }}
+                                    onClick={() => handleOpenModalRepairRequest()}
+                                ><i class="bi bi-tools"></i> แจ้งซ่อม
+                                </button>
+                            </div>
+                        </div> */}
 
                         {(dataVehicle.car_type_id === 1 || dataVehicle.car_type_id === 2) && (
                             <CardVehiclePairing dataVehicle={dataVehicle} />
@@ -35,6 +77,14 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
 
 
             </div>
+
+            {isOpenModalRepairRequest && (
+                <Modal_RepairRequestForm isOpen={isOpenModalRepairRequest} onClose={handleCloseModalRepairRequest} />
+            )}
+
+            {isOpenModalCarMileageForm && (
+                <Modal_CarMileageForm isOpen={isOpenModalCarMileageForm} onClose={handleCloseModalCarMileageForm} />
+            )}
 
         </>
     )
