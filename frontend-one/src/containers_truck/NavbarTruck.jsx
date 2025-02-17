@@ -14,12 +14,6 @@ const NavbarPage1 = ({ toggleSidebar }) => {
       navigate('/loginpage');
     }
 
-    // Import Bootstrap if needed
-    import('bootstrap/dist/js/bootstrap.bundle.min.js').then(() => {
-      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-      tooltipTriggerList.forEach((tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl));
-    });
-
   }, [navigate, user]);
 
   const handleLogout = () => {

@@ -30,3 +30,26 @@
   .custom-navbar-brand i {
     font-size: 1.2rem; /* ปรับขนาดไอคอน */
   }
+
+
+  /* ในไฟล์ NavbarTruck.css */
+.btn-outline-secondary:active, 
+.btn-outline-secondary:focus, 
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.navbar-brand:active, 
+.navbar-brand:focus, 
+.navbar-brand:hover {
+  color: #007bff !important;
+  text-decoration: underline;
+}
+
+.navbar-brand button:active, 
+.navbar-brand button:focus, 
+.navbar-brand button:hover {
+  color: #dc3545 !important;
+}
