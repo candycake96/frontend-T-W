@@ -53,3 +53,11 @@
 .navbar-brand button:hover {
   color: #dc3545 !important;
 }
+
+.text-Teal {
+  color: Teal;
+}
+
+.text-Navy {
+  color: #083b72;
+}

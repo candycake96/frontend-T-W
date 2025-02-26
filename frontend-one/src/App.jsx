@@ -36,7 +36,7 @@ import { UserContext } from "./componentspage1/localstorage/UserContext";
 import BookingRoomDetails from "./componentspage1/bookingroom/BookingRoomDetails";
 import BookingRoomAdd from "./componentspage1/bookingroom/MeetingRoomAdd";
 import MeetingRoomAdd from "./componentspage1/bookingroom/MeetingRoomAdd";
-import LoginTruck from "./components_truck/loginTruck";
+import LoginTruck from "./components_truck/LoginTruck";
 import LayoutTruck from "./containers_truck/LayoutTruck";
 import TruckHome from "./components_truck/TruckHome";
 import Driver from "./components_truck/driver/driver";
@@ -48,6 +48,7 @@ import OrganizationMenagement from "./componentspage1/ManageOrganization/Organiz
 import CompanyManagement from "./componentspage1/ManageOrganization/CompanyManagement";
 import RepairRequestForm from "./components_truck/truck/Repair/RepairRequestForm";
 import CarMileageShow from "./components_truck/truck/CarMileage/CarMileageShow";
+import CarMileageDetails from "./components_truck/truck/CarMileage/CarMileageDetails";
 
 Modal.setAppElement("#root");
 
@@ -110,6 +111,7 @@ function App() {
           <Route path="companymanagement" element={<CompanyManagement/>} /> {/* หน้าจัดการข้อมูลองค์กร */}
           <Route path="RepairRequestForm" element={<RepairRequestForm/>} /> {/* หน้าแจ้งซ่อม */}
           <Route path="CarMileageShow" element={<CarMileageShow/>} /> {/* หน้าเลขไมล์รถ */}
+          <Route path="CarMileageDetails" element={<CarMileageDetails/>} /> {/* หน้าเลขไมล์รถ */}
           </Route>
         </Routes>
       </Router>

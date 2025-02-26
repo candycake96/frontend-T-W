@@ -67,8 +67,8 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
       สินเชื่อรถ
     </button>
     <button
-      className={`btn btn-outline-primary btn-sm ${actionShow === "maintenanceInfo" ? "active-btn" : "inactive-btn"}`}
-      onClick={() => setActiveShow("maintenanceInfo")}
+      className={`btn btn-outline-primary btn-sm ${actionShow === "MaintenanceInfo" ? "active-btn" : "inactive-btn"}`}
+      onClick={() => setActiveShow("MaintenanceInfo")}
     >
       บำรุงรักษา
     </button>
@@ -85,6 +85,7 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
                                 {actionShow === "insuranceInfo" && <InsuranceInfo dataVehicle={vehicle} />}
                                 {actionShow === "vehicleInfo" && <VehicleDtails dataVehicle={vehicle} />}
                                 {actionShow === "FinanceInfo" && <FinanceInfo dataVehicle={vehicle} />}
+                                {actionShow === "MaintenanceInfo" && <MaintenanceInfo dataVehicle={vehicle} />}
                             </div>
                         ))}
                     </div>
@@ -499,6 +500,26 @@ const FinanceInfo = ({ dataVehicle }) => {
         </div>
 
     );
+};
+
+// บำรุงรักษา
+const MaintenanceInfo = ({dataVehicle}) => {
+    if (!dataVehicle) return null;
+    return(
+        <>
+        <div className="p-3">
+            <div className="row">
+                <div className="col-lg-4">
+                <p>เลขไมล์รถ ล่าสุด <strong>000000000</strong> </p>
+                </div>
+                <div className="col-lg">
+                <p>เลขไมล์รวม <strong>000000000</strong> </p>
+                </div>
+                
+            </div>
+        </div>
+        </>
+    )
 };
 
 export default CardDetailsVehicle;
