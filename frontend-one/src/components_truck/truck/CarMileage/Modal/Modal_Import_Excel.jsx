@@ -1,5 +1,6 @@
 import React from "react";
 import ReactModal from "react-modal";
+import ExcelUploader from "../ExcelUploader";
 
 const Modal_Import_Excel = ({isOpen, onClose}) => {
     return (
@@ -12,7 +13,7 @@ const Modal_Import_Excel = ({isOpen, onClose}) => {
          style={{
              content: {
                  width: "90%",
-                 maxWidth: "700px",
+                 maxWidth: "100%",
                  maxHeight: "80vh",
                  margin: "auto",
                  padding: "0",
@@ -29,7 +30,8 @@ const Modal_Import_Excel = ({isOpen, onClose}) => {
              },
          }}
         >
-test
+
+<ExcelUploader/>
         </ReactModal>
         </>
     )

@@ -11,13 +11,13 @@ const CarMileageDetails = () => {
     const [isOpenModalEditMileage, setOpenModalEditMileage] = useState(false);
     const [isOpenModalAddMileage, setOpenModalAddMileage] = useState(false);
     const [isDataMileageAdd, setDataMileageAdd] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 20;
+    const [currentPage, setCurrentPage] = useState(0);  // Tracks the current page
+    const itemsPerPage = 10;  // The number of items per page
     const [user, setUser] = useState(null);
     const [searchTermDate, setSearchTermDate] = useState("");
     const location = useLocation();
     const rowMiData = location.state || {};
-        const [reload, setReload] = useState(false);//  โหลดใหม่เมื่อ `reload` เปลี่ยน
+    const [reload, setReload] = useState(false); // Reload when `reload` changes
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
@@ -74,34 +74,36 @@ const CarMileageDetails = () => {
         return date.toISOString().split('T')[0];
     };
 
+    // Filter the data based on the search term
     const filteredVehicleData = isMileageData.filter((dataRow) => {
         const formattedDate = formatDateForSearch(dataRow.recorded_date);
         const isDateMatch = searchTermDate ? formattedDate.includes(searchTermDate) : true;
         return isDateMatch;
     });
 
+    // Pagination logic
     const offset = currentPage * itemsPerPage;
-    const currentData = filteredVehicleData.slice(offset, offset + itemsPerPage);
-    const pageCount = Math.ceil(filteredVehicleData.length / itemsPerPage);
+    const currentData = filteredVehicleData.slice(offset, offset + itemsPerPage);  // Get the current page data
+    const pageCount = Math.ceil(filteredVehicleData.length / itemsPerPage);  // Calculate total page count
 
     const handlePageClick = ({ selected }) => {
-        setCurrentPage(selected);
+        setCurrentPage(selected);  // Update the current page based on user's selection
     };
 
     const handleDeleteMileageDataRow = async (id) => {
-        if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?")) return; // 🔴 ยืนยันก่อนลบ
+        if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?")) return; // Confirm before delete
         try {
             await axios.delete(`http://localhost:3333/api/car_mileage_delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
             });
-    
-            // ✅ อัปเดตรายการโดยไม่ต้องรีเฟรช
-            setReload(prev => !prev)
+
+            // Refresh data without reloading the page
+            setReload(prev => !prev);
 
         } catch (error) {
-            console.error("❌ Error deleting driver relation:", error);
+            console.error("❌ Error deleting mileage data:", error);
         }
     };
 
@@ -120,14 +122,14 @@ const CarMileageDetails = () => {
                             name="input_date_sh"
                             className="form-control"
                             value={searchTermDate}
-                            onChange={(e) => setSearchTermDate(e.target.value)}
+                            onChange={(e) => setSearchTermDate(e.target.value)} // Update search term for filtering
                         />
                     </div>
                     <div className="col-lg-2 d-flex align-items-end">
                         <button 
                             className="btn w-100" 
                             onClick={() => {
-                                setSearchTermDate("");
+                                setSearchTermDate("");  // Clear search term and fetch data
                                 fetchMileageData();
                             }}
                         >
@@ -135,7 +137,7 @@ const CarMileageDetails = () => {
                         </button>
                     </div>
                     <div className="col-lg-2 d-flex align-items-end">
-                        <button className="btn btn-mileage-gold w-100" onClick={()=>handleOpenModalAddMileage(rowMiData)}>
+                        <button className="btn btn-mileage-gold w-100" onClick={() => handleOpenModalAddMileage(rowMiData)}>
                             ➕ เพิ่มข้อมูล
                         </button>
                     </div>
@@ -155,7 +157,7 @@ const CarMileageDetails = () => {
                         </thead>
                         <tbody>
                             {filteredVehicleData.length > 0 ? (
-                                filteredVehicleData.map((rowMi, index) => (
+                                currentData.map((rowMi, index) => (
                                     <tr key={index}>
                                         <td>{rowMi.recorded_date ? formatDate(rowMi.recorded_date) : "N/A"}</td>
                                         <td style={{ color: "blue" }}>{rowMi.odometer ? Number(rowMi.odometer).toLocaleString() : "N/A"}</td>
@@ -165,10 +167,10 @@ const CarMileageDetails = () => {
                                         <td>{`${rowMi.fname || ""} ${rowMi.lname || ""}`.trim() || "-"}</td>
                                         <td className="button-container-td-mileage">
                                             <button className="btn-circle" onClick={() => handleOpenModalEditMileage(rowMi)}>
-                                            <i class="bi bi-tools"></i> {/* Edit icon */}
+                                                <i className="bi bi-tools"></i> {/* Edit icon */}
                                             </button>
-                                            <button className="btn-circle" onClick={()=>handleDeleteMileageDataRow(rowMi.id) }>
-                                            <i class="bi bi-trash3-fill"></i> {/* Delete icon */}
+                                            <button className="btn-circle" onClick={() => handleDeleteMileageDataRow(rowMi.id)}>
+                                                <i className="bi bi-trash3-fill"></i> {/* Delete icon */}
                                             </button>
                                         </td>
                                     </tr>
@@ -196,10 +198,10 @@ const CarMileageDetails = () => {
                 </div>
             </div>
             {isOpenModalEditMileage && (
-                <Modal_Edit_Mileage isOpen={isOpenModalEditMileage} onClose={handleCloseModalEditMileage} dataMileage={isDataMileageAdd} user={user} onSuccess={() => setReload(prev => !prev)}/>
+                <Modal_Edit_Mileage isOpen={isOpenModalEditMileage} onClose={handleCloseModalEditMileage} dataMileage={isDataMileageAdd} user={user} onSuccess={() => setReload(prev => !prev)} />
             )}
             {isOpenModalAddMileage && (
-                <Modal_Add_Mileage isOpen={isOpenModalAddMileage} onClose={handleCloseModalAddMileage} dataMileage={isDataMileageAdd} user={user} onSuccess={() => setReload(prev => !prev)}/>
+                <Modal_Add_Mileage isOpen={isOpenModalAddMileage} onClose={handleCloseModalAddMileage} dataMileage={isDataMileageAdd} user={user} onSuccess={() => setReload(prev => !prev)} />
             )}
         </div>
     );

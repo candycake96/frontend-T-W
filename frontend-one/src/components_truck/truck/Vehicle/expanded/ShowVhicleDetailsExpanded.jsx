@@ -24,19 +24,14 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     const handleCloseModalCarMileageForm = () => {
         setOpenModalCarMileageForm(false);
     }
-
+    const rowMi = dataVehicle;
     return (
         <>
             <div className="p-2">
                 <div className="">
                     <div className="mb-2">
-                        <Link
-                            // to="/truck/RepairRequestForm"
-                            className="btn "
-                            onClick={()=>handleOpenModalCarMileageForm()}
-                            style={{ background: "Teal", color: '#ffffff' }}
-                            >
-                            <i class="bi bi-speedometer"></i> เลขไมล์รถ
+                        <Link to="/truck/CarMileageDetails" state={rowMi} className="btn" style={{ background: "Teal", color: '#ffffff' }}>
+                        <i class="bi bi-speedometer2"></i> เลขไมล์รถ
                         </Link>
                         <button
                             className="btn "
@@ -52,6 +47,7 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
                     </div>
 
                     <div className="col-lg-5 d-flex flex-column">
+                        
                         {/* <div className="mb-3">
                             <div className="">
                                 <Link to="/truck/RepairRequestForm" className="btn " style={{ background: "Teal", color: '#ffffff' }}><i class="bi bi-tools"></i>เลขไมล์รถ</Link>

@@ -17,7 +17,7 @@ const CarMileageShow = () => {
     const [dataImportExcel, estDataImportExcel] = useState(null);
     // data
     const [currentPage, setCurrentPage] = useState(0); // หน้าปัจจุบัน
-    const itemsPerPage = 20; // จำนวนแถวต่อหน้า
+    const itemsPerPage = 50; // จำนวนแถวต่อหน้า
     const [user, setUser] = useState(null);  //token
     const [branches, setBranches] = useState([]);
     const [searchBranch, setSearchBranch] = useState("");
@@ -266,7 +266,7 @@ const CarMileageShow = () => {
                                 </thead>
 
                                 <tbody>
-                                    {filteredVehicleData.map((rowMi, index) => (
+                                    {currentData.map((rowMi, index) => (
                                         <tr key={index}>
                                             <td>{rowMi.reg_number}</td>
                                             <td style={{ color: "blue" }}>{rowMi.odometer ? Number(rowMi.odometer).toLocaleString() : "N/A"}</td>
