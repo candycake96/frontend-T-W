@@ -2,11 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_Department_add from "./modal/Modal_Department_Add";
 
-const Department = ({CompanyID}) => {
+const Department = ({ CompanyID, user }) => {
   const [departments, setDepartments] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-
+  const [isCompany, setCompany] = useState(null);
   const [modalDepartment, setModalDepartment] = useState(null);
 
   const [modaldOpenDepartmentAdd, estModalOpenDepartment] = useState(false);
@@ -16,6 +16,12 @@ const Department = ({CompanyID}) => {
   const handleCloseModalDepartmentAdd = () => {
     estModalOpenDepartment(false);
   }
+
+    useEffect(() => {
+      if (user?.company_id) {
+        setCompany(user.company_id); // ✅ Ensure company_id is set
+      }
+    }, [user]);
 
   const fetchDepartment = async () => {
     try {
@@ -45,8 +51,8 @@ const Department = ({CompanyID}) => {
     if (modalDepartment) {
       try {
         const response = await axios.put(
-          `http://localhost:7071/api/updatedepartment/${modalDepartment.department_id}`,
-          modalDepartment,
+          `http://localhost:3333/api/depastment_update_data/${modalDepartment.id_department}`,
+          {name_department: modalDepartment.name_department},
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -69,25 +75,33 @@ const Department = ({CompanyID}) => {
     }
   };
 
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+      console.log("Token is missing");
+  } else {
+      console.log("Token:", token);
+  }
 
   const handleDelete = async (id) => {
     try {
-        const response = await axios.delete(`http://localhost:7071/api/deletedepartment/${id}`,
+        const response = await axios.put(
+            `http://localhost:3333/api/depastment_update_status/${id.id_department}`,{isCompany}, // ✅ Fixed typo in endpoint URL
             {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                  },
+              headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
-        )
+        );
         setMessage(response.data.message);
         setMessageType('success');
-        fetchDepartment(); // Refresh the branch list
+        fetchDepartment(); // ✅ Refresh the department list
 
     } catch (error) {
         console.error('Error:', error);
-        setMessage(error.response.data.message || 'Something went wrong');
+        setMessage(error.response?.data?.message || 'Something went wrong');
     }
-}
+};
+
 
   return (
     <>
@@ -113,14 +127,14 @@ const Department = ({CompanyID}) => {
                 <table className="table  table-responsive">
                   <tbody>
                     {departments.map((department, index) => (
-                      <tr key={department.department_id}>
+                      <tr key={department.id_department}>
                         <td className="col-lg-1">{index + 1}</td>
                         <td className="col-lg-9">{department.name_department}</td>
                         <td className="col-1">
 
                         <button
                            className="p-0 btn-icon-Delete"
-                           onClick={() => handleDelete(department.department_id)}
+                           onClick={() => handleDelete(department)}
                           >
                             <i className="bi bi-trash3-fill"></i> {/* ลบ */}
                             </button>
@@ -156,11 +170,11 @@ const Department = ({CompanyID}) => {
                   type="text"
                   className="form-control"
                   id="editDepartmentName"
-                  value={modalDepartment.department_name}
+                  value={modalDepartment.name_department}
                   onChange={(e) =>
                     setModalDepartment((prev) => ({
                       ...prev,
-                      department_name: e.target.value,
+                      name_department: e.target.value,
                     }))
                   }
                 />
@@ -180,7 +194,7 @@ const Department = ({CompanyID}) => {
 
 {/*  */}
 {modaldOpenDepartmentAdd && (
-  <Modal_Department_add isOpen={handleOpenModalDepartmentAdd} onClose={handleCloseModalDepartmentAdd} />
+  <Modal_Department_add isOpen={handleOpenModalDepartmentAdd} onClose={handleCloseModalDepartmentAdd} user={user}/>
 )}
 
     </>

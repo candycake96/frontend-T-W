@@ -1,45 +1,246 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 
-const Modal_edit_vehicle = ({isOpen, onClose}) => {
+const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle  }) => {
+    const [user, setUser] = useState(null);
+    const [isUsageType, setUsageType] = useState([]);
+        const [isVehicleType, setVehicleType] = useState([]);
+    useEffect(() => {
+        // ดึงข้อมูลผู้ใช้จาก localStorage
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData)); // แปลง JSON เป็น Object แล้วเก็บใน state
+        }
+    }, []);
+
+    const VehicleFormData = {
+        reg_date: "",
+        reg_number: "",
+        province: "",
+        fuel: "",
+        chassis_number: "",
+        usage_type_id: "",
+        car_brand: "",
+        model_no: "",
+        color: "",
+        engine_brand: "",
+        engine_no: "",
+        cylinders: "",
+        veh_weight: "",
+        max_load: "",
+        gross_weight: "",
+        possession_date: "",
+        operators: "",
+        nation: "",
+        addr: "",
+        trans_type: "",
+        license_no: "",
+        license_expiry: "",
+        rights_to_use: "",
+        owner_name: "",
+        address: "",
+        passenger_count: "",
+        vehicle_type_id: "",
+        chassis_number_location: "",
+        engine_on_location: "",
+        engine_power: "",
+        document_order: "",
+        reg_doc_number: "",
+        inspection_code: "",
+    }
+
+    const fuelOptions = [
+        "ไม่ใช้เชื้อเพลิง",
+        "ไฟฟ้า",
+        "เบนซิน 95",
+        "แก๊สโซฮอล์ 95 (E10)",
+        "แก๊สโซฮอล์ 91 (E10)",
+        "แก๊สโซฮอล์ E20",
+        "แก๊สโซฮอล์ E85",
+        "พรีเมี่ยมดีเซล",
+        "ไบโอดีเซล B7",
+        "ไบโอดีเซล B10",
+        "ไบโอดีเซล B20",
+    ];
+
+    const [formData, setFormdata] = useState(VehicleFormData);
+
+    useEffect(() => {
+        if (dataVehicle) {
+            setFormdata({
+                ...formData,
+                reg_date: dataVehicle.reg_date ? dataVehicle.reg_date.split("T")[0] : "",
+                reg_number: dataVehicle.reg_number || "",
+                province: dataVehicle.province || "",
+                fuel: dataVehicle.fuel,
+                car_type_id: dataVehicle.car_type_id || "",
+                chassis_number: dataVehicle.chassis_number || "",
+                usage_type_id: dataVehicle.usage_type_id || "",
+                car_brand: dataVehicle.car_brand || "",
+                model_no: dataVehicle.model_no || "",
+                color: dataVehicle.color || "",
+                engine_brand: dataVehicle.engine_brand || "",
+                engine_no: dataVehicle.engine_no || "",
+                cylinders: dataVehicle.cylinders || "",
+                veh_weight: dataVehicle.veh_weight || "",
+                max_load: dataVehicle.max_load || "",
+                gross_weight: dataVehicle.gross_weight || "",
+                possession_date: dataVehicle.possession_date ? dataVehicle.possession_date.split("T")[0] : "",
+                operators: dataVehicle.operators || "",
+                nation: dataVehicle.nation || "",
+                addr: dataVehicle.addr || "",
+                trans_type: dataVehicle.trans_type || "",
+                license_no: dataVehicle.license_no || "",
+                license_expiry: dataVehicle.license_expiry || "",
+                rights_to_use: dataVehicle.rights_to_use || "",
+                owner_name: dataVehicle.owner_name || "",
+                address: dataVehicle.address || "",
+                passenger_count: dataVehicle.passenger_count || "",
+                vehicle_type_id: dataVehicle.vehicle_type_id || "",
+                chassis_number_location: dataVehicle.chassis_number_location || "",
+                engine_on_location: dataVehicle.engine_on_location,
+                engine_power: dataVehicle.engine_power || "",
+                document_order: dataVehicle.document_order || "",
+                reg_doc_number: dataVehicle.reg_doc_number || "",
+                inspection_code: dataVehicle.inspection_code || "",
+            })
+        } else {
+            console.warn("User data not available or incomplete");
+            setFormdata(VehicleFormData);
+        }
+    }, [dataVehicle]);
+
+    const handleChangeInputUpDate = (e) => {
+        const { name, value } = e.target;
+        setFormdata((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const fetchVehicleUsageType = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:3333/api/detailsvehicleusagetype", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            console.log("API Response:", response.data); // ✅ ตรวจสอบ Response
+
+            setUsageType(response.data);
+        } catch (error) {
+            console.error("Error fetching VehicleUsageType:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status); // ✅ ดูว่าเป็น 403 จริงไหม
+                console.error("Response Data:", error.response.data); // ✅ ดูข้อความจากเซิร์ฟเวอร์
+            }
+        }
+    };
+
+useEffect(()=> {
+    fetchVehicleUsageType();
+}, []);
+
+const fetchVehicleType = async () => {
+    try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            console.error("No access token found");
+            return;
+        }
+
+        const response = await axios.get("http://localhost:3333/api/detailsvehicletype", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("API Response:", response.data); // ✅ ตรวจสอบ Response
+
+        setVehicleType(response.data);
+    } catch (error) {
+        console.error("Error fetching VehicleUsageType:", error);
+        if (error.response) {
+            console.error("Response Status:", error.response.status); // ✅ ดูว่าเป็น 403 จริงไหม
+            console.error("Response Data:", error.response.data); // ✅ ดูข้อความจากเซิร์ฟเวอร์
+        }
+    }
+};
+
+useEffect(()=> {
+    fetchVehicleType();
+}, []);
+
+
+const handleSubmitVehicleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.put(
+            `http://localhost:3333/api/vehicle_update_doc/${dataVehicle.reg_id}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            }
+        );
+        alert("บันทึกข้อมูลสำเร็จ!");
+        
+        console.log("Data updated successfully!");
+        // setReload(prev => !prev);  // Trigger reload เพื่ออัปเดตข้อมูล
+
+        onClose(); // ✅ ปิด Modal หรือ Form
+    } catch (error) {
+        console.error("❌ Error saving data:", error);
+        alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    }
+};
+
+
+    if (!user) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <>
-        <ReactModal
-         isOpen={isOpen}
-         onRequestClose={onClose}
-         ariaHideApp={false}
-         contentLabel="Employee Details"
-         style={{
-           content: {
-             width: "100%",
-             maxWidth: "950px",
-             maxHeight: "80vh",
-             margin: "auto",
-             padding: "0",
-             border: "none",
-             borderRadius: "0.5rem",
-             overflowY: "auto",
-           },
-           overlay: {
-             backgroundColor: "rgba(0, 0, 0, 0.5)",
-             zIndex: 9999,
-             display: "flex",
-             alignItems: "center",
-             justifyContent: "center",
-           },
-         }}
-         >
+            <ReactModal
+                isOpen={isOpen}
+                onRequestClose={onClose}
+                ariaHideApp={false}
+                contentLabel="Employee Details"
+                style={{
+                    content: {
+                        width: "100%",
+                        maxWidth: "950px",
+                        maxHeight: "80vh",
+                        margin: "auto",
+                        padding: "0",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                        overflowY: "auto",
+                    },
+                    overlay: {
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        zIndex: 9999,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    },
+                }}
+            >
 
 
-<div className="container">
-                {/* <div className="text-center p-3">
-                    <p className="fs-4"> เพิ่มข้อมูลรถใหม่ {user.company_id}</p>
-                    <hr />
-                </div> */}
+                <div className="container">
 
-                <div className="p-3">
-                    <div className="">
-                      
+
+                    <div className="p-3">
+                        <div className="">
+<form action="" onSubmit={handleSubmitVehicleUpdate}>
                             <div className="text-center mb-3">
                                 <p className="fw-bolder">แก้ไข <i class="bi bi-pencil-square"></i> รายการจดทะเบียน</p>
                             </div>
@@ -52,8 +253,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         id="input_reg_date"
                                         name="reg_date"
                                         className="form-control"
-                                        // value={formData.reg_date}
-                                        // onChange={(e) => setFormdata({ ...formData, reg_date: e.target.value })}
+                                        value={formData.reg_date}
+                                        onChange={handleChangeInputUpDate}
+                                    // {(e) => setFormdata({ ...formData, reg_date: e.target.value })}
                                     />
                                 </div>
 
@@ -64,8 +266,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="reg_number"
                                         id="input_reg_number"
                                         className="form-control"
-                                        // value={formData.reg_number}
-                                        // onChange={(e) => setFormdata({ ...formData, reg_number: e.target.value })}
+                                        value={formData.reg_number}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, reg_number: e.target.value })}
                                         placeholder="กรอกเลขทะเบียน" />
                                 </div>
 
@@ -76,8 +279,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="province"
                                         id="input_province"
                                         className="form-control"
-                                        // value={formData.province}
-                                        // onChange={(e) => setFormdata({ ...formData, province: e.target.value })}
+                                        value={formData.province}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, province: e.target.value })}
                                         placeholder="กรอกจังหวัด" />
                                 </div>
                             </div>
@@ -89,21 +293,14 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         id="input_fuel"
                                         className="form-select"
                                         name="fuel"
-                                        // value={formData.fuel}
-                                        // onChange={(e) => setFormdata({ ...formData, fuel: e.target.value })}
+                                        value={formData.fuel}
+                                        onChange={handleChangeInputUpDate}
+
                                     >
                                         <option value="">กรุณาเลือกเชื้อเพลิง</option>
-                                        <option value="ไม่ใช้เชื้อเพลิง">ไม่ใช้เชื้อเพลิง</option>
-                                        <option value="ไฟฟ้า">ไฟฟ้า</option>
-                                        <option value="เบนซิน 95">น้ำมันเบนซิน 95</option>
-                                        <option value="แก๊สโซฮอล์ 95 (E10)">น้ำมันแก๊สโซฮอล์ 95 (E10)</option>
-                                        <option value="แก๊สโซฮอล์ 91 (E10)">แก๊สโซฮอล์ 91 (E10)</option>
-                                        <option value="แก๊สโซฮอล์ E20">แก๊สโซฮอล์ E20</option>
-                                        <option value="แก๊สโซฮอล์ E85">แก๊สโซฮอล์ E85 </option>
-                                        <option value="พรีเมี่ยมดีเซล">พรีเมี่ยมดีเซล</option>
-                                        <option value="ไบโอดีเซล B7">ไบโอดีเซล B7</option>
-                                        <option value="ไบโอดีเซล B10">ไบโอดีเซล B10</option>
-                                        <option value="ไบโอดีเซล B20">ไบโอดีเซล B20</option>
+                                        {fuelOptions.map((fuel, index) => (
+                                            <option key={index} value={fuel}>{fuel}</option>
+                                        ))}
                                     </select>
 
                                 </div>
@@ -114,8 +311,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="inspection_code"
                                         id="inputinspection_code"
                                         className="form-control"
-                                        // value={formData.inspection_code}
-                                        // onChange={(e) => setFormdata({ ...formData, inspection_code: e.target.value })}
+                                        value={formData.inspection_code}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, inspection_code: e.target.value })}
                                         placeholder="รหัสตรวจสภาพ" />
                                 </div>
                                 <div className="col-lg-3">
@@ -124,11 +322,11 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         id="input_vehicle_type_id"
                                         className="form-select"
                                         name="vehicle_type_id"
-                                        // value={formData.vehicle_type_id}
-                                        // onChange={(e) => setFormdata({ ...formData, vehicle_type_id: e.target.value })}
+                                        value={formData.vehicle_type_id}
+                                        onChange={handleChangeInputUpDate}
                                     >
                                         <option value="">เลือกประเภทรถ</option>
-                                        {/* {isVehicleType.length > 0 ? (
+                                        {isVehicleType.length > 0 ? (
                                             isVehicleType.map((rowVehicleType) => (
                                                 <option key={rowVehicleType.vehicle_type_id} value={rowVehicleType.vehicle_type_id}>
                                                     {rowVehicleType.vehicle_type_name}
@@ -136,7 +334,7 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                             ))
                                         ) : (
                                             <option disabled>กำลังโหลด...</option>
-                                        )} */}
+                                        )}
                                     </select>
                                 </div>
                                 <div className="col-lg-3">
@@ -145,11 +343,11 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         className="form-select"
                                         id="input_usage_type_id"
                                         name="usage_type_id"
-                                        // value={formData.usage_type_id}
-                                        // onChange={(e) => setFormdata({ ...formData, usage_type_id: e.target.value })}
+                                        value={formData.usage_type_id}
+                                        onChange={handleChangeInputUpDate}
                                     >
-                                        <option value="">เลือกประเภทรถ</option>
-                                        {/* {isUsageType.length > 0 ? (
+                                        <option value="">เลือกลักษณะรถ</option>
+                                        {isUsageType.length > 0 ? (
                                             isUsageType.map((rowUsageType) => (
                                                 <option key={rowUsageType.usage_type_id} value={rowUsageType.usage_type_id}>
                                                     {rowUsageType.usage_type}
@@ -157,7 +355,7 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                             ))
                                         ) : (
                                             <option disabled>กำลังโหลด...</option>
-                                        )} */}
+                                        )}
                                     </select>
                                 </div>
                             </div>
@@ -170,8 +368,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="car_brand"
                                         id="input_car_brand"
                                         className="form-control"
-                                        // value={formData.car_brand}
-                                        // onChange={(e) => setFormdata({ ...formData, car_brand: e.target.value })}
+                                        value={formData.car_brand}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, car_brand: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
@@ -181,8 +380,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="model_no"
                                         id="input_model_no"
                                         className="form-control"
-                                        // value={formData.model_no}
-                                        // onChange={(e) => setFormdata({ ...formData, model_no: e.target.value })}
+                                        value={formData.model_no}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, model_no: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
@@ -192,8 +392,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="color"
                                         id="input_color"
                                         className="form-control"
-                                        // value={formData.color}
-                                        // onChange={(e) => setFormdata({ ...formData, color: e.target.value })}
+                                        value={formData.color}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, color: e.target.value })}
                                         placeholder="สี" />
                                 </div>
                             </div>
@@ -206,8 +407,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="chassis_number"
                                         id="input_chassis_number"
                                         className="form-control"
-                                        // value={formData.chassis_number}
-                                        // onChange={(e) => setFormdata({ ...formData, chassis_number: e.target.value })}
+                                        value={formData.chassis_number}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, chassis_number: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
@@ -217,8 +419,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="chassis_number_location"
                                         id="input_chassis_number_location"
                                         className="form-control"
-                                        // value={formData.chassis_number_location}
-                                        // onChange={(e) => setFormdata({ ...formData, chassis_number_location: e.target.value })}
+                                        value={formData.chassis_number_location}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, chassis_number_location: e.target.value })}
                                         placeholder="" />
                                 </div>
                             </div>
@@ -231,8 +434,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="engine_brand"
                                         id="input_engine_brand"
                                         className="form-control"
-                                        // value={formData.engine_brand}
-                                        // onChange={(e) => setFormdata({ ...formData, engine_brand: e.target.value })}
+                                        value={formData.engine_brand}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, engine_brand: e.target.value })}
                                         placeholder="ยี่ห้อรถ" />
                                 </div>
                                 <div className="col-lg-4">
@@ -242,8 +446,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="engine_no "
                                         id="input_engine_no "
                                         className="form-control"
-                                        // value={formData.engine_no}
-                                        // onChange={(e) => setFormdata({ ...formData, engine_no: e.target.value })}
+                                        value={formData.engine_no}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, engine_no: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
@@ -253,8 +458,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="engine_on_location"
                                         id="input_engine_on_location"
                                         className="form-control"
-                                        // value={formData.engine_on_location}
-                                        // onChange={(e) => setFormdata({ ...formData, engine_on_location: e.target.value })}
+                                        value={formData.engine_on_location}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, engine_on_location: e.target.value })}
                                         placeholder=""
 
                                     />
@@ -269,8 +475,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="cylinders"
                                         id="input_cylinders"
                                         className="form-control"
-                                        // value={formData.cylinders}
-                                        // onChange={(e) => setFormdata({ ...formData, cylinders: e.target.value })}
+                                        value={formData.cylinders}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, cylinders: e.target.value })}
                                         placeholder="ยี่ห้อรถ"
                                     />
                                 </div>
@@ -281,8 +488,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="engine_power"
                                         id="input_engine_power"
                                         className="form-control"
-                                        // value={formData.engine_power}
-                                        // onChange={(e) => setFormdata({ ...formData, engine_power: e.target.value })}
+                                        value={formData.engine_power}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, engine_power: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
@@ -292,8 +500,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="veh_weight"
                                         id="input_veh_weight"
                                         className="form-control"
-                                        // value={formData.veh_weight}
-                                        // onChange={(e) => setFormdata({ ...formData, veh_weight: e.target.value })}
+                                        value={formData.veh_weight}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, veh_weight: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
@@ -303,8 +512,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="passenger_count"
                                         id="input_passenger_count"
                                         className="form-control"
-                                        // value={formData.passenger_count}
-                                        // onChange={(e) => setFormdata({ ...formData, passenger_count: e.target.value })}
+                                        value={formData.passenger_count}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, passenger_count: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
@@ -314,8 +524,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="max_load"
                                         id="input_max_load"
                                         className="form-control"
-                                        // value={formData.max_load}
-                                        // onChange={(e) => setFormdata({ ...formData, max_load: e.target.value })}
+                                        value={formData.max_load}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, max_load: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-2">
@@ -325,8 +536,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="gross_weight"
                                         id="input_gross_weight"
                                         className="form-control"
-                                        // value={formData.gross_weight}
-                                        // onChange={(e) => setFormdata({ ...formData, gross_weight: e.target.value })}
+                                        value={formData.gross_weight}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, gross_weight: e.target.value })}
                                         placeholder="" />
                                 </div>
                             </div>
@@ -345,8 +557,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="document_order"
                                         id="input_document_order"
                                         className="form-control"
-                                        // value={formData.document_order}
-                                        // onChange={(e) => setFormdata({ ...formData, document_order: e.target.value })}
+                                        value={formData.document_order}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, document_order: e.target.value })}
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
@@ -356,8 +569,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="possession_date"
                                         id="input_possession_date"
                                         className="form-control"
-                                        // value={formData.possession_date}
-                                        // onChange={(e) => setFormdata({ ...formData, possession_date: e.target.value })}
+                                        value={formData.possession_date}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, possession_date: e.target.value })}
                                         placeholder="" />
                                 </div>
                             </div>
@@ -370,8 +584,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="operators"
                                         id="input_operators"
                                         className="form-control"
-                                        // value={formData.operators}
-                                        // onChange={(e) => setFormdata({ ...formData, operators: e.target.value })}
+                                        value={formData.operators}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, operators: e.target.value })}
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
@@ -381,8 +596,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="reg_doc_number"
                                         id="input_reg_doc_number"
                                         className="form-control"
-                                        // value={formData.reg_doc_number}
-                                        // onChange={(e) => setFormdata({ ...formData, reg_doc_number: e.target.value })}
+                                        value={formData.reg_doc_number}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, reg_doc_number: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
@@ -392,8 +608,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="nation"
                                         id="input_nation"
                                         className="form-control"
-                                        // value={formData.nation}
-                                        // onChange={(e) => setFormdata({ ...formData, nation: e.target.value })}
+                                        value={formData.nation}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, nation: e.target.value })}
                                         placeholder="" />
                                 </div>
                             </div>
@@ -406,8 +623,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="addr"
                                         id="input_addr"
                                         className="form-control"
-                                        // value={formData.addr}
-                                        // onChange={(e) => setFormdata({ ...formData, addr: e.target.value })}
+                                        value={formData.addr}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, addr: e.target.value })}
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-4">
@@ -417,8 +635,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="trans_type"
                                         id="input_trans_type"
                                         className="form-control"
-                                        // value={formData.trans_type}
-                                        // onChange={(e) => setFormdata({ ...formData, trans_type: e.target.value })}
+                                        value={formData.trans_type}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, trans_type: e.target.value })}
                                         placeholder="" />
                                 </div>
                                 <div className="col-lg-4">
@@ -428,8 +647,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="license_no"
                                         id="input_license_no"
                                         className="form-control"
-                                        // value={formData.license_no}
-                                        // onChange={(e) => setFormdata({ ...formData, license_no: e.target.value })}
+                                        value={formData.license_no}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, license_no: e.target.value })}
                                         placeholder="" />
                                 </div>
                             </div>
@@ -442,8 +662,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="license_expiry"
                                         id="input_license_expiry"
                                         className="form-control"
-                                        // value={formData.license_expiry}
-                                        // onChange={(e) => setFormdata({ ...formData, license_expiry: e.target.value })}
+                                        value={formData.license_expiry}
+                                        onChange={handleChangeInputUpDate}
+                                    // {(e) => setFormdata({ ...formData, license_expiry: e.target.value })}
                                     />
                                 </div>
                                 <div className="col-lg-4">
@@ -453,8 +674,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="rights_to_use"
                                         id="input_rights_to_use"
                                         className="form-control"
-                                        // value={formData.rights_to_use}
-                                        // onChange={(e) => setFormdata({ ...formData, rights_to_use: e.target.value })}
+                                        value={formData.rights_to_use}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, rights_to_use: e.target.value })}
                                         placeholder=""
 
                                     />
@@ -470,8 +692,9 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="owner_name"
                                         id="input_owner_name"
                                         className="form-control"
-                                        // value={formData.owner_name}
-                                        // onChange={(e) => setFormdata({ ...formData, owner_name: e.target.value })}
+                                        value={formData.owner_name}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, owner_name: e.target.value })}
                                         placeholder="xxx" />
                                 </div>
                                 <div className="col-lg-8">
@@ -481,23 +704,25 @@ const Modal_edit_vehicle = ({isOpen, onClose}) => {
                                         name="address"
                                         id="input_address"
                                         className="form-control"
-                                        // value={formData.address}
-                                        // onChange={(e) => setFormdata({ ...formData, address: e.target.value })}
+                                        value={formData.address}
+                                        onChange={handleChangeInputUpDate}
+                                        // {(e) => setFormdata({ ...formData, address: e.target.value })}
                                         placeholder=""
                                     />
                                 </div>
                             </div>
 
 
-                          <div className="text-center mb-4">
-                            <div className="">
-                                <button className="btn Teal-button">บันทึก</button>
+                            <div className="text-center mb-4">
+                                <div className="">
+                                    <button className="btn Teal-button" type="submit">บันทึก</button>
+                                </div>
                             </div>
-                          </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </ReactModal>
+            </ReactModal>
         </>
     )
 }

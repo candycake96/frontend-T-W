@@ -5,7 +5,7 @@ const JobpositionDelete = ({ id, onDeleteSuccess }) => {
 
   const positionDelete = async () => {
     try {
-      await axios.delete(`http://localhost:7071/api/jobposition_delete/${id}`, {
+      await axios.put(`http://localhost:3333/api/positions_update_status/${id}`,{}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

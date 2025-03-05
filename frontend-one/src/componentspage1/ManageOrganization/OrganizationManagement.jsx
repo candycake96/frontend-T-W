@@ -50,16 +50,18 @@ const OrganizationMenagement = () => {
             <div className="row">
                 <div className="col-lg-6">
                     <div className="mb-3">
-                        <Branch user={user} CompanyID={userCompanyID}/>
-                    </div>
-                    <div className="mb-3">
-                        <JobPosition user={user} CompanyID={userCompanyID}/>
+                        <Branch user={user} CompanyID={userCompanyID} />
                     </div>
                 </div>
                 <div className="col-lg-6">
                     <div className="mb-3">
                         <Department user={user} CompanyID={userCompanyID} />
                     </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="mb-3 col-lg-6">
+                    <JobPosition user={user} CompanyID={userCompanyID} />
                 </div>
             </div>
         </div>

@@ -132,7 +132,7 @@ function ExcelUploader() {
                         </tbody>
                     </table>
 <div className="text-center">
-  <button className="btn btn-mileage" onClick={sendDataToBackend}>ส่งข้อมูลไปที่ Backend</button>   
+  <button className="btn btn-mileage" onClick={sendDataToBackend}>บันทึก</button>   
 </div>
                    
                 </div>

@@ -2,13 +2,14 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal_Branch_Add from "./modal/Modal_Brcnch_Add";
 
-const Branch = ({CompanyID}) => {
+const Branch = ({CompanyID, user}) => {
   const [branches, setBranches] = useState([]);
   const [branchName, setBranchName] = useState("");
   const [branchAddress, setBranchAddress] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null); // For editing
+    const [isCompany, setCompany] = useState(null);
 
    const [modalOpenBranchAdd, setModalOpenBranchAdd] = useState(false);
    const handleOpenModalBanchAdd = () => {
@@ -47,11 +48,12 @@ const handleCloseModalBanchAdd = () => {
     if (dialog) dialog.showModal();
   };
 
+
   const handleSaveChanges = async () => {
     if (selectedBranch) {
       try {
         const response = await axios.put(
-          `http://localhost:7071/api/updatebranch/${selectedBranch.branch_id}`,
+          `http://localhost:3333/api/branches_update_data/${selectedBranch.id_branch}`,
           selectedBranch,
           {
             headers: {
@@ -59,6 +61,7 @@ const handleCloseModalBanchAdd = () => {
             },
           }
         );
+
         setMessage(response.data.message);
         setMessageType("success");
         fetchBranches(); // Refresh the branch list
@@ -72,29 +75,40 @@ const handleCloseModalBanchAdd = () => {
         console.error("Error updating branch:", error);
         setMessage("Failed to update the branch.");
         setMessageType("error");
-      }
+      } 
     }
   };
 
-const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this branch?");
+    if (!confirmDelete) return;
+  
     try {
-        const response = await axios.delete(`http://localhost:7071/api/deletebranch/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                  },
-            }
-        )
-        setMessage(response.data.message);
-        setMessageType('success');
-        fetchBranches(); // Refresh the branch list
-
+      const response = await axios.put(
+        `http://localhost:3333/api/branches_update_status/${id}`,
+        isCompany,// No request body needed
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+  
+      setMessage(response.data.message);
+      setMessageType("success");
+      fetchBranches(); // Refresh the branch list
     } catch (error) {
-        console.error('Error:', error);
-        setMessage(error.response.data.message || 'Something went wrong');
+      console.error("Error:", error);
+      setMessage(error.response?.data?.message || "Something went wrong");
+      setMessageType("error");
     }
-}
-
+  };
+  
+  useEffect(() => {
+    if (user) {
+      setCompany(user.company_id); // ✅ แก้ไขการอัปเดตค่าให้ถูกต้อง
+    }
+  }, [user]);
 
   return (
     <>
@@ -124,14 +138,14 @@ const handleDelete = async (id) => {
       <div className="container">
       <div className="row">
         {branches.map((branch) => (
-          <div className="col-12 mb-3" key={branch.branch_id} style={{ borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
+          <div className="col-12 mb-3" key={branch.id_branch} style={{ borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
             <div>
               <p className="d-flex justify-content-between align-items-center mb-1">
                 <span><strong>ชื่อสาขา:</strong> {branch.branch_name}</span>
                 <span>
                 <button
                     className=" p-0 btn-icon-Delete"
-                    onClick={() => handleDelete(branch.branch_id)}
+                    onClick={() => handleDelete(branch.id_branch)}
                   >
                     <i className="bi bi-trash3-fill"></i> {/* ลบ */}
                   </button>
@@ -163,64 +177,65 @@ const handleDelete = async (id) => {
             <Modal_Branch_Add 
             isOpen = {modalOpenBranchAdd}
             onClose = {handleCloseModalBanchAdd}
+            user={user}
             />
         )}
 
       {/* Modal */}
       <dialog id="my_modal_4" className="modal">
-        <div className="">
-          <h3 className="font-bold text-lg">Edit Branch</h3>
-          {selectedBranch && (
-            <>
-              <div className="mb-3">
-                <label htmlFor="editBranchName" className="form-label">
-                  ชื่อสาขา
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="editBranchName"
-                  value={selectedBranch.branch_name}
-                  onChange={(e) =>
-                    setSelectedBranch((prev) => ({
-                      ...prev,
-                      branch_name: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="editBranchAddress" className="form-label">
-                  ที่อยู่
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="editBranchAddress"
-                  value={selectedBranch.branch_address}
-                  onChange={(e) =>
-                    setSelectedBranch((prev) => ({
-                      ...prev,
-                      branch_address: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-            </>
-          )}
-          <div className="modal-action">
-            <button className="btn btn-primary" onClick={handleSaveChanges}>
-              Save Changes
-            </button>
-            <button
-              className="btn"
-              onClick={() => document.getElementById("my_modal_4").close()}
-            >
-              Close
-            </button>
-          </div>
+  <div className="modal-box">
+    <h3 className="font-bold text-lg text-center">แก้ไขข้อมูลสาขา</h3>
+
+    {selectedBranch && (
+      <>
+        <div className="mb-3">
+          <label htmlFor="editBranchName" className="form-label">ชื่อสาขา</label>
+          <input
+            type="text"
+            className="form-control"
+            id="editBranchName"
+            value={selectedBranch.branch_name}
+            onChange={(e) =>
+              setSelectedBranch((prev) => ({
+                ...prev,
+                branch_name: e.target.value,
+              }))
+            }
+          />
         </div>
-      </dialog>
+        
+        <div className="mb-3">
+          <label htmlFor="editBranchAddress" className="form-label">ที่อยู่</label>
+          <input
+            type="text"
+            className="form-control"
+            id="editBranchAddress"
+            value={selectedBranch.branch_address}
+            onChange={(e) =>
+              setSelectedBranch((prev) => ({
+                ...prev,
+                branch_address: e.target.value,
+              }))
+            }
+          />
+        </div>
+      </>
+    )}
+
+    <div className="modal-action">
+      <button className="btn btn-primary" onClick={handleSaveChanges}>
+        บันทึก
+      </button>
+      <button
+        className="btn"
+        onClick={() => document.getElementById("my_modal_4").close()}
+      >
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</dialog>
+
     </>
   );
 };

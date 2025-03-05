@@ -1,11 +1,18 @@
 import axios from "axios";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import ReactModal from "react-modal";
 
-const Modal_Jobposition_Add = ({isOpen, onClose}) => {
+const Modal_Jobposition_Add = ({isOpen, onClose, user}) => {
     const [jobposition, setJobposition] = useState(""); // รับส่งข้อมูลจาก input
+      const [isCompany, setCompany] = useState(null);
     const [messageType, setMessageType] = useState(""); // 'success' or 'error'
     const [message, setMessage] = useState("");
+
+      useEffect(() => {
+        if (user?.company_id) {
+          setCompany(user.company_id); // ✅ Ensure company_id is set
+        }
+      }, [user]);
 
     const createSubmit = async (e) => {
         e.preventDefault();
@@ -19,11 +26,13 @@ const Modal_Jobposition_Add = ({isOpen, onClose}) => {
     
         try {
           const response = await axios.post(
-            "http://localhost:7071/api/jobposition_add",
-            { position_name: jobposition }, // sending job position
+            "http://localhost:3333/api/positions_add_data",
+            { name_position: jobposition,
+              company_id: isCompany
+             }, // sending job position
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
               },
             }
           );

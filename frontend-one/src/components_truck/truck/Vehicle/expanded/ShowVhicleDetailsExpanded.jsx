@@ -30,6 +30,12 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
             <div className="p-2">
                 <div className="">
                     <div className="mb-2">
+                    <button
+                            className="btn "
+                            style={{ background: "Teal", color: '#ffffff' }}
+                            // onClick={() => handleOpenModalRepairRequest()}
+                        ><i class="bi bi-clipboard"></i> ม.89 / ม.79 
+                        </button>
                         <Link to="/truck/CarMileageDetails" state={rowMi} className="btn" style={{ background: "Teal", color: '#ffffff' }}>
                         <i class="bi bi-speedometer2"></i> เลขไมล์รถ
                         </Link>

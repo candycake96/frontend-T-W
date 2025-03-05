@@ -115,6 +115,14 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                   รายงานเลขไมล์รถ
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/truck/CarMileageShow"
+                  className={`nav-link ${["/truck/CarMileageShow1", "/truck/CarMileageDetails1"].includes(location.pathname) ? "active" : ""}`}
+                >
+                  รายงานรถ ม.79/ม.89
+                </Link>
+              </li>
             </ul>
           )}
         </li>

@@ -4,7 +4,7 @@ import JobPositionShows from "./jobpositionshows";
 import Modal_Jobposition_Add from "./modal/Modal_Jobposition_Add";
 const token = 'accessToken';
 
-const JobPosition = ({CompanyID}) => {
+const JobPosition = ({CompanyID, user}) => {
  
   const [messageType, setMessageType] = useState(""); // 'success' or 'error'
   const [message, setMessage] = useState("");
@@ -49,7 +49,7 @@ const JobPosition = ({CompanyID}) => {
 
       </div>
       {modalOpenJobpositionAdd && (
-        <Modal_Jobposition_Add isOpen={handleModalOpenJobposiotion} onClose={handleModalCloseAJobposition}/>
+        <Modal_Jobposition_Add isOpen={handleModalOpenJobposiotion} onClose={handleModalCloseAJobposition} user={user}/>
       )}
     </>
   );

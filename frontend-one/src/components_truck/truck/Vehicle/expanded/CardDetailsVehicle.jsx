@@ -3,6 +3,11 @@ import React, { useState, useEffect } from "react";
 import './ShowVhicleDetailsExpanded.css';
 import Modal_edit_vehicle from "../modal/Modal_edit_vehicle";
 import Modal_edit_vehicle_other from "../modal/Modal_edit_vehicle_other";
+import Modal_UpdateTex from "./modal/Modal_UpdateTax";
+import Modal_UpdateCMI from "./modal/Modal_UpdataCMI";
+import Modal_UpdateInsurance from "./modal/Modal_UpdateInsurance";
+import Modal_AddAutoCar from "./modal/Modal_AddAutoCar";
+import Modal_UpdateAutoCar from "./modal/Modal_UpdateAutoCar";
 
 // ฟังก์ชันแปลงวันที่
 const formatDate = (dateString) => {
@@ -14,7 +19,7 @@ const formatDate = (dateString) => {
 
 const CardDetailsVehicle = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
-
+    // const [reload, setReload] = useState(false); // สร้าง state สำหรับการรีโหลด
     const [actionShow, setActiveShow] = useState("vehicleInfo");
     const [isDataVehicle, setDataVahicle] = useState(null);
     const [error, setError] = useState(null);
@@ -83,7 +88,7 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
                         {isDataVehicle.map((vehicle, index) => (
                             <div key={index}>
                                 {actionShow === "insuranceInfo" && <InsuranceInfo dataVehicle={vehicle} />}
-                                {actionShow === "vehicleInfo" && <VehicleDtails dataVehicle={vehicle} />}
+                                {actionShow === "vehicleInfo" && <VehicleDtails dataVehicle={vehicle}/>}
                                 {actionShow === "FinanceInfo" && <FinanceInfo dataVehicle={vehicle} />}
                                 {actionShow === "MaintenanceInfo" && <MaintenanceInfo dataVehicle={vehicle} />}
                             </div>
@@ -97,28 +102,30 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
 
 const VehicleDtails = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
-
     const [isOpenModalEditVehicle, setOpenModaleEditVehicle] = useState(false);
     const [isOpenModalEditOther, setOpenModalEditOther] = useState(false);
     const [isDataVehicle, setDataVahicle] = useState(null);
-    const handleOpenModalEditOther = (e) => {
+    const handleOpenModalEditOther = (eData) => {
         setOpenModalEditOther(true);
-        setDataVahicle(e)
+        setDataVahicle(eData);
     }
     const handleCloseModalEditOther = () => {
         setOpenModalEditOther(false);
     }
-    const handleOpenModalEditVehicle = () => {
+    const handleOpenModalEditVehicle = (data) => {
+        setDataVahicle(data);
         setOpenModaleEditVehicle(true);
     }
     const handleCloseModalEditVehicle = () => {
         setOpenModaleEditVehicle(false);
     }
+
+
     return (
         <div className="p-2">
             <div className="d-flex justify-content-center position-relative">
                 <strong>รายการจดทะเบียน</strong>
-                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }} onClick={handleOpenModalEditVehicle}>
+                <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }} onClick={() => handleOpenModalEditVehicle(dataVehicle)}>
                     <i className="bi bi-pencil-square"></i>
                 </button>
             </div>
@@ -149,7 +156,7 @@ const VehicleDtails = ({ dataVehicle }) => {
 
             <div className="row">
                 <div className="col-lg-7">
-                    <p><strong>ลักษณะ/มาตรฐาน:</strong> {dataVehicle.usage_type} </p>
+                    <p><strong>ลักษณะ/มาตรฐาน:</strong> {dataVehicle.usage_type} {dataVehicle.usage_type_id}</p>
                 </div>
 
                 <div className="col-lg-5">
@@ -316,7 +323,7 @@ const VehicleDtails = ({ dataVehicle }) => {
             </div>
 
             {isOpenModalEditVehicle && (
-                <Modal_edit_vehicle isOpen={handleOpenModalEditVehicle} onClose={handleCloseModalEditVehicle} />
+                <Modal_edit_vehicle isOpen={handleOpenModalEditVehicle} onClose={handleCloseModalEditVehicle} dataVehicle={isDataVehicle} />
             )}
     
             {isOpenModalEditOther && (
@@ -331,11 +338,42 @@ const VehicleDtails = ({ dataVehicle }) => {
 
 // พรบ ประกัน
 const InsuranceInfo = ({ dataVehicle }) => {
+    const [isOpenModalTax, setOpenModalTax] = useState(false);
+    const [dataTaxModal, setDataTaxModal] = useState(null);
+    const handleOpenModalTax = (data) => {
+        setDataTaxModal(data);
+        setOpenModalTax(true);
+    };
+    const handleCloseModalTax = () => {
+        setOpenModalTax(false);
+    };
+
+    const [isOpenModalCMI, setOpenMoadalCMI] = useState(false);
+    const [dataModalCMI, setDataModalCMI] = useState(null);
+    const handleOpenModalCMI = (data) => {
+        setDataModalCMI(data);
+        setOpenMoadalCMI(true);
+    };
+    const handleCloseModalCMI = () => {
+        setOpenMoadalCMI(false);
+    };
+
+    const [isOpenModalInsurance, setOpenModaleInsurance] = useState(false);
+    const [dataModalInsurance, setDataModalInsurance] = useState(null);
+    const handleOpenModalInsurace = (data) => {
+        setOpenModaleInsurance(true);
+        setDataModalInsurance(data);
+    };
+    const handleCloseModalInsurance = () => {
+        setOpenModaleInsurance(false);
+    }
+
     if (!dataVehicle) return null;
+
     return (
         <div className="p-2">
             <div className="mb-3">
-                <strong>ภาษี</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <strong>ภาษี</strong> <strong><button className="btn-animated" style={{ color: 'green' }} onClick={()=>handleOpenModalTax((dataVehicle))}><i class="bi bi-pencil-square"></i></button></strong>
                 <div className="row">
                     <div className="col-lg-12">
                         <p>
@@ -347,7 +385,7 @@ const InsuranceInfo = ({ dataVehicle }) => {
             </div>
 
             <div className="mb-3">
-                <strong>พรบ</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <strong>พรบ</strong> <strong><button className="btn-animated" style={{ color: 'green' }} onClick={()=>handleOpenModalCMI(dataVehicle)}><i class="bi bi-pencil-square"></i></button></strong>
                 <div className="row">
                     <div className="col-lg-4">
                         <p><strong>วันที่เริ่มต้น:</strong> {formatDate(dataVehicle.cmi_start)}</p>
@@ -360,7 +398,7 @@ const InsuranceInfo = ({ dataVehicle }) => {
             </div>
 
             <div className="mb-3">
-                <strong>ประกันภัย</strong> <strong><button className="btn-animated" style={{ color: 'green' }}><i class="bi bi-pencil-square"></i></button></strong>
+                <strong>ประกันภัย</strong> <strong><button className="btn-animated" style={{ color: 'green' }} onClick={()=>handleOpenModalInsurace(dataVehicle)}><i class="bi bi-pencil-square"></i></button></strong>
                 <div className="row">
                     <div className="col-lg-4">
                         <p><strong>วันที่เริ่มต้น:</strong> {formatDate(dataVehicle.insurance_start)}</p>
@@ -375,6 +413,16 @@ const InsuranceInfo = ({ dataVehicle }) => {
                 </div>
             </div>
 
+                {isOpenModalTax && (
+                    <Modal_UpdateTex isOpen={isOpenModalTax} onClose={handleCloseModalTax} dataTax={dataTaxModal} />
+                )};
+
+                {isOpenModalCMI && (
+                    <Modal_UpdateCMI isOpen={isOpenModalCMI} onClose={handleCloseModalCMI} dataCMI={dataModalCMI} />
+                )}
+                {isOpenModalInsurance && (
+                    <Modal_UpdateInsurance isOpen={isOpenModalInsurance} onClose={handleCloseModalInsurance} dataInsurance={dataModalInsurance} />
+                )}
         </div>
     );
     // ฟังก์ชันตรวจสอบสถานะภาษี
@@ -450,6 +498,24 @@ const FinanceInfo = ({ dataVehicle }) => {
         }
     };
 
+    const [isOpenModalAddAutoCar, setOpenModalAutoCar] = useState(false);
+    const [dataModalAutuCar, setDataModalAutoCar] = useState(null);
+    const handleOpenModaleAutoCer = (data) => {
+        setOpenModalAutoCar(true);
+        setDataModalAutoCar(data);
+    };
+    const handleCloseModaleAutoCer = (data) => {
+        setOpenModalAutoCar(false);
+    };
+    const [isOpenModalEditAutoCar, setOpenModalEditAutoCar] = useState(false);
+    const [dataModalEditAutuCar, setDataModalEditAutoCar] = useState(null);
+    const handleOpenModaleEditAutoCer = (data) => {
+        setOpenModalEditAutoCar(true);
+        setDataModalEditAutoCar(data);
+    };
+    const handleCloseModaleEditAutoCer = (data) => {
+        setOpenModalEditAutoCar(false);
+    };
     useEffect(() => {
         if (id) fetchFinanceInfo();
     }, [id]); // เพิ่ม id เป็น dependency
@@ -462,7 +528,7 @@ const FinanceInfo = ({ dataVehicle }) => {
                     <div className="d-flex justify-content-center position-relative">
                         <strong>สินเชื่อรถ</strong>
                         {/* ปุ่ม Edit อยู่มุมขวาบน */}
-                        <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }}>
+                        <button className="p-0 position-absolute end-0 btn-animated" style={{ color: 'green' }} onClick={()=>handleOpenModaleEditAutoCer(financeData)}>
                             <i className="bi bi-pencil-square"></i>
                         </button>
                     </div>
@@ -494,8 +560,15 @@ const FinanceInfo = ({ dataVehicle }) => {
                 </>
             ) : (
                 <div className="text-center">
-                    <p style={{ color: 'red' }}>ไม่มีข้อมูลสินเชื่อรถ</p>
+                    <p style={{ color: 'red' }}>ไม่มีข้อมูลสินเชื่อรถ  <strong><button className="link" onClick={()=>handleOpenModaleAutoCer(dataVehicle)}>เพิ่มข้อมูล</button></strong></p>
                 </div>
+            )}
+
+            {isOpenModalAddAutoCar && (
+                <Modal_AddAutoCar isOpen={isOpenModalAddAutoCar} onClose={handleCloseModaleAutoCer} regData={dataModalAutuCar} />
+            )}
+            {isOpenModalEditAutoCar && (
+                <Modal_UpdateAutoCar isOpen={isOpenModalEditAutoCar} onClose={handleCloseModaleEditAutoCer} dataAuto={dataModalEditAutuCar} />
             )}
         </div>
 
