@@ -50,6 +50,7 @@ import RepairRequestForm from "./components_truck/truck/Repair/RepairRequestForm
 import CarMileageShow from "./components_truck/truck/CarMileage/CarMileageShow";
 import CarMileageDetails from "./components_truck/truck/CarMileage/CarMileageDetails";
 import ExcelUploader from "./components_truck/truck/CarMileage/ExcelUploader";
+import CarMainRepair from "./components_truck/truck/Repair/CarMainRepair";
 
 Modal.setAppElement("#root");
 
@@ -111,6 +112,7 @@ function App() {
           <Route path="organizationmanagment" element={<OrganizationMenagement/>} /> {/* หน้าจัดการข้อมูลภายในสองค์กร */}
           <Route path="companymanagement" element={<CompanyManagement/>} /> {/* หน้าจัดการข้อมูลองค์กร */}
           <Route path="RepairRequestForm" element={<RepairRequestForm/>} /> {/* หน้าแจ้งซ่อม */}
+          <Route path="CarMainRepair" element={<CarMainRepair/>} /> {/* หน้าแจ้งซ่อม main */}
           <Route path="CarMileageShow" element={<CarMileageShow/>} /> {/* หน้าเลขไมล์รถ */}
           <Route path="CarMileageDetails" element={<CarMileageDetails/>} /> {/* หน้าเลขไมล์รถ */}
           <Route path="ExcelUploader" element={<ExcelUploader/>} /> {/* หน้าเลขไมล์รถ */}

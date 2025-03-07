@@ -10,6 +10,7 @@ import AddDriverLicense from "./AddDriverLicense";
 import EditDriverLicense from "./EditDriverLicense";
 import EditRol from "./EditRole";
 import axios from 'axios';
+import ShowDetailFinance from "./ShowDetailFinance";
 
 const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
   if (!emp) return null;
@@ -133,7 +134,7 @@ const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
                 className={`nav-link ${actionShow === "currentAddress" ? "active" : ""}`}
                 onClick={() => setActiveShow("currentAddress")}
               >
-                ข้อมูลที่อยู่
+                ที่อยู่
               </button>
             </li>
             <li className="nav-item">
@@ -141,7 +142,15 @@ const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
                 className={`nav-link ${actionShow === "driverLicenses" ? "active" : ""}`}
                 onClick={() => setActiveShow("driverLicenses")}
               >
-                ข้อมูลใบขับขี่
+                ใบขับขี่
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link ${actionShow === "finance" ? "active" : ""}`}
+                onClick={() => setActiveShow("finance")}
+              >
+                เงินเดือน
               </button>
             </li>
             <li className="nav-item">
@@ -186,6 +195,13 @@ const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
               />
             </div>
           )}
+
+{actionShow === 'finance' && (
+            <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              <ShowDetailFinance emp={emp} onEdit={handleOpenEditModalAddress} />
+            </div>
+          )}
+
         </div>
       </div>
 

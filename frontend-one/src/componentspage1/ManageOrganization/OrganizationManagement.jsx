@@ -22,6 +22,7 @@ const OrganizationMenagement = () => {
         }
     }, []);
 
+    
     // ตั้งค่า userCompanyID ตามลำดับความสำคัญ
     useEffect(() => {
         console.log("Received Data:", receivedData);

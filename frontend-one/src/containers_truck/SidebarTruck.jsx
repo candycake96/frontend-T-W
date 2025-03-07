@@ -102,12 +102,6 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/RepairRequestForm"
-                  className={`nav-link ${["/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  รายงานการซ่อมรถ
-                </Link>
-              </li>
-              <li>
                 <Link
                   to="/truck/CarMileageShow"
                   className={`nav-link ${["/truck/CarMileageShow", "/truck/CarMileageDetails"].includes(location.pathname) ? "active" : ""}`}
@@ -123,6 +117,29 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                   รายงานรถ ม.79/ม.89
                 </Link>
               </li>
+            </ul>
+          )}
+        </li>
+
+                {/* 📌 เมนูข้อมูลรถ */}
+                <li className="nav-item">
+          <button onClick={() => toggleDropdown("CaeRepai")} className="nav-link">
+          <i class="bi bi-tools"></i>  ระบบแจ้งซ่อมรถ
+          </button>
+          {activeDropdown === "CaeRepai" && (
+            <ul className="list-unstyled ps-4"> 
+                          <li>
+                <Link to="/truck/RepairRequestForm"
+                  className={`nav-link ${["/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  แจ้งซ่อม
+                </Link>
+              </li>            
+              <li>
+                <Link to="/truck/CarMainRepair"
+                  className={`nav-link ${["/truck/CarMainRepair", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  งานซ่อม
+                </Link>
+              </li>            
             </ul>
           )}
         </li>
