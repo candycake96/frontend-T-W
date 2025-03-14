@@ -3,6 +3,7 @@ import Modal_Edit_Mileage from "./Modal/Modal_Edit_Mileage";
 import Modal_Add_Mileage from "./Modal/Modal_Add_Milaege";
 import ReactPaginate from "react-paginate";
 import "./CarMileageShow.css";
+import "./CarMileageDetails.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 
@@ -143,23 +144,23 @@ const CarMileageDetails = () => {
                     </div>
                 </div>
                 <div>
-                    <table className="table table-hover table-borderless">
-                        <thead className="table-secondary ">
+                    <table className="table table-hover table-borderless ">
+                        <thead className="table-secondary  ">
                             <tr>
-                                <th>วันที่อัปเดท</th>
+                                <th >วันที่อัปเดท</th>
                                 <th>เลขไมล์รถ</th>
                                 <th>เลขไมล์รถรวม</th>
                                 <th>สถานะ</th>
                                 <th>หมายเหตุ</th>
                                 <th>ผู้คีย์ข้อมูล</th>
-                                <th className=""></th>
+                                <th ></th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredVehicleData.length > 0 ? (
                                 currentData.map((rowMi, index) => (
                                     <tr key={index}>
-                                        <td>{rowMi.recorded_date ? formatDate(rowMi.recorded_date) : "N/A"}</td>
+                                        <td >{rowMi.recorded_date ? formatDate(rowMi.recorded_date) : "N/A"}</td>
                                         <td style={{ color: "blue" }}>{rowMi.odometer ? Number(rowMi.odometer).toLocaleString() : "N/A"}</td>
                                         <td style={{ color: "green" }}>{rowMi.total_distance ? Number(rowMi.total_distance).toLocaleString() : "N/A"}</td>
                                         <td>{rowMi.status ? rowMi.status : "-"}</td>
