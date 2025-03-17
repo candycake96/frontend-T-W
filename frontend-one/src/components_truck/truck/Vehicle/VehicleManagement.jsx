@@ -19,7 +19,7 @@ const VehicleManagement = () => {
     <div className="container">
       <div className="p-3">
         <div className="text-center">
-          <p className="fs-3">ระบบจัดการข้อมูลรถ</p>
+          <p className="fs-4 fw-bolder">ระบบจัดการข้อมูลรถ</p>
         </div>
         <hr />
       </div>

@@ -84,7 +84,7 @@ const CarTaxRenewal_Main = () => {
                 <div className="p-3">
                     <div className="text-center">
                         <div className="mb-3">
-                            <p className="fw-bolder fs-4">ข้อมูลรถต่อทะเบียน</p>
+                            <p className="fw-bolder fs-4">ข้อมูลรถ ภาษี</p>
                         </div>
                     </div>
 

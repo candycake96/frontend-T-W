@@ -53,6 +53,7 @@ import ExcelUploader from "./components_truck/truck/CarMileage/ExcelUploader";
 import CarMainRepair from "./components_truck/truck/Repair/CarMainRepair";
 import CarTaxRenewal_Main from "./components_truck/truck/CarTaxRenewal/CarTaxRenewal_Main";
 import CarStopTaxRemittanc from "./components_truck/truck/CarTaxRenewal/CarStopTaxRemittance";
+import CarCMI_Main from "./components_truck/truck/CarCMI/CarCMI_Main";
 
 Modal.setAppElement("#root");
 
@@ -119,6 +120,7 @@ function App() {
           <Route path="CarMileageDetails" element={<CarMileageDetails/>} /> {/* หน้าเลขไมล์รถ */}
           <Route path="ExcelUploader" element={<ExcelUploader/>} /> {/* หน้าเลขไมล์รถ */}
           <Route path="CarTaxRenewal_Main" element={<CarTaxRenewal_Main/>} /> {/* หน้า main tax */}
+          <Route path="CarCMI_Main" element={<CarCMI_Main/>} /> {/* หน้า main CMI พรบ */}
           <Route path="CarStopTaxRemittanc" element={<CarStopTaxRemittanc/>} /> {/* หน้า ม.89-79 */}
 
           </Route>
