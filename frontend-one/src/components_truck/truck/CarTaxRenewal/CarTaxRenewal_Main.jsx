@@ -4,7 +4,11 @@ import React, { useEffect, useState } from "react";
 const CarTaxRenewal_Main = () => {
 
     const [isDataTaxend, setDataTaxend] = useState([]);
+    const [searchRegNumber, setSearchRegNumber] = useState(""); // ค่าที่กรอกในช่องค้นหาทะเบียน
+    const [searchCarType, setSearchCarType] = useState(""); // ค่าที่กรอกในช่องค้นหาประเภทรถ
+    const [showAll, setShowAll] = useState(false); // สถานะแสดงข้อมูลทั้งหมด
 
+    // ฟังก์ชันโหลดข้อมูลที่กำหนด
     const fetchTaxend = async () => {
         try {
             const response = await axios.get(
@@ -15,16 +19,51 @@ const CarTaxRenewal_Main = () => {
                     },
                 }
             );
-            // console.log("Fetched positions:", response.data); // Check fetched data
             setDataTaxend(response.data);
         } catch (error) {
             console.error("Error fetching Taxend:", error);
         }
     }
 
+    const fetchTaxendAll = async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3333/api/tax_managment_show_all`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataTaxend(response.data);
+        } catch (error) {
+            console.error("Error fetching Taxend:", error);
+        }
+    }
+
+
+    // เมื่อเริ่มต้นโหลดข้อมูล
     useEffect(() => {
         fetchTaxend();
     }, []);
+
+    // ฟังก์ชันค้นหาข้อมูล
+    const filteredData = isDataTaxend.filter(rowTax => {
+        return (
+            (rowTax.reg_number.toLowerCase().includes(searchRegNumber.toLowerCase())) &&
+            (rowTax.car_type_name.toLowerCase().includes(searchCarType.toLowerCase()))
+        );
+    });
+
+     // ฟังก์ชันคลิกปุ่ม "all"
+     const toggleDataView = () => {
+        setShowAll(!showAll); // สลับสถานะ
+        if (!showAll) {
+            fetchTaxendAll(); // ถ้ากดปุ่ม "all" จะโหลดข้อมูลทั้งหมด
+        } else {
+            fetchTaxend(); // ถ้ากดอีกครั้งจะกลับไปแสดงข้อมูลเดิม
+        }
+    }
 
     return (
         <>
@@ -36,49 +75,81 @@ const CarTaxRenewal_Main = () => {
                         </div>
                     </div>
 
-                    <div className="">
+                    <div>
                         <div className="mb-3">
-                            <p className="fw-bolder">ถึงกำหนดต่อทะเบียน</p>
+                            <div className="row">
+                                <p className="fw-bolder">ค้นหาข้อมูล</p>
+                                <div className="col-lg-3">
+
+                                    <input
+                                        type="text"
+                                        className="form-control mb-2"
+                                        placeholder="ค้นหาทะเบียน"
+                                        value={searchRegNumber}
+                                        onChange={(e) => setSearchRegNumber(e.target.value)}
+                                    />
+                                </div>
+                                <div className="col-lg-3">
+                                    <p></p>
+                                    <input
+                                        type="text"
+                                        className="form-control mb-2"
+                                        placeholder="ค้นหาประเภทรถ"
+                                        value={searchCarType}
+                                        onChange={(e) => setSearchCarType(e.target.value)}
+                                    />
+                                </div>
+                                <div className="col-lg-3">
+                                <div className="mb-3">
+                            {/* ปุ่ม "All" เพื่อรีเซ็ตการค้นหา */}
+                            <button className="btn btn-primary" onClick={toggleDataView}>
+                                {showAll ? "ย้อนกลับ" : "ค้นหาทั้งหมด"}
+                            </button>
                         </div>
-                        <div className="">
-                            <table
-                                className="table">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div>
+                            <table className="table">
                                 <thead>
                                     <tr>
                                         <th>ลำดับ</th>
                                         <th>ทะเบียน</th>
-                                        <th>ประเรภทรถ</th>
+                                        <th>ประเภทรถ</th>
                                         <th>วันที่หมดอายุ</th>
                                         <th>สถานะ</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {isDataTaxend && isDataTaxend.length > 0 ? (
-                                        isDataTaxend.map((rowTax, index) => (
+                                    {filteredData.length > 0 ? (
+                                        filteredData.map((rowTax, index) => (
                                             <tr key={index}>
-                                                <td>{index + 1}</td> {/* เริ่ม index ที่ 1 แทน 0 */}
+                                                <td>{index + 1}</td>
                                                 <td>{rowTax.reg_number}</td>
                                                 <td>{rowTax.car_type_name}</td>
                                                 <td>{rowTax.tax_end_date}</td>
                                                 <td>
-                                                    {rowTax.tax_end_date && new Date(rowTax.tax_end_date) <= new Date() ? (
-                                                        <p className="text-danger">ทะเบียนหมดอายุ</p>
+                                                    {rowTax.status === "ทะเบียนหมดอายุ" ? (
+                                                        <p className="text-danger">{rowTax.status}</p>
+                                                    ) : rowTax.status === "ทะเบียนใกล้หมดอายุ" ? (
+                                                        <p className="text-warning">{rowTax.status}</p>
                                                     ) : (
-                                                        <p className="text-warning">ทะเบียนใกล้หมดอายุ</p>
+                                                        <p className="text-success">{rowTax.status}</p>
                                                     )}
                                                 </td>
-
                                                 <td><button className="btn btn-primary">H</button></td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" className="text-center">ไม่มีข้อมูล</td>
+                                            <td colSpan="6" className="text-center">ไม่มีข้อมูล</td>
                                         </tr>
                                     )}
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
