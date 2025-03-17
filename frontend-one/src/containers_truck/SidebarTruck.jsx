@@ -96,8 +96,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/vehiclemanagement"
-                  className={`nav-link ${["/truck/vehiclemanagement1"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/CarTaxRenewal_Main"
+                  className={`nav-link ${["/truck/CarTaxRenewal_Main"].includes(location.pathname) ? "active" : ""}`}>
                   ข้อมูลรถต่อทะเบียน
                 </Link>
               </li>
@@ -111,8 +111,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               </li>
               <li>
                 <Link
-                  to="/truck/CarMileageShow"
-                  className={`nav-link ${["/truck/CarMileageShow1", "/truck/CarMileageDetails1"].includes(location.pathname) ? "active" : ""}`}
+                  to="/truck/CarStopTaxRemittanc"
+                  className={`nav-link ${["/truck/CarStopTaxRemittanc", "/truck/CarMileageDetails1"].includes(location.pathname) ? "active" : ""}`}
                 >
                   รายงานรถ ม.79/ม.89
                 </Link>
