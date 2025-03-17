@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Modal_UpdateTex from "../Vehicle/expanded/modal/Modal_UpdateTax";
 
 const CarTaxRenewal_Main = () => {
 
@@ -7,6 +8,18 @@ const CarTaxRenewal_Main = () => {
     const [searchRegNumber, setSearchRegNumber] = useState(""); // ค่าที่กรอกในช่องค้นหาทะเบียน
     const [searchCarType, setSearchCarType] = useState(""); // ค่าที่กรอกในช่องค้นหาประเภทรถ
     const [showAll, setShowAll] = useState(false); // สถานะแสดงข้อมูลทั้งหมด
+
+    const [isOpenModalEditTax, setOpenModalEditTax] = useState(false);
+    const [dataTaxModal, setDataTaxModal] = useState(null);
+    const handleOpenModalEditTax = (data) => {
+        const { reg_id, tax_end_date: tax_end } = data;
+        setDataTaxModal({ reg_id, tax_end });
+        setOpenModalEditTax(true);
+    }
+
+    const handleClesModalEditTax = () => {
+        setOpenModalEditTax(false);
+    }
 
     // ฟังก์ชันโหลดข้อมูลที่กำหนด
     const fetchTaxend = async () => {
@@ -55,8 +68,8 @@ const CarTaxRenewal_Main = () => {
         );
     });
 
-     // ฟังก์ชันคลิกปุ่ม "all"
-     const toggleDataView = () => {
+    // ฟังก์ชันคลิกปุ่ม "all"
+    const toggleDataView = () => {
         setShowAll(!showAll); // สลับสถานะ
         if (!showAll) {
             fetchTaxendAll(); // ถ้ากดปุ่ม "all" จะโหลดข้อมูลทั้งหมด
@@ -100,12 +113,12 @@ const CarTaxRenewal_Main = () => {
                                     />
                                 </div>
                                 <div className="col-lg-3">
-                                <div className="mb-3">
-                            {/* ปุ่ม "All" เพื่อรีเซ็ตการค้นหา */}
-                            <button className="btn btn-primary" onClick={toggleDataView}>
-                                {showAll ? "ย้อนกลับ" : "ค้นหาทั้งหมด"}
-                            </button>
-                        </div>
+                                    <div className="mb-3">
+                                        {/* ปุ่ม "All" เพื่อรีเซ็ตการค้นหา */}
+                                        <button className="btn btn-primary" onClick={toggleDataView}>
+                                            {showAll ? "ย้อนกลับ" : "ค้นหาทั้งหมด"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -113,7 +126,7 @@ const CarTaxRenewal_Main = () => {
                         </div>
 
                         <div>
-                            <table className="table">
+                            <table className="table table-hover table-borderless">
                                 <thead>
                                     <tr>
                                         <th>ลำดับ</th>
@@ -141,7 +154,13 @@ const CarTaxRenewal_Main = () => {
                                                         <p className="text-success">{rowTax.status}</p>
                                                     )}
                                                 </td>
-                                                <td><button className="btn btn-primary">H</button></td>
+                                                <td><button
+                                                    className="btn-circle"
+                                                    onClick={() => handleOpenModalEditTax(rowTax)}
+                                                >
+                                                    <i className="bi bi-pencil-fill"></i>
+                                                </button>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -155,6 +174,10 @@ const CarTaxRenewal_Main = () => {
                     </div>
                 </div>
             </div>
+
+            {isOpenModalEditTax && (
+                <Modal_UpdateTex isOpen={isOpenModalEditTax} onClose={handleClesModalEditTax} dataTax={dataTaxModal} />
+            )}
         </>
     )
 }

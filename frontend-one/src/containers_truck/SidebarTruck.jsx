@@ -98,7 +98,19 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               <li>
                 <Link to="/truck/CarTaxRenewal_Main"
                   className={`nav-link ${["/truck/CarTaxRenewal_Main"].includes(location.pathname) ? "active" : ""}`}>
-                  ข้อมูลรถต่อทะเบียน
+                  ข้อมูลรถต่อ พรบ.
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/CarTaxRenewal_Main"
+                  className={`nav-link ${["/truck/CarTaxRenewal_Main1"].includes(location.pathname) ? "active" : ""}`}>
+                  ข้อมูลรถต่อ ภาษี
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/CarTaxRenewal_Main"
+                  className={`nav-link ${["/truck/CarTaxRenewal_Main2"].includes(location.pathname) ? "active" : ""}`}>
+                  ข้อมูลรถต่อ ประกัน
                 </Link>
               </li>
               <li>
