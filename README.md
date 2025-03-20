@@ -39,23 +39,24 @@
         </rewrite>
     </system.webServer>
 </configuration>
-
    ```
 
 3. **ตั้งค่า IIS**
-   - เปิด IIS Manager
-   - เพิ่ม **เว็บไซต์ใหม่** หรือ **Application** ชี้ไปที่โฟลเดอร์ `dist`
-   - ตรวจสอบว่าเปิดใช้งาน **URL Rewrite Module** แล้ว
+   
+   ปิด IIS Manager
+   เพิ่ม **เว็บไซต์ใหม่** หรือ **Application** ชี้ไปที่โฟลเดอร์ `dist`
+   ตรวจสอบว่าเปิดใช้งาน **URL Rewrite Module** แล้ว
 
-4. **ทดสอบการทำงาน**
-   - เปิดเบราว์เซอร์แล้วเข้าไปที่ `http://localhost:8080/` (หรือพอร์ตที่กำหนด)
-   - ตรวจสอบว่าหน้าเว็บโหลดได้ถูกต้อง
+5. **ทดสอบการทำงาน**
+   
+   เปิดเบราว์เซอร์แล้วเข้าไปที่ `http://localhost:8080/` (หรือพอร์ตที่กำหนด)
+   ตรวจสอบว่าหน้าเว็บโหลดได้ถูกต้อง
 
 ### หมายเหตุ
-- หากพบปัญหา 404 เมื่อรีเฟรชหน้า ให้ตรวจสอบว่าไฟล์ `web.config` อยู่ใน `dist` และ IIS เปิดใช้งาน URL Rewrite
-- หากพบปัญหา MIME Type ให้ตรวจสอบว่า IIS รองรับไฟล์ `.js`, `.css`, `.json` และไฟล์อื่น ๆ ที่จำเป็น
+   หากพบปัญหา 404 เมื่อรีเฟรชหน้า ให้ตรวจสอบว่าไฟล์ `web.config` อยู่ใน `dist` และ IIS เปิดใช้งาน URL Rewrite
+   หากพบปัญหา MIME Type ให้ตรวจสอบว่า IIS รองรับไฟล์ `.js`, `.css`, `.json` และไฟล์อื่น ๆ ที่จำเป็น
 
-5. Common Issues:
+### Common Issues:
 404 Error on Page Refresh: Ensure web.config is in the dist folder and URL Rewrite is enabled.
 MIME Type Issues: Ensure IIS supports necessary file types like .js, .css, and .json.
 Adding Bootstrap:
