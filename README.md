@@ -43,23 +43,21 @@
    ```
 
 3. **ตั้งค่า IIS**
-
    - เปิด IIS Manager
    - เพิ่ม **เว็บไซต์ใหม่** หรือ **Application** ชี้ไปที่โฟลเดอร์ `dist`
    - ตรวจสอบว่าเปิดใช้งาน **URL Rewrite Module** แล้ว
 
 4. **ทดสอบการทำงาน**
-
    - เปิดเบราว์เซอร์แล้วเข้าไปที่ `http://localhost:8080/` (หรือพอร์ตที่กำหนด)
    - ตรวจสอบว่าหน้าเว็บโหลดได้ถูกต้อง
 
 ### หมายเหตุ
-
 - หากพบปัญหา 404 เมื่อรีเฟรชหน้า ให้ตรวจสอบว่าไฟล์ `web.config` อยู่ใน `dist` และ IIS เปิดใช้งาน URL Rewrite
 - หากพบปัญหา MIME Type ให้ตรวจสอบว่า IIS รองรับไฟล์ `.js`, `.css`, `.json` และไฟล์อื่น ๆ ที่จำเป็น
 
 ### bootstrap
-``` bootstrap
+
+  ``` bootstrap
    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
 
@@ -68,6 +66,6 @@
 
     <!-- Bootstrap JS (bundle includes Popper.js) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-```
+ ```
 
 
