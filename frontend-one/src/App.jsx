@@ -90,6 +90,7 @@ function App() {
             <Route path="jobsection" element={<JobSection/>} />
             <Route path="branch" element={<Branch/>} />
             
+            <Route path="employeesadddata" element={<EmployeesAddData />} />
             <Route path="employeesaccess" element={<EmployeesAccess/>} />
             <Route path="bookingroom/:id" element={<BookingRoom/>} />
             <Route path="bookingroomdetails" element={<BookingRoomDetails/>} />\
