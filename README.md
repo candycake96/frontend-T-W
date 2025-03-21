@@ -80,7 +80,7 @@ This guide should help you deploy your React app on IIS successfully! Let me kno
 
 6. **vite.config.js**
    
-   ```vi
+   ```i
    import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
@@ -92,4 +92,5 @@ export default defineConfig({
     },
   },
 });
+
  ```
