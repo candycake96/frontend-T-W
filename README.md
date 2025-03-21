@@ -42,7 +42,7 @@
 </configuration>
 
 
-   ```
+  , ```
 
 3. **ตั้งค่า IIS**
    
@@ -93,7 +93,7 @@ export default defineConfig({
  ```
 
 
-```u
+```
 
   "name": "frontend-one",
   "private": true,
