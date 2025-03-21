@@ -84,13 +84,7 @@ This guide should help you deploy your React app on IIS successfully! Let me kno
    import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://192.168.16.111:3333',  
-        changeOrigin: true, 
-      },
-    },
-  },
+    proxy: {'/api': { target: 'http://192.168.16.111:3333',   changeOrigin: true,  },},},
 });
 
  ```
