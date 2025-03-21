@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../../config/apiConfig";
 
 Modal.setAppElement("#root");
 
@@ -48,7 +49,7 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
 
   const fetchUserDriver = async () => {
     try {
-      const response = await axios.get(`http://localhost:3333/api/getdriver`, {
+      const response = await axios.get(`${apiUrl}/api/getdriver`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -129,7 +130,7 @@ const Driver_relation_management = ({ isOpen, onClose, dataVehicle, onSuccess })
 
     try {
       const response = await axios.post(
-        `http://localhost:3333/api/add_driver_relation`,
+        `${apiUrl}/api/add_driver_relation`,
         dataRelation,
         {
           headers: {

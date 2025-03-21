@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_UpdateTex from "../Vehicle/expanded/modal/Modal_UpdateTax";
+import { apiUrl } from "../../../config/apiConfig";
 
 const CarTaxRenewal_Main = () => {
 
@@ -25,7 +26,7 @@ const CarTaxRenewal_Main = () => {
     const fetchTaxend = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/tax_managment_show`,
+                `${apiUrl}/api/tax_managment_show`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -41,7 +42,7 @@ const CarTaxRenewal_Main = () => {
     const fetchTaxendAll = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/tax_managment_show_all`,
+                `${apiUrl}/api/tax_managment_show_all`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

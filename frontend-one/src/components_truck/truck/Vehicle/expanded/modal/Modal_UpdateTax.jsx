@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../../config/apiConfig";
 
 const Modal_UpdateTex = ({ isOpen, onClose, dataTax }) => {
     const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ const Modal_UpdateTex = ({ isOpen, onClose, dataTax }) => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/vehicle_updata_tax/${dataTax.reg_id}`,
+                `${apiUrl}/api/vehicle_updata_tax/${dataTax.reg_id}`,
                 formData,
                 {
                     headers: {

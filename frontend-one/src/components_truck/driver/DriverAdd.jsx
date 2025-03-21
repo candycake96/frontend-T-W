@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../config/apiConfig";
 
 const AddDriver = ({ onSubmit }) => {
     const [employeeDriver, setEmployeeDriver] = useState([]);
@@ -19,7 +20,7 @@ const AddDriver = ({ onSubmit }) => {
     const fetchEmployeeDriver = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3333/api/getemployeesdriver",
+                `${apiUrl}/api/getemployeesdriver`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -42,7 +43,7 @@ const AddDriver = ({ onSubmit }) => {
         e.preventDefault(); // ป้องกันการ refresh หน้า
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/adddriverlicense`,
+                `${apiUrl}/api/adddriverlicense`,
                 {
                     id_emp: idemp,
                     license_number: licensenumber,

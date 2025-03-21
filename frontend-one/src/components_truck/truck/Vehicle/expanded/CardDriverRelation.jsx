@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // ลืม import axios
 import Driver_relation_management from "../modal/driver_relation_management";
 import EmployeeShowModal from "../../../../componentspage1/EmployeesUser/modal/EmployeeShowModal";
-
-
+import { apiUrl } from "../../../../config/apiConfig";
 
 const CardDriverRelation = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
@@ -28,7 +27,7 @@ const CardDriverRelation = ({ dataVehicle }) => {
         if (!dataVehicle?.reg_id) return; // ป้องกันข้อผิดพลาด
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/shows_driver_relation/${dataVehicle.reg_id}`,
+                `${apiUrl}/api/shows_driver_relation/${dataVehicle.reg_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -64,7 +63,7 @@ const CardDriverRelation = ({ dataVehicle }) => {
     const handleDelete = async (driver_assignment_id) => {
         if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?")) return; // 🔴 ยืนยันก่อนลบ
         try {
-            await axios.delete(`http://localhost:3333/api/delete_driver_relation/${driver_assignment_id}`, {
+            await axios.delete(`${apiUrl}/api/delete_driver_relation/${driver_assignment_id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -89,7 +88,7 @@ const CardDriverRelation = ({ dataVehicle }) => {
     
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/update_cancel_driver_relation/${driverAssignmentId}`,
+                `${apiUrl}/api/update_cancel_driver_relation/${driverAssignmentId}`,
                 {}, // 👈 ถ้าไม่มีข้อมูลใน body ให้ส่ง {}
                 {
                     headers: { Authorization: `Bearer ${token}` },

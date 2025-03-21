@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../../config/apiConfig";
 
 Modal.setAppElement('#root');
 
@@ -24,7 +25,7 @@ const Vehicle_pairing = ({ isOpen, onClose, dataVehicle, onSuccess }) => {
     
     try {
       const response = await axios.post(
-        `http://localhost:3333/api/vehicle_relation_add`,
+        `${apiUrl}/api/vehicle_relation_add`,
         dataToSend,
         {
           headers: {

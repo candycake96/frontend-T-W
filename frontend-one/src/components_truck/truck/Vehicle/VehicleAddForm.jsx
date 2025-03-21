@@ -3,6 +3,7 @@ import VehicleForm from "./VehicleForm";
 import FinanceForm from "./FinanceForm";
 import TaxForm from "./TaxForm";
 import axios from "axios";
+import { apiUrl } from "../../../config/apiConfig";
 
 const VehicleAddForm = () => {
 
@@ -203,7 +204,7 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
     
         try {
             const response = await axios.post(
-                "http://localhost:3333/api/vehicleAdd",
+                `${apiUrl}/api/vehicleAdd`,
                 formDataToSend,
                 {
                     headers: {

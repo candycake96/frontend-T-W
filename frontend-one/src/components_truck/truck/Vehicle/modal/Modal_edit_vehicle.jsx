@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle  }) => {
     const [user, setUser] = useState(null);
@@ -127,7 +128,7 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle  }) => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailsvehicleusagetype", {
+            const response = await axios.get(`${apiUrl}/api/detailsvehicleusagetype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -155,7 +156,7 @@ const fetchVehicleType = async () => {
             return;
         }
 
-        const response = await axios.get("http://localhost:3333/api/detailsvehicletype", {
+        const response = await axios.get(`${apiUrl}/api/detailsvehicletype`, {
             headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -180,7 +181,7 @@ const handleSubmitVehicleUpdate = async (e) => {
     e.preventDefault();
     try {
         const response = await axios.put(
-            `http://localhost:3333/api/vehicle_update_doc/${dataVehicle.reg_id}`,
+            `${apiUrl}/api/vehicle_update_doc/${dataVehicle.reg_id}`,
             formData,
             {
                 headers: {

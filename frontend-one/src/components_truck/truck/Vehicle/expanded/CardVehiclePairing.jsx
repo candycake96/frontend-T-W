@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Vehicle_pairing from "../modal/Vehicle_pairing";
 import axios from "axios";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const CardVehiclePairing = ({ dataVehicle }) => {
   const [isPairingOpenModal, setPairingOpenModal] = useState(false);
@@ -20,7 +21,7 @@ const CardVehiclePairing = ({ dataVehicle }) => {
   const fetchCarRelation = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/vehicle_relation_shows/${dataVehicle.reg_id}/${dataVehicle.car_type_id}`,
+        `${apiUrl}/api/vehicle_relation_shows/${dataVehicle.reg_id}/${dataVehicle.car_type_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -42,7 +43,7 @@ const CardVehiclePairing = ({ dataVehicle }) => {
     if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?")) return; // 🔴 ยืนยันก่อนลบ
     try {
       console.log(`กำลังลบข้อมูล pair_id: ${id}`); // เพิ่มข้อความเพื่อดูในคอนโซล
-      await axios.delete(`http://localhost:3333/api/vehicle_relation_delete/${id}`, {
+      await axios.delete(`${apiUrl}/api/vehicle_relation_delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

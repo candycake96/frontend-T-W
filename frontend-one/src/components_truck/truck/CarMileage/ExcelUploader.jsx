@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
+import { apiUrl } from "../../../config/apiConfig";
 
 function ExcelUploader() {
     const [file, setFile] = useState(null);
@@ -70,7 +71,7 @@ function ExcelUploader() {
 
     const sendDataToBackend = async () => {
         try {
-            const response = await axios.post("http://localhost:3333/api/mileage_excel_uploader", {
+            const response = await axios.post(`${apiUrl}/api/mileage_excel_uploader`, {
                 data: excelData,
             }, {
                 headers: {

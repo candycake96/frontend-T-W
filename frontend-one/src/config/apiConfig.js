@@ -1,3 +1,9 @@
+
 const API_BASE_URL = "http://202.183.178.248:4441";
 
-export default API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
+console.log(apiUrl);  // ตรวจสอบค่าที่ได้
+
+
+export { API_BASE_URL, apiUrl };
+

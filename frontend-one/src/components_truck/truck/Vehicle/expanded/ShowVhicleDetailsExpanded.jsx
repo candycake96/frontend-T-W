@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Modal_RepairRequestForm from "./modal/Modal_RepairRequestForm";
 import Modal_CarMileageForm from "./modal/Modal_CarMileageForm";
 
+
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
     const [isOpenModalRepairRequest, setOpenModalRepairRequest] = useState(false);

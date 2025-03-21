@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_edit_vehicle_other = ({ isOpen, onClose, dataVehicle}) => {
   const [formData, setFormdata] = useState({
@@ -34,7 +35,7 @@ const Modal_edit_vehicle_other = ({ isOpen, onClose, dataVehicle}) => {
   const fetchCarType = useCallback(async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.get("http://localhost:3333/api/detailscartype", {
+      const response = await axios.get(`${apiUrl}/api/detailscartype`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCarType(response.data);
@@ -47,7 +48,7 @@ const Modal_edit_vehicle_other = ({ isOpen, onClose, dataVehicle}) => {
     try {
       const token = localStorage.getItem("accessToken");
       if (user && user.company_id) {
-        const response = await axios.get(`http://localhost:3333/api/getbranches/${user.company_id}`, {
+        const response = await axios.get(`${apiUrl}/api/getbranches/${user.company_id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBranches(response.data);
@@ -108,7 +109,7 @@ const Modal_edit_vehicle_other = ({ isOpen, onClose, dataVehicle}) => {
   
       // Send the form data
       const response = await axios.put(
-        `http://localhost:3333/api/vehicle_updata_other_doc/${dataVehicle.reg_id}`,
+        `${apiUrl}/api/vehicle_updata_other_doc/${dataVehicle.reg_id}`,
         formDataObj,
         {
           headers: {

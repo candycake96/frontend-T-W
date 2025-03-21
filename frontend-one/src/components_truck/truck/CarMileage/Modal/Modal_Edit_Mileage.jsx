@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_Edit_MIleage = ({ dataMileage, isOpen, onClose, onSuccess }) => {
    const [user, setUser] = useState(null);
@@ -72,7 +73,7 @@ useEffect(() => {
 
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/car_mileage_update/${dataMileage.id}`,
+                `${apiUrl}/api/car_mileage_update/${dataMileage.id}`,
                 formData,
                 {
                     headers: {

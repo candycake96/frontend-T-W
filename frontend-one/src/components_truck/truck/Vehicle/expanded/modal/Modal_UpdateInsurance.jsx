@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../../config/apiConfig";
 
 const Modal_UpdateInsurance = ({isOpen, onClose, dataInsurance}) => {
         const [message, setMessage] = useState("");
@@ -25,7 +26,7 @@ const Modal_UpdateInsurance = ({isOpen, onClose, dataInsurance}) => {
                 e.preventDefault();
                 try {
                     const response = await axios.put(
-                        `http://localhost:3333/api/vehicle_updata_insurance/${dataInsurance.reg_id}`,
+                        `${apiUrl}/api/vehicle_updata_insurance/${dataInsurance.reg_id}`,
                         formData,
                         {
                             headers: {

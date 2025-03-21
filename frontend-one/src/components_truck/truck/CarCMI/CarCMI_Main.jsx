@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_UpdateCMI from "../Vehicle/expanded/modal/Modal_UpdataCMI";
+import { apiUrl } from "../../../config/apiConfig";
 
 const CarCMI_Main = () => {
     
@@ -25,7 +26,7 @@ const CarCMI_Main = () => {
     const fetchCMIend = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/cmi_managment_show`,
+                `${apiUrl}/api/cmi_managment_show`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -41,7 +42,7 @@ const CarCMI_Main = () => {
     const fetchCMIendAll = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/cmi_managment_show_all`,
+                `${apiUrl}/api/cmi_managment_show_all`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

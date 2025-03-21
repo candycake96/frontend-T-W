@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ShowVhicleDetailsExpanded from "./expanded/ShowVhicleDetailsExpanded";
 import { Link } from "react-router-dom";
+import { apiUrl } from "../../../config/apiConfig";
 
 const VehicleTable = () => {
     const [isVehicleDetails, setVehicleDetails] = useState([]);
@@ -23,7 +24,7 @@ const VehicleTable = () => {
     const fetchVehicleTable = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/vehicleget`,
+                `${apiUrl}/api/vehicleget`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -49,7 +50,7 @@ const VehicleTable = () => {
 
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${user.company_id}`,
+                `${apiUrl}/api/getbranches/${user.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -74,7 +75,7 @@ const VehicleTable = () => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailscartype", {
+            const response = await axios.get(`${apiUrl}/api/detailscartype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

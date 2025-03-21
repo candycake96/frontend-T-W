@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from 'react-modal'; 
 import axios from "axios";
+import { apiUrl } from "../../config/apiConfig";
 
 const DriverUpDate = ({ isOpenUpDate, onCloseUpDate, driverDataUpDate }) => {
     const [formData, setFormData] = useState(driverDataUpDate || {});
@@ -26,7 +27,7 @@ const DriverUpDate = ({ isOpenUpDate, onCloseUpDate, driverDataUpDate }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/updatedriverlicense/${formData.id_driver}`,
+                `${apiUrl}/api/updatedriverlicense/${formData.id_driver}`,
                 formData,
                 {
                     headers: {

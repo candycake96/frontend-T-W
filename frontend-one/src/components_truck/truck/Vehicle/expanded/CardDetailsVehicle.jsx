@@ -8,6 +8,7 @@ import Modal_UpdateCMI from "./modal/Modal_UpdataCMI";
 import Modal_UpdateInsurance from "./modal/Modal_UpdateInsurance";
 import Modal_AddAutoCar from "./modal/Modal_AddAutoCar";
 import Modal_UpdateAutoCar from "./modal/Modal_UpdateAutoCar";
+import { apiUrl } from "../../../../config/apiConfig";
 
 // ฟังก์ชันแปลงวันที่
 const formatDate = (dateString) => {
@@ -28,7 +29,7 @@ const CardDetailsVehicle = ({ dataVehicle }) => {
     const fetchDetailsVehicle = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/vehicledetailgetid/${dataVehicle.reg_id}`,
+                `${apiUrl}/api/vehicledetailgetid/${dataVehicle.reg_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -482,7 +483,7 @@ const FinanceInfo = ({ dataVehicle }) => {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:3333/api/autocardetails/${id}`, {
+            const response = await axios.get(`${apiUrl}/api/autocardetails/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

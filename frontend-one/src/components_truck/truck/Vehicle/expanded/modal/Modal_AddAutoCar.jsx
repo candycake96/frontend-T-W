@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../../config/apiConfig";
 
 const Modal_AddAutoCar = ({ isOpen, onClose, regData }) => {
     const [message, setMessage] = useState("");
@@ -18,7 +19,7 @@ const Modal_AddAutoCar = ({ isOpen, onClose, regData }) => {
         e.preventDefault();
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/auto_car_add/${regData.reg_id}`,
+                `${apiUrl}/api/auto_car_add/${regData.reg_id}`,
                 formData,
                 {
                     headers: {

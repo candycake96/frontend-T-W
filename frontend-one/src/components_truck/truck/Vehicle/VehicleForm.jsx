@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
 const VehicleForm = ({formData, setFormdata, errors}) => {
 
@@ -26,7 +27,7 @@ const handleCarTypeChange = (e) => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailscartype", {
+            const response = await axios.get(`${apiUrl}/api/detailscartype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -50,7 +51,7 @@ const handleCarTypeChange = (e) => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailsvehicletype", {
+            const response = await axios.get(`${apiUrl}/api/detailsvehicletype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -75,7 +76,7 @@ const handleCarTypeChange = (e) => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailsvehicleusagetype", {
+            const response = await axios.get(`${apiUrl}/api/detailsvehicleusagetype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -94,7 +95,7 @@ const handleCarTypeChange = (e) => {
     const fetchBranches = async (user) => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${user.company_id}`,
+                `${apiUrl}/api/getbranches/${user.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

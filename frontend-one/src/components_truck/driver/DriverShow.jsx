@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import EmployeeShoweModal from "../../componentspage1/EmployeesUser/modal/EmployeeShowModal";
+import { apiUrl } from "../../config/apiConfig";
 
 const DriverShow = () => {
 
@@ -23,7 +24,7 @@ const DriverShow = () => {
     const fetchDriverData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdriver`,
+                `${apiUrl}/api/getdriver`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -40,7 +41,7 @@ const DriverShow = () => {
     const fetchShowBranch = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${userCompanyID}`,
+                `${apiUrl}/api/getbranches/${userCompanyID}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

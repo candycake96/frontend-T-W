@@ -6,6 +6,8 @@ import Modal_Add_Mileage from "./Modal/Modal_Add_Milaege";
 import ReactPaginate from "react-paginate";
 import "./CarMileageShow.css";
 import Modal_Import_Excel from "./Modal/Modal_Import_Excel";
+import { apiUrl } from "../../../config/apiConfig";
+
 
 const CarMileageShow = () => {
     // Modal
@@ -39,7 +41,7 @@ const CarMileageShow = () => {
 
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${user.company_id}`,
+                `${apiUrl}/api/getbranches/${user.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -63,7 +65,7 @@ const CarMileageShow = () => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:3333/api/detailscartype", {
+            const response = await axios.get(`${apiUrl}/api/detailscartype`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -115,7 +117,7 @@ const CarMileageShow = () => {
     const fetchMileageData = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/car_mileage_show_tbl_all_one`,
+                `${apiUrl}/api/car_mileage_show_tbl_all_one`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

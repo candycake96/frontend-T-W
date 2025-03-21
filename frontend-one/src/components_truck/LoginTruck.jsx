@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";  // นำเข้า useNavigate และ useLocation
 import "./LoginTruck.css";
+import { apiUrl } from "../config/apiConfig";
 
 const LoginTruck = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -33,7 +34,7 @@ const LoginTruck = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3333/api/logintruck", formData); // API call
+      const response = await axios.post(`${apiUrl}/api/logintruck`, formData); // API call
       const { accessToken, user } = response.data;
 
       // Store token and user info in localStorage

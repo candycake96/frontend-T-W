@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_Add_Mileage = ({ dataMileage, isOpen, onClose, onSuccess }) => {
     const [user, setUser] = useState(null);
@@ -47,7 +48,7 @@ const Modal_Add_Mileage = ({ dataMileage, isOpen, onClose, onSuccess }) => {
 
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/car_mileage_add_data`,
+                `${apiUrl}/api/car_mileage_add_data`,
                 isDataInputMileage,
                 {
                     headers: {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../../config/apiConfig";
 
 const Modal_UpdateAutoCar = ({isOpen, onClose, dataAuto}) => {
 
@@ -33,7 +34,7 @@ const Modal_UpdateAutoCar = ({isOpen, onClose, dataAuto}) => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/auto_car_update/${dataAuto.finance_id}`,
+                `${apiUrl}/api/auto_car_update/${dataAuto.finance_id}`,
                 formData,
                 {
                     headers: {

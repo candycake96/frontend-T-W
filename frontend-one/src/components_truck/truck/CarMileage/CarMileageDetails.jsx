@@ -6,6 +6,7 @@ import "./CarMileageShow.css";
 import "./CarMileageDetails.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { apiUrl } from "../../../config/apiConfig";
 
 const CarMileageDetails = () => {
     const [isMileageData, setMileageData] = useState([]);
@@ -53,7 +54,7 @@ const CarMileageDetails = () => {
 
     const fetchMileageData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3333/api/getMileageData/${rowMiData.reg_id}`, {
+            const response = await axios.get(`${apiUrl}/api/getMileageData/${rowMiData.reg_id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -94,7 +95,7 @@ const CarMileageDetails = () => {
     const handleDeleteMileageDataRow = async (id) => {
         if (!window.confirm("คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?")) return; // Confirm before delete
         try {
-            await axios.delete(`http://localhost:3333/api/car_mileage_delete/${id}`, {
+            await axios.delete(`${apiUrl}/api/car_mileage_delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
