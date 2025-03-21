@@ -91,3 +91,13 @@ export default defineConfig({
 });
 
  ```
+
+
+```u
+
+  "name": "frontend-one",
+  "private": true,
+  "version": "0.0.0",
+  "proxy": "http://192.168.16.111:3333",
+
+```
