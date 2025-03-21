@@ -16,6 +16,7 @@
    ให้สร้างไฟล์ `web.config` และใส่โค้ดต่อไปนี้เพื่อให้ IIS สามารถรองรับ React SPA:
 
    ```xml
+   
    <configuration>
     <system.webServer>
         <rewrite>
@@ -39,6 +40,7 @@
         </rewrite>
     </system.webServer>
 </configuration>
+
    ```
 
 3. **ตั้งค่า IIS**
