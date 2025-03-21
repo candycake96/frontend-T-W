@@ -82,7 +82,6 @@ This guide should help you deploy your React app on IIS successfully! Let me kno
    
    ```vi
    import { defineConfig } from 'vite';
-
 export default defineConfig({
   server: {
     proxy: {
@@ -93,5 +92,4 @@ export default defineConfig({
     },
   },
 });
-
-   ```
+ ```
