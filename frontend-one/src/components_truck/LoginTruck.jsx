@@ -23,36 +23,36 @@ const LoginTruck = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    if (!formData.email || !formData.password) {
-      setError("กรุณากรอก Email และ Password");
-      setLoading(false);
-      return;
-    }
+  if (!formData.email || !formData.password) {
+    setError("กรุณากรอก Email และ Password");
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const response = await axios.post(`${apiUrl}/api/logintruck`, formData); // API call
-      const { accessToken, user } = response.data;
+  try {
+    const response = await axios.post(`${apiUrl}/api/logintruck`, formData); // API call
+    const { accessToken, user } = response.data;
 
-      // Store token and user info in localStorage
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
+    // Store token and user info in localStorage
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("user", JSON.stringify(user));
 
-      alert("เข้าสู่ระบบสำเร็จ!");
+    alert("เข้าสู่ระบบสำเร็จ!");
 
-      // Redirect ไปยังหน้าที่ผู้ใช้พยายามเข้าถึง (ถ้ามี) หรือหน้า default เช่น /truck
-      const redirectPath = location.state?.from?.pathname || "/truck"; // ถ้ามีจากหน้าเดิม ก็ไปที่หน้านั้น
-      console.log("Redirecting to:", redirectPath); // ดูค่าใน console ว่าได้ path ที่ต้องการหรือไม่
-      navigate(redirectPath, { replace: true }); // ใช้ navigate เพื่อนำทางไปยัง path ที่ต้องการ
-    } catch (error) {
-      setError(error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Redirect ไปยังหน้าที่ผู้ใช้พยายามเข้าถึง (ถ้ามี) หรือหน้า default เช่น /truck
+    const redirectPath = location.state?.from?.pathname || "/truck"; // ถ้ามีจากหน้าเดิม ก็ไปที่หน้านั้น
+    console.log("Redirecting to:", redirectPath); // ดูค่าใน console ว่าได้ path ที่ต้องการหรือไม่
+    navigate(redirectPath, { replace: true }); // ใช้ navigate เพื่อนำทางไปยัง path ที่ต้องการ
+  } catch (error) {
+    setError(error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="login-container">
