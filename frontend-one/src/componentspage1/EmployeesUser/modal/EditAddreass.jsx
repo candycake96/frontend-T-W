@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const EditAddress = ({ isOpen, onClose, row }) => {
 
@@ -44,7 +45,7 @@ const EditAddress = ({ isOpen, onClose, row }) => {
         setIsSaving(true);
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/putaddress/${row.address_id}`,
+                `${apiUrl}/api/putaddress/${row.address_id}`,
                 formData,
                 {
                     headers: {

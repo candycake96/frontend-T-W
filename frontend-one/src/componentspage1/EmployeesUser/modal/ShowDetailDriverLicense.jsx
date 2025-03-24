@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
+
 
 const ShowDetailDriverLicense = ({ emp, onInsert, onEdit, fetchDriverLicenses  }) => {
     if (!emp) return null;
@@ -10,7 +12,7 @@ const ShowDetailDriverLicense = ({ emp, onInsert, onEdit, fetchDriverLicenses  }
     const fetchDriverLicense = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdriverLicense/${id}`,
+                `${apiUrl}/api/getdriverLicense/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -31,7 +33,7 @@ const ShowDetailDriverLicense = ({ emp, onInsert, onEdit, fetchDriverLicenses  }
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:3333/api/deletedriverlicense/${id}`,
+            const response = await axios.delete(`${apiUrl}/api/deletedriverlicense/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

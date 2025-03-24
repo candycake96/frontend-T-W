@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../config/apiConfig";
 
 const EditImageEmployees = ({ isOpen, onClose, emp, employeeId }) => {
     const [previewImageEmp, setPreviewImageEmp] = useState(null);
@@ -29,7 +30,7 @@ const EditImageEmployees = ({ isOpen, onClose, emp, employeeId }) => {
             // ส่งข้อมูลไปยังเซิร์ฟเวอร์ด้วย Axios หรือ fetch.
             try {
                 // ตัวอย่างใช้ Axios
-                axios.put(`http://localhost:3333/api/employeesputimage/${emp.id_emp}`, formData, {
+                axios.put(`${apiUrl}/api/employeesputimage/${emp.id_emp}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

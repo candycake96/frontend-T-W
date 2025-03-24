@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import EmployeeShoweModal from "./modal/EmployeeShowModal";
+import { apiUrl } from "../../config/apiConfig";
 
 const EmployeesResing = () => {
   const [employees, setEmployees] = useState([]);
@@ -22,7 +23,7 @@ const EmployeesResing = () => {
   // Fetch Employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:3333/api/getemployeesresing", {
+      const response = await axios.get(`${apiUrl}/api/getemployeesresing`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -57,7 +58,7 @@ const EmployeesResing = () => {
     console.log("Resignation ID received:", id);
 
     try {
-      await axios.put(`http://localhost:3333/api/putemployeeresign/${id}`, payload, {
+      await axios.put(`${apiUrl}/api/putemployeeresign/${id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

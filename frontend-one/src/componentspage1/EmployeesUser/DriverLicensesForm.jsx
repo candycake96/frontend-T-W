@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { apiUrl } from '../../config/apiConfig';
 
 const DriverLicensesForm = ({ driverLicenses, setDriverLicenses }) => {
     const [drivingLicenseTypes, setDrivingLicenseTypes] = useState([]);
@@ -7,7 +8,7 @@ const DriverLicensesForm = ({ driverLicenses, setDriverLicenses }) => {
     const fetchDrivingLicenseTypes = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdrivinglicensetypes`,
+            `${apiUrl}/api/getdrivinglicensetypes`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

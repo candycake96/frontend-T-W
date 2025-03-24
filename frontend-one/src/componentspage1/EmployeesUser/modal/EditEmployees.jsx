@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const EditEmployees = ({ isOpen, onClose, emp }) => {
     if (!emp) return null;
@@ -33,7 +34,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
     const fetchJobposition = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getpositions/${emp.company_id}`,
+                `${apiUrl}/api/getpositions/${emp.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -50,7 +51,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
     const fetchDepartment = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdepartments/${emp.company_id}`,
+                `${apiUrl}/api/getdepartments/${emp.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -67,7 +68,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
     const fetchBranches = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${emp.company_id}`,
+                `${apiUrl}/api/getbranches/${emp.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -123,7 +124,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
         setIsSaving(true);
         try {
             const response = await axios.put(
-                `http://localhost:3333/api/putemployees/${emp.id_emp}`,
+                `${apiUrl}/api/putemployees/${emp.id_emp}`,
                 formData,
                 {
                     headers: {

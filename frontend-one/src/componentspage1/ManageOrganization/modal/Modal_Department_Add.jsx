@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const Modal_Department_add = ({ isOpen, onClose, user }) => {
   const [departmentName, setDepartmentName] = useState("");
@@ -25,7 +26,7 @@ const Modal_Department_add = ({ isOpen, onClose, user }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3333/api/depastment_add_data", // ✅ Fixed API endpoint typo
+        `${apiUrl}/api/depastment_add_data`, // ✅ Fixed API endpoint typo
         { name_department: departmentName, company_id: isCompany },
         {
           headers: {

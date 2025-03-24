@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import EditImageEmployees from "./EditImageEmployees";
+import { apiUrl } from "../../../config/apiConfig";
 
 const ShowDetailEmployee = ({ emp, onEdit }) => {
     if (!emp) return null;
@@ -15,7 +16,7 @@ const ShowDetailEmployee = ({ emp, onEdit }) => {
         const fetchEmpDetailsID = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/api/getemployeesshowid/${id}`,
+                    `${apiUrl}/api/getemployeesshowid/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

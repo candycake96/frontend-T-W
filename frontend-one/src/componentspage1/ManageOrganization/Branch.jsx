@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal_Branch_Add from "./modal/Modal_Brcnch_Add";
+import { apiUrl } from "../../config/apiConfig";
 
 const Branch = ({CompanyID, user}) => {
   const [branches, setBranches] = useState([]);
@@ -23,7 +24,7 @@ const handleCloseModalBanchAdd = () => {
   const fetchBranches = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/getbranches/${CompanyID}`,
+        `${apiUrl}/api/getbranches/${CompanyID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -53,7 +54,7 @@ const handleCloseModalBanchAdd = () => {
     if (selectedBranch) {
       try {
         const response = await axios.put(
-          `http://localhost:3333/api/branches_update_data/${selectedBranch.id_branch}`,
+          `${apiUrl}/api/branches_update_data/${selectedBranch.id_branch}`,
           selectedBranch,
           {
             headers: {
@@ -85,7 +86,7 @@ const handleCloseModalBanchAdd = () => {
   
     try {
       const response = await axios.put(
-        `http://localhost:3333/api/branches_update_status/${id}`,
+        `${apiUrl}/api/branches_update_status/${id}`,
         isCompany,// No request body needed
         {
           headers: {

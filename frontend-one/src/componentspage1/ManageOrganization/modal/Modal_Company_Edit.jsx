@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../config/apiConfig";
 
 const Modal_Company_Edit = ({ isOpen, onClose, dataCompany }) => {
   if (!dataCompany) return null;
@@ -64,7 +65,7 @@ const Modal_Company_Edit = ({ isOpen, onClose, dataCompany }) => {
       console.log("FormData before submission:", Object.fromEntries(formData.entries()));
       
       const response = await axios.put(
-        `http://localhost:3333/api/editcompany/${dataCompany.company_id}`,
+        `${apiUrl}/api/editcompany/${dataCompany.company_id}`,
         formData,
         {
           headers: {

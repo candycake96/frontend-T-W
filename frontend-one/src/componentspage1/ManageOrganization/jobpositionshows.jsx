@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import JobpositionDelete from "./jobpositiondelete";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { apiUrl } from "../../config/apiConfig";
 
 const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
   const [showjobposition, setShowjobposition] = useState([]);
@@ -14,7 +15,7 @@ const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
   const fetchJobposition = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/getpositions/${CompanyID}`,
+        `${apiUrl}/api/getpositions/${CompanyID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -48,7 +49,7 @@ const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
     if (selectedJob) {
       try {
         const response = await axios.put(
-          `http://localhost:3333/api/positions_update_data/${selectedJob.id_position}`,
+          `${apiUrl}/api/positions_update_data/${selectedJob.id_position}`,
           { name_position: selectedJob.name_position },
           {
             headers: {

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
 const ShowDetailFinance = ({ emp, onEdit }) => {
     if (!emp) return null; //ตรวจสอบค่าเพื่อไม่ให้ error 
@@ -8,7 +9,7 @@ const ShowDetailFinance = ({ emp, onEdit }) => {
     const fetchAddress = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getaddress/${id}`,
+            `${apiUrl}/api/getaddress/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

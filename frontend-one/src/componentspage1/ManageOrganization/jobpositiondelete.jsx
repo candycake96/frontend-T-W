@@ -1,11 +1,12 @@
 import axios from "axios";
 import React from "react";
+import { apiUrl } from "../../config/apiConfig";
 
 const JobpositionDelete = ({ id, onDeleteSuccess }) => {
 
   const positionDelete = async () => {
     try {
-      await axios.put(`http://localhost:3333/api/positions_update_status/${id}`,{}, {
+      await axios.put(`${apiUrl}/api/positions_update_status/${id}`,{}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const Modal_Company_add = ({ isOpen, onClose }) => {
     const [isCompany, setCompany] = useState({
@@ -31,7 +32,7 @@ const Modal_Company_add = ({ isOpen, onClose }) => {
         
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/addcompany`,
+                `${apiUrl}/api/addcompany`,
                 formDataCompany,
                 {
                     headers: {

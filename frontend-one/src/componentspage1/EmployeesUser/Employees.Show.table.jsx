@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import EmployeeShowModal from "./modal/EmployeeShowModal"; // ตรวจสอบชื่อคอมโพเนนต์
 import Modal from "react-modal";
+import { apiUrl } from "../../config/apiConfig";
 
 const EmployeesShowtable = () => {
   const [employees, setEmployees] = useState([]);
@@ -18,7 +19,7 @@ const EmployeesShowtable = () => {
   // Fetch Employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:3333/api/getemployees", {
+      const response = await axios.get(`${apiUrl}/api/getemployees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -77,7 +78,7 @@ const EmployeesShowtable = () => {
     console.log("Resignation ID received:", id);
 
     try {
-      await axios.put(`http://localhost:3333/api/putemployeeresign/${id}`, payload, {
+      await axios.put(`${apiUrl}/api/putemployeeresign/${id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -96,7 +97,7 @@ const EmployeesShowtable = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3333/api/deleteemployee/${id}`, {
+      await axios.delete(`${apiUrl}/api/deleteemployee/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

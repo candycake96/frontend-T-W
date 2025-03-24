@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const EditDriverLicense = ({ isOpen, onClose, rowDriver, emp }) => {
   const [drivingLicenseTypes, setDrivingLicenseTypes] = useState([]);
@@ -12,7 +13,7 @@ const EditDriverLicense = ({ isOpen, onClose, rowDriver, emp }) => {
   const fetchDrivingLicenseTypes = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/getdrivinglicensetypes`,
+        `${apiUrl}/api/getdrivinglicensetypes`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -52,7 +53,7 @@ const EditDriverLicense = ({ isOpen, onClose, rowDriver, emp }) => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:3333/api/updatedriverlicense/${formData.id_driver}`,
+        `${apiUrl}/api/updatedriverlicense/${formData.id_driver}`,
         formData,
         {
           headers: {

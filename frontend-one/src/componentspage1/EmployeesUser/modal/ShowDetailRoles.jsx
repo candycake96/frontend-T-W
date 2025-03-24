@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
 const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
   if (!emp) return null;
@@ -11,7 +12,7 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
   const fetchEmpRoles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/getemployeeroles/${id}`,
+        `${apiUrl}/api/getemployeeroles/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

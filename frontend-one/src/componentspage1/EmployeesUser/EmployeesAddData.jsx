@@ -5,6 +5,7 @@ import CurrentAddressForm from "./EmployeeAddressForm";
 import DriverLicensesForm from "./DriverLicensesForm";
 import EmployeePermissionForm from "./EmployeePermissionForm";
 import EmployeeFinanceForm from "./EmployeeFinanceForm";
+import { apiUrl } from "../../config/apiConfig";
 
 const EmployeesAddData = () => {
   const [message, setMessage] = useState("");
@@ -137,7 +138,7 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
       
       // Post the data to the backend
       const response = await axios.post(
-        `http://localhost:3333/api/addemployeesdriver`,
+        `${apiUrl}/api/addemployeesdriver`,
         formData,
         {
           headers: {

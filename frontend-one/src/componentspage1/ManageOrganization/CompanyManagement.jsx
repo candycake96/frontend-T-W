@@ -4,6 +4,7 @@ import axios from "axios";
 import Modal_Company_add from "./modal/Modal_Company_Add";
 import { Link } from "react-router-dom";
 import Modal_Company_Edit from "./modal/Modal_Company_Edit";
+import { apiUrl } from "../../config/apiConfig";
 
 const CompanyManagement = () => {
     const [modalOpentCompanyEdit, setModalOpenCompanyEdit] = useState(false);
@@ -35,7 +36,7 @@ const CompanyManagement = () => {
         }
 
         try {
-            const response = await axios.get(`http://localhost:3333/api/getcompany`, {
+            const response = await axios.get(`${apiUrl}/api/getcompany`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             console.log("API Response:", response.data); // ✅ ตรวจสอบ Response

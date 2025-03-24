@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../config/apiConfig";
 
 const EmployeePermissionForm = ({ roles, setRoles }) => {
   const [showRoles, setShowRoles] = useState([]);
@@ -7,7 +8,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
   // Fetch roles from the API
   const fetchRoles = async () => {
     try {
-      const response = await axios.get("http://localhost:3333/api/getroles", {
+      const response = await axios.get(`${apiUrl}/api/getroles`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },

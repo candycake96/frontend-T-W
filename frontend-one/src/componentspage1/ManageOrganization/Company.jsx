@@ -3,6 +3,7 @@ import './CompanyManagement.css';
 import axios from "axios";
 import Modal_Company_add from "./modal/Modal_Company_Add";
 import Modal_Company_Edit from "./modal/Modal_Company_Edit";
+import { apiUrl } from "../../config/apiConfig";
 
 const Company = ({user, CompanyID}) => {
     const [isCompany, setCompany] = useState([]);
@@ -33,7 +34,7 @@ const Company = ({user, CompanyID}) => {
         }
 
         try {
-            const response = await axios.get(`http://localhost:3333/api/getcompanyid/${CompanyID}`, {
+            const response = await axios.get(`${apiUrl}/api/getcompanyid/${CompanyID}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             console.log("API Response:", response.data); // ✅ ตรวจสอบ Response

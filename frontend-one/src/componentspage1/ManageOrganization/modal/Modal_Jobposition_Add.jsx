@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, {useState, useEffect} from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const Modal_Jobposition_Add = ({isOpen, onClose, user}) => {
     const [jobposition, setJobposition] = useState(""); // รับส่งข้อมูลจาก input
@@ -26,7 +27,7 @@ const Modal_Jobposition_Add = ({isOpen, onClose, user}) => {
     
         try {
           const response = await axios.post(
-            "http://localhost:3333/api/positions_add_data",
+            `${apiUrl}/api/positions_add_data`,
             { name_position: jobposition,
               company_id: isCompany
              }, // sending job position

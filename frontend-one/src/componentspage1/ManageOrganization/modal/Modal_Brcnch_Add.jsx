@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../config/apiConfig";
 
 const Modal_Branch_Add = ({ isOpen, onClose, fetchBranches, user }) => {
   const [branchName, setBranchName] = useState("");
@@ -20,7 +21,7 @@ const Modal_Branch_Add = ({ isOpen, onClose, fetchBranches, user }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3333/api/branches_add_data",
+        `${apiUrl}/api/branches_add_data`,
         {
           branch_name: branchName,
           branch_address: branchAddress,

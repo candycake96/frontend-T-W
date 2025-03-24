@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../config/apiConfig";
+
 
 const EditRol = ({ isOpen, onClose, emp }) => {
   if (!emp) return null;
@@ -13,7 +15,7 @@ const EditRol = ({ isOpen, onClose, emp }) => {
   // Fetch all available roles
   const fetchAvailableRoles = async () => {
     try {
-      const response = await axios.get("http://localhost:3333/api/getroles", {
+      const response = await axios.get(`${apiUrl}/api/getroles`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -29,7 +31,7 @@ const EditRol = ({ isOpen, onClose, emp }) => {
   const fetchEmpRoles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/getemployeeroles/${id}`,
+        `${apiUrl}/api/getemployeeroles/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -65,7 +67,7 @@ const EditRol = ({ isOpen, onClose, emp }) => {
   const saveRoles = async () => {
     try {
       await axios.post(
-        `http://localhost:3333/api/updateemployeeroles/${id}`,
+        `${apiUrl}/api/updateemployeeroles/${id}`,
         { selectedRoles },
         {
           headers: {

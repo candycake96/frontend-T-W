@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_Department_add from "./modal/Modal_Department_Add";
+import { apiUrl } from "../../config/apiConfig";
 
 const Department = ({ CompanyID, user }) => {
   const [departments, setDepartments] = useState([]);
@@ -25,7 +26,7 @@ const Department = ({ CompanyID, user }) => {
 
   const fetchDepartment = async () => {
     try {
-      const response = await axios.get(`http://localhost:3333/api/getdepartments/${CompanyID}`, {
+      const response = await axios.get(`${apiUrl}/api/getdepartments/${CompanyID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -51,7 +52,7 @@ const Department = ({ CompanyID, user }) => {
     if (modalDepartment) {
       try {
         const response = await axios.put(
-          `http://localhost:3333/api/depastment_update_data/${modalDepartment.id_department}`,
+          `${apiUrl}/api/depastment_update_data/${modalDepartment.id_department}`,
           {name_department: modalDepartment.name_department},
           {
             headers: {
@@ -85,7 +86,7 @@ const Department = ({ CompanyID, user }) => {
   const handleDelete = async (id) => {
     try {
         const response = await axios.put(
-            `http://localhost:3333/api/depastment_update_status/${id.id_department}`,{isCompany}, // ✅ Fixed typo in endpoint URL
+            `${apiUrl}/api/depastment_update_status/${id.id_department}`,{isCompany}, // ✅ Fixed typo in endpoint URL
             {
               headers: {
                     Authorization: `Bearer ${token}`,

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { apiUrl } from '../../config/apiConfig';
 
 const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
 
@@ -38,7 +39,7 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
     const fetchJobposition = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getpositions/${employeeInfo.company_id}`,
+                `${apiUrl}/api/getpositions/${employeeInfo.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -56,7 +57,7 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
     const fetchDepartment = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdepartments/${employeeInfo.company_id}`,
+                `${apiUrl}/api/getdepartments/${employeeInfo.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -73,7 +74,7 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
     const fetchBranches = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getbranches/${employeeInfo.company_id}`,
+                `${apiUrl}/api/getbranches/${employeeInfo.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -90,7 +91,7 @@ const EmployeeInfoForm = ({ employeeInfo, setEmployeeInfo }) => {
     const fetchCompany = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getcompany`,
+                `${apiUrl}/api/getcompany`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

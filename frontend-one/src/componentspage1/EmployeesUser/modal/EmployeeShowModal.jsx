@@ -11,6 +11,8 @@ import EditDriverLicense from "./EditDriverLicense";
 import EditRol from "./EditRole";
 import axios from 'axios';
 import ShowDetailFinance from "./ShowDetailFinance";
+import { apiUrl } from "../../../config/apiConfig";
+
 
 const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
   if (!emp) return null;
@@ -37,7 +39,7 @@ const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
   const fetchDriverLicenses = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3333/api/getdriverlicenses",
+        `${apiUrl}/api/getdriverlicenses`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

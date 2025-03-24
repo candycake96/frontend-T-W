@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 const AddDriverLicense = ({ isOpen, onClose, emp, onSubmit }) => {
     if (!emp) return null;
@@ -26,7 +27,7 @@ const AddDriverLicense = ({ isOpen, onClose, emp, onSubmit }) => {
     const fetchDrivingLicenseTypes = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/api/getdrivinglicensetypes`,
+                `${apiUrl}/api/getdrivinglicensetypes`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -47,7 +48,7 @@ const AddDriverLicense = ({ isOpen, onClose, emp, onSubmit }) => {
         e.preventDefault();
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/adddriverlicense/${emp.id_emp}`,
+                `${apiUrl}/api/adddriverlicense/${emp.id_emp}`,
                 {
                     id_emp: idemp,
                     license_number: licensenumber,
