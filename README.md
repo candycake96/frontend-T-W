@@ -16,6 +16,7 @@
    ให้สร้างไฟล์ `web.config` และใส่โค้ดต่อไปนี้เพื่อให้ IIS สามารถรองรับ React SPA:
 
    ```xml
+   
    <configuration>
     <system.webServer>
         <rewrite>
@@ -39,7 +40,9 @@
         </rewrite>
     </system.webServer>
 </configuration>
-   ```
+
+
+  , ```
 
 3. **ตั้งค่า IIS**
    
@@ -81,10 +84,30 @@ This guide should help you deploy your React app on IIS successfully! Let me kno
 6. **vite.config.js**
    
    ```i
-   import { defineConfig } from 'vite';
+   
+import { defineConfig } from 'vite';
+
 export default defineConfig({
   server: {
-    proxy: {'/api': { target: 'http://192.168.16.111:3333',   changeOrigin: true,  },},},
+    proxy: {
+      '/api': {
+        target: 'http://192.168.16.111:3333',  // URL ของ backend
+        changeOrigin: true, // เพื่อให้แทนที่ Host header เป็นที่ของ backend
+       
+      },
+    },
+  },
 });
 
+
  ```
+
+
+```c
+
+  "name": "frontend-one",
+  "private": true,
+  "version": "0.0.0",
+  "proxy": "http://192.168.16.111:3333",
+
+```
