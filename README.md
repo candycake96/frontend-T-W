@@ -17,7 +17,7 @@
 
    ```xml
    
-   <configuration>
+<configuration>
     <system.webServer>
         <rewrite>
             <rules>
@@ -36,10 +36,18 @@
                     </conditions>
                     <action type="Rewrite" url="/index.html" />
                 </rule>
+
+                <!-- Images Rewrite Rule -->
+                <rule name="Images" stopProcessing="true">
+                    <match url="^company/imglogo/(.*)" />
+                    <action type="Rewrite" url="http://192.168.16.111:3333/company/imglogo/{R:1}" logRewrittenUrl="true" />
+                </rule>
+
             </rules>
         </rewrite>
     </system.webServer>
 </configuration>
+
 
 
   , ```
