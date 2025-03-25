@@ -576,7 +576,7 @@ const handleCarTypeChange = (e) => {
                                         {errors.operators && <p className="text-danger">{errors.operators}</p>}
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัณแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
+                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัญแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="reg_doc_number"
