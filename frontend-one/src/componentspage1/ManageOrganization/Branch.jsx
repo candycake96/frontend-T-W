@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Modal_Branch_Add from "./modal/Modal_Brcnch_Add";
 import { apiUrl } from "../../config/apiConfig";
+import ReactModal from "react-modal";
 
 const Branch = ({CompanyID, user}) => {
   const [branches, setBranches] = useState([]);
@@ -11,6 +12,8 @@ const Branch = ({CompanyID, user}) => {
   const [messageType, setMessageType] = useState("");
   const [selectedBranch, setSelectedBranch] = useState(null); // For editing
     const [isCompany, setCompany] = useState(null);
+    const [isOpenMaodalBranchEdit, setisOpenMaodalBranchEdit] = useState(false);
+
 
    const [modalOpenBranchAdd, setModalOpenBranchAdd] = useState(false);
    const handleOpenModalBanchAdd = () => {
@@ -45,9 +48,12 @@ const handleCloseModalBanchAdd = () => {
 
   const handleEditClick = (branch) => {
     setSelectedBranch(branch);
-    const dialog = document.getElementById("my_modal_4");
-    if (dialog) dialog.showModal();
+    setisOpenMaodalBranchEdit(true);
   };
+
+  const handleCloseModalBanchEdit = () => {
+    setisOpenMaodalBranchEdit(false);
+}
 
 
   const handleSaveChanges = async () => {
@@ -69,8 +75,7 @@ const handleCloseModalBanchAdd = () => {
         setSelectedBranch(null);
 
             // Close the modal
-      const dialog = document.getElementById("my_modal_4");
-      if (dialog) dialog.close();  // Close the modal after saving changes
+            setisOpenMaodalBranchEdit(false);
 
       } catch (error) {
         console.error("Error updating branch:", error);
@@ -183,8 +188,34 @@ const handleCloseModalBanchAdd = () => {
         )}
 
       {/* Modal */}
-      <dialog id="my_modal_4" className="modal">
-  <div className="modal-box">
+      {isOpenMaodalBranchEdit && (
+ <ReactModal
+            isOpen={isOpenMaodalBranchEdit}
+            onRequestClose={handleCloseModalBanchEdit}
+            ariaHideApp={false}
+            contentLabel="เพิ่มข้อมูลองค์กรใหม่"
+            style={{
+                content: {
+                    width: "90%",
+                    maxWidth: "600px",
+                    maxHeight: "50vh",
+                    margin: "auto",
+                    padding: "0",
+                    border: "none",
+                    borderRadius: "0.5rem",
+                    overflowY: "auto",
+                },
+                overlay: {
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 9999,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                },
+            }}
+        >
+
+  <div className="modal-box p-3">
     <h3 className="font-bold text-lg text-center">แก้ไขข้อมูลสาขา</h3>
 
     {selectedBranch && (
@@ -223,19 +254,21 @@ const handleCloseModalBanchAdd = () => {
       </>
     )}
 
-    <div className="modal-action">
+    <div className="modal-action text-center">
       <button className="btn btn-primary" onClick={handleSaveChanges}>
         บันทึก
       </button>
       <button
         className="btn"
-        onClick={() => document.getElementById("my_modal_4").close()}
+        onClick={handleCloseModalBanchEdit}
       >
         ยกเลิก
       </button>
     </div>
   </div>
-</dialog>
+
+      </ReactModal>
+    )} 
 
     </>
   );

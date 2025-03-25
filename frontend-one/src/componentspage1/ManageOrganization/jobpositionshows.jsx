@@ -4,8 +4,9 @@ import JobpositionDelete from "./jobpositiondelete";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { apiUrl } from "../../config/apiConfig";
+import ReactModal from "react-modal";
 
-const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
+const JobPositionShows = ({ onPositionAdded, CompanyID, onClose }) => {
   const [showjobposition, setShowjobposition] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
@@ -99,9 +100,33 @@ const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
       </div>
 
       {isModalOpen && (
-        <dialog id="my_modal_4" className="modal" open>
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 className="font-bold text-lg mb-3 text-center">Edit Job Position</h3>
+     <ReactModal
+                 isOpen={isModalOpen}
+                 onRequestClose={() => setIsModalOpen(false)}
+                 ariaHideApp={false}
+                 contentLabel="เพิ่มข้อมูลองค์กรใหม่"
+                 style={{
+                     content: {
+                         width: "90%",
+                         maxWidth: "600px",
+                         maxHeight: "40vh",
+                         margin: "auto",
+                         padding: "0",
+                         border: "none",
+                         borderRadius: "0.5rem",
+                         overflowY: "auto",
+                     },
+                     overlay: {
+                         backgroundColor: "rgba(0, 0, 0, 0.5)",
+                         zIndex: 9999,
+                         display: "flex",
+                         alignItems: "center",
+                         justifyContent: "center",
+                     },
+                 }}
+             >
+          <div className="p-3">
+            <h3 className="font-bold text-lg mb-3 text-center">แก้ไขข้อมูล ตำแหน่ง</h3>
             <div className="">
               {message && (
                 <div
@@ -139,7 +164,8 @@ const JobPositionShows = ({ onPositionAdded, CompanyID }) => {
               </form>
             </div>
           </div>
-        </dialog>
+        </ReactModal>
+      
       )}
     </div>
   );

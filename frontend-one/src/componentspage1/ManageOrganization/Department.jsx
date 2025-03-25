@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_Department_add from "./modal/Modal_Department_Add";
 import { apiUrl } from "../../config/apiConfig";
+import ReactModal from "react-modal";
 
 const Department = ({ CompanyID, user }) => {
   const [departments, setDepartments] = useState([]);
@@ -9,6 +10,7 @@ const Department = ({ CompanyID, user }) => {
   const [messageType, setMessageType] = useState("");
   const [isCompany, setCompany] = useState(null);
   const [modalDepartment, setModalDepartment] = useState(null);
+  const [isOpenModalDepartment, setOpenModalDepartment] = useState(false);
 
   const [modaldOpenDepartmentAdd, estModalOpenDepartment] = useState(false);
   const handleOpenModalDepartmentAdd = () => {
@@ -44,8 +46,10 @@ const Department = ({ CompanyID, user }) => {
 
   const openModal = (department) => {
     setModalDepartment(department);
-    const dialog = document.getElementById("my_modal_4_1");
-    if (dialog) dialog.showModal();
+    setOpenModalDepartment(true);
+  };
+  const closeModal = (department) => {
+    setOpenModalDepartment(false);
   };
 
   const handleSaveEditDepartment = async () => {
@@ -66,8 +70,7 @@ const Department = ({ CompanyID, user }) => {
         setModalDepartment(null);
 
         // Close the modal
-        const dialog = document.getElementById("my_modal_4_1");
-        if (dialog) dialog.close(); // Close the modal after saving changes
+        setOpenModalDepartment(false);
       } catch (error) {
         console.error("Error updating department:", error);
         setMessage("Failed to update the department.");
@@ -158,9 +161,37 @@ const Department = ({ CompanyID, user }) => {
       </div>
 
       {/* Modal */}
-      <dialog id="my_modal_4_1" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
+      {isOpenModalDepartment && (
+     <ReactModal
+                 isOpen={openModal}
+                 onRequestClose={closeModal}
+                 ariaHideApp={false}
+                 contentLabel="เพิ่มข้อมูลองค์กรใหม่"
+                 style={{
+                     content: {
+                         width: "90%",
+                         maxWidth: "600px",
+                         maxHeight: "40vh",
+                         margin: "auto",
+                         padding: "0",
+                         border: "none",
+                         borderRadius: "0.5rem",
+                         overflowY: "auto",
+                     },
+                     overlay: {
+                         backgroundColor: "rgba(0, 0, 0, 0.5)",
+                         zIndex: 9999,
+                         display: "flex",
+                         alignItems: "center",
+                         justifyContent: "center",
+                     },
+                 }}
+             >
+      <div className="p-3">
+        <div className="">
+          <div className="text-center">
           <h1 className="font-bold text-lg">แก้ไขข้อมูล</h1>
+          </div>
           {modalDepartment && (
             <>
               <div className="mb-3">
@@ -182,16 +213,19 @@ const Department = ({ CompanyID, user }) => {
               </div>
             </>
           )}
-          <div className="modal-action">
+          <div className="modal-action text-center">
             <button className="btn btn-primary" onClick={handleSaveEditDepartment}>
               บันทึก
             </button>
-            <button className="btn" onClick={() => document.getElementById("my_modal_4_1").close()}>
+            <button className="btn" onClick={closeModal}>
               ยกเลิก
             </button>
           </div>
         </div>
-      </dialog>
+      </div>
+
+      </ReactModal>
+     )}
 
 {/*  */}
 {modaldOpenDepartmentAdd && (
