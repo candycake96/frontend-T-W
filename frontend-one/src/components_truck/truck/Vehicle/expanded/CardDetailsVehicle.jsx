@@ -208,7 +208,10 @@ const VehicleDtails = ({ dataVehicle }) => {
                     <p><strong>กิโลวัตต์:</strong> {dataVehicle.power_kw } </p>
                 </div>
                 <div className="col-lg-2">
-                    <p><strong>เพลา:</strong> {dataVehicle.axle_count } <strong>ล้อ</strong></p>
+                    <p><strong>เพลา:</strong> {dataVehicle.axle_count } </p>
+                </div>
+                <div className="col-lg-2">
+                    <p><strong>ล้อ:</strong> {dataVehicle.wheel_count } </p>
                 </div>
                 <div className="col-lg-2">
                     <p><strong>ยาง:</strong> {dataVehicle.tire_count } <strong>เส้น</strong> </p>
