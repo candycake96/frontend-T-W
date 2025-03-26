@@ -205,13 +205,13 @@ const VehicleDtails = ({ dataVehicle }) => {
                     <p><strong>แรงม้า:</strong> {dataVehicle.engine_power} </p>
                 </div>
                 <div className="col-lg-2">
-                    <p><strong>กิโลวัตต์:</strong> {dataVehicle.cylinders} </p>
+                    <p><strong>กิโลวัตต์:</strong> {dataVehicle.power_kw } </p>
                 </div>
                 <div className="col-lg-2">
-                    <p><strong>เพลา:</strong> {dataVehicle.cylinders} <strong>ล้อ</strong></p>
+                    <p><strong>เพลา:</strong> {dataVehicle.axle_count } <strong>ล้อ</strong></p>
                 </div>
                 <div className="col-lg-2">
-                    <p><strong>ยาง:</strong> {dataVehicle.cylinders} <strong>เส้น</strong> </p>
+                    <p><strong>ยาง:</strong> {dataVehicle.tire_count } <strong>เส้น</strong> </p>
                 </div>
             </div>
 
