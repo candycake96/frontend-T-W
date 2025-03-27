@@ -286,6 +286,8 @@ const handleCarTypeChange = (e) => {
                                         <option value="ไบโอดีเซล B7">ไบโอดีเซล B7</option>
                                         <option value="ไบโอดีเซล B10">ไบโอดีเซล B10</option>
                                         <option value="ไบโอดีเซล B20">ไบโอดีเซล B20</option>
+                                        <option value="ก๊าซ CNG">ก๊าซ CNG</option>                                        
+                                        <option value="ก๊าซ CNG">ก๊าซ NGV</option>   
                                     </select>
                                     {errors.fuel && <p className="text-danger">{errors.fuel}</p>}
                                 </div>
@@ -396,7 +398,7 @@ const handleCarTypeChange = (e) => {
                                         className="form-control"
                                         value={formData.chassis_number}
                                         onChange={(e) => setFormdata({ ...formData, chassis_number: e.target.value })}
-                                        placeholder="ยี่ห้อรถ" />
+                                        placeholder="เลขตัวรถ" />
                                         {errors.chassis_number && <p className="text-danger">{errors.chassis_number}</p>}
                                 </div>
                                 <div className="col-lg-4">
@@ -423,7 +425,7 @@ const handleCarTypeChange = (e) => {
                                         className="form-control"
                                         value={formData.engine_brand}
                                         onChange={(e) => setFormdata({ ...formData, engine_brand: e.target.value })}
-                                        placeholder="ยี่ห้อรถ" />
+                                        placeholder="ยี่ห้อเครื่องยนต์" />
                                         {errors.engine_brand && <p className="text-danger">{errors.engine_brand}</p>}
                                 </div>
                                 <div className="col-lg-4">
@@ -551,7 +553,7 @@ const handleCarTypeChange = (e) => {
                                 <div className="col-lg-4">
                                     <label htmlFor="input_possession_date" className="form-label fw-medium">วัน เดือน ปี ที่ครอบครอง  <span style={{ color: "red" }}> *</span></label>
                                     <input
-                                        type="text"
+                                        type="date"
                                         name="possession_date"
                                         id="input_possession_date"
                                         className="form-control"
@@ -576,7 +578,7 @@ const handleCarTypeChange = (e) => {
                                         {errors.operators && <p className="text-danger">{errors.operators}</p>}
                                 </div>
                                 <div className="col-lg-4">
-                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัณแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
+                                    <label htmlFor="input_reg_doc_number" className="form-label fw-medium">หนังสือสำคัญแสดงการจดทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                     <input
                                         type="text"
                                         name="reg_doc_number"
