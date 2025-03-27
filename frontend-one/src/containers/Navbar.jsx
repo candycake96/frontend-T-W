@@ -91,7 +91,7 @@ const Navbar = ({ toggleSidebar }) => {
           </div>
           <div className="me-2">
             <Link
-              to="/loginpage"
+              to="/logintruck"
               className="fw-bold"
               style={{ color: "#ffffff" }}
             >
