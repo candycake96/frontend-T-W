@@ -27,7 +27,6 @@ const ShowDetailFinance = ({ emp, onEdit }) => {
         fetchAddress()
     }, []);
 
-
     return (
         <>
             <div className="">
