@@ -42,7 +42,7 @@ const VehicleAddForm = () => {
         veh_weight: "",
         max_load: "",
         gross_weight: "",
-        possession_date: "",
+        possession_date: "", 
         operators: "",
         nation: "",
         addr: "",
@@ -142,7 +142,6 @@ const VehicleAddForm = () => {
     };
     
 
-
     useEffect(() => {
         console.log("Updated formData:", formData);
     }, [formData]);
@@ -152,14 +151,54 @@ const VehicleAddForm = () => {
     }, [isFinance]);
 
 
+    const checkDuplicate = async (formData) => {
+        try {
+
+            const token = localStorage.getItem("accessToken");
+        if (!token) {
+            setMessage("Access token is missing. Please log in.");
+            setMessageType("error");
+            return; // Stop form submission
+        }
+
+            const response = await axios.post(`${apiUrl}/api/checkDuplicate_VehicleAdd`, formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data.duplicate) {
+                setMessage(response.data.message);  // ตั้งค่าข้อความแจ้งเตือนจาก Backend
+                setErrors(response.data.errors_row)
+                setMessageType("error");
+            }
+            return response.data.duplicate;
+        } catch (error) {
+            console.error("Error checking duplicate:", error);
+            setMessage("❌ ไม่สามารถตรวจสอบข้อมูลซ้ำได้");
+            setMessageType("error");
+            return false;
+        }
+    };
+    
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
+        if (!validateForm()) return;  // ถ้าฟอร์มไม่ผ่าน validation ให้หยุดทำงาน
 
         console.log('FormData before submission:', formData);
         console.log('IsFinance before submission:', isFinance);
     
-        const formDataToSend = new FormData();
+        const formDataToSend = new FormData(); 
+
+            // ตรวจสอบว่ามีเลขตัวถังซ้ำหรือไม่
+        // ตรวจสอบข้อมูลซ้ำก่อนส่ง
+        const isDuplicate = await checkDuplicate(formData);
+        if (isDuplicate) return; // ถ้าซ้ำ หยุดการส่งข้อมูล
+
     
         // Append fields from formData
         Object.keys(formData).forEach((key) => {
