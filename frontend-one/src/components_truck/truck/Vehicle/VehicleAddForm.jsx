@@ -219,6 +219,51 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
   
                 setMessage(response.data.message || "Data submitted successfully.");
                 setMessageType("success");
+                setFormdata({
+                    reg_date: "",
+                    reg_number: "",
+                    province: "",
+                    fuel: "",
+                    car_type_id: "",
+                    chassis_number: "",
+                    usage_type_id: "",
+                    car_brand: "",
+                    model_no: "",
+                    color: "",
+                    engine_brand: "",
+                    engine_no: "",
+                    cylinders: "",
+                    veh_weight: "",
+                    max_load: "",
+                    gross_weight: "",
+                    possession_date: "",
+                    operators: "",
+                    nation: "",
+                    addr: "",
+                    trans_type: "",
+                    license_no: "",
+                    license_expiry: "",
+                    rights_to_use: "",
+                    owner_name: "",
+                    address: "",
+                    passenger_count: "",
+                    file_download: null,
+                    vehicle_type_id: "",
+                    chassis_number_location: "",
+                    engine_on_location: "",
+                    engine_power: "",
+                    document_order: "",
+                    reg_doc_number: "",
+                    inspection_code: "",
+                    id_branch: "",
+                    tax_end: "",
+                    cmi_start: "",
+                    cmi_end: "",
+                    insurance_start: "",
+                    insurance_end: "",
+                    insurance_name: "",
+                    status: "active"}
+                );
 
         } catch (error) {
             console.error("Upload Error:", error.response ? error.response.data : error.message);
