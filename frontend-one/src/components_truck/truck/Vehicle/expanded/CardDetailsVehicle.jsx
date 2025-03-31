@@ -235,13 +235,7 @@ const VehicleDtails = ({ dataVehicle }) => {
                 </div>
             </div>
 
-            {dataVehicle.file_download && dataVehicle.file_download.trim() !== "" && (
-                <div className="mb-3" >
-                    <a href={dataVehicle.file_download} className="" target="_blank" rel="noopener noreferrer" id="btn-animated" style={{ color: '#c0392b' }}>
-                        <i className="bi bi-file-earmark-pdf-fill"></i> ไฟล์เอกสาร
-                    </a>
-                </div>
-            )}
+
 
             <hr className="mb-2 " />
 
@@ -315,14 +309,24 @@ const VehicleDtails = ({ dataVehicle }) => {
                 </button>
             </div>
             <div className="row">
-                <div className="col-lg-4 ">
+
+                <div className="col-lg-3">
                     <p><strong>ประเภทรถ:</strong> {(dataVehicle.car_type_name)} </p>
                 </div>
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                     <p><strong>สถานะ:</strong> {(dataVehicle.status)}</p>
                 </div>
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                     <p><strong>สาขาที่ดูแล:</strong> {(dataVehicle.branch_name)}</p>
+                </div>
+                <div className="col-lg-2">
+                {dataVehicle.file_download && dataVehicle.file_download.trim() !== "" && (
+                <div className="mb-3" >
+                    <a href={dataVehicle.file_download} className="" target="_blank" rel="noopener noreferrer" id="btn-animated" style={{ color: '#c0392b' }}>
+                        <i className="bi bi-file-earmark-pdf-fill"></i> ไฟล์เอกสาร
+                    </a>
+                </div>
+            )}
                 </div>
             </div>
 
