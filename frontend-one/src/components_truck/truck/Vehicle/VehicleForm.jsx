@@ -21,7 +21,6 @@ const handleCarTypeChange = (e) => {
         try {
             const token = localStorage.getItem("accessToken");
             console.log("Stored Token:", token); // ✅ ตรวจสอบ Token
-
             if (!token) {
                 console.error("No access token found");
                 return;
@@ -287,7 +286,7 @@ const handleCarTypeChange = (e) => {
                                         <option value="ไบโอดีเซล B10">ไบโอดีเซล B10</option>
                                         <option value="ไบโอดีเซล B20">ไบโอดีเซล B20</option>
                                         <option value="ก๊าซ CNG">ก๊าซ CNG</option>                                        
-                                        <option value="ก๊าซ CNG">ก๊าซ NGV</option>   
+                                        <option value="ก๊าซ CNG">ก๊าซ NGV</option>                                           
                                     </select>
                                     {errors.fuel && <p className="text-danger">{errors.fuel}</p>}
                                 </div>

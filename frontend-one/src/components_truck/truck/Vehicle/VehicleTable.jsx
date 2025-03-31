@@ -184,7 +184,7 @@ const VehicleTable = () => {
                     {filteredVehicleData.map((rowVD, index) => (
                         <React.Fragment key={index}>
                             <tr>
-                                <td>{index + 1}</td>
+                                <td className="col-lg-1">{index + 1}</td>
                                 <td className="col-1">{rowVD.reg_number}</td>
                                 <td>{rowVD.car_brand}</td>
                                 <td>{rowVD.model_no}</td>
