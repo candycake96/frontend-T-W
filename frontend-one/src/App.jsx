@@ -55,6 +55,7 @@ import CarTaxRenewal_Main from "./components_truck/truck/CarTaxRenewal/CarTaxRen
 import CarStopTaxRemittanc from "./components_truck/truck/CarTaxRenewal/CarStopTaxRemittance";
 import CarCMI_Main from "./components_truck/truck/CarCMI/CarCMI_Main";
 import CarInsurance_Main from "./components_truck/truck/Car_insurance/CarInsurance_Main";
+import Vehicle_status from "./components_truck/truck/Vehicle_status/Vehicle_status";
 
 Modal.setAppElement("#root");
 
@@ -124,6 +125,7 @@ function App() {
           <Route path="CarCMI_Main" element={<CarCMI_Main/>} /> {/* หน้า main CMI พรบ */}
           <Route path="CarInsurance_Main" element={<CarInsurance_Main/>} /> {/* หน้า main  */}
           <Route path="CarStopTaxRemittanc" element={<CarStopTaxRemittanc/>} /> {/* หน้า ม.89-79 */}
+          <Route path="Vehicle_status" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */}
           </Route>
         </Routes>
       </Router>

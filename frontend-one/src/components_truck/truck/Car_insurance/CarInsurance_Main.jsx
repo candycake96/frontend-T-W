@@ -13,8 +13,8 @@ const CarInsurance_Main = () => {
     const [isOpenModalEditInsurance, setOpenModalEditInsurance] = useState(false);
     const [dataCMIModal, setDataCMIModal] = useState(null);
     const handleOpenModalEditInsurance = (data) => {
-        const { reg_id, insurance_end_date: insurance_end, insurance_start_date: insurance_start } = data;
-        setDataCMIModal({ reg_id, insurance_end , insurance_start});
+        const { reg_id, insurance_end_date: insurance_end, insurance_start_date: insurance_start, insurance_name: insurance_name } = data;
+        setDataCMIModal({ reg_id, insurance_end , insurance_start, insurance_name});
         setOpenModalEditInsurance(true);
     }
 

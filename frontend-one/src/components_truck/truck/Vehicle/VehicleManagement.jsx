@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import VehicleTable from "./VehicleTable";
 import { useNavigate } from "react-router-dom";
 
+
 const VehicleManagement = () => {
   const navigate = useNavigate();
 

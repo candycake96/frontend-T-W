@@ -140,12 +140,6 @@ const VehicleAddForm = () => {
     
       return true;
     };
-<<<<<<< HEAD
-
-=======
->>>>>>> 7edc919744a1acafa1af61764cbcf66829c2b0b4
-    
-
     useEffect(() => {
         console.log("Updated formData:", formData);
     }, [formData]);

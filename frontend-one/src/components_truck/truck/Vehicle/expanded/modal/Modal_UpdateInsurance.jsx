@@ -77,7 +77,7 @@ const Modal_UpdateInsurance = ({isOpen, onClose, dataInsurance}) => {
         >
                 <div className="p-3">
                     <div className="text-center mb-3 fw-bolder">
-                        พรบ (แก้ไข)
+                        ประกันภัย (แก้ไข)
                     </div>
                     {/* Display success or error message */}
                     {message && (
