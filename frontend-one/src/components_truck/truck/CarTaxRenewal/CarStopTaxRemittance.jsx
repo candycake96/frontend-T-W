@@ -180,7 +180,11 @@ const CarStopTaxRemittanc = () => {
                                 <td>{formatDate(rewData.updated_at)}</td>
                                 <td>{rewData.status || "-"}</td>
                                 <td className="text-center">
-                                    <Link to='/truck/Vehicle_status' className="btn btn-outline-primary">
+                                    <Link 
+                                    to='/truck/Vehicle_status'
+                                     state={{ data: rewData }}
+                                     className="btn btn-outline-primary"
+                                     >
                                         <i className="bi bi-clipboard2-fill"></i>
                                     </Link>
                                 </td>
