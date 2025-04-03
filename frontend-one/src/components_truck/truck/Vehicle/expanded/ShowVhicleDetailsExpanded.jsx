@@ -6,6 +6,7 @@ import CardVehiclePairing from "./CardVehiclePairing";
 import { Link } from "react-router-dom";
 import Modal_RepairRequestForm from "./modal/Modal_RepairRequestForm";
 import Modal_CarMileageForm from "./modal/Modal_CarMileageForm";
+import Modal_status_update from "../modal/Modal_status_update";
 
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
@@ -25,13 +26,28 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     const handleCloseModalCarMileageForm = () => {
         setOpenModalCarMileageForm(false);
     }
+
+    const [isOpenModalStatusUpdate, setOpenModalStatuseUpdate] = useState(false);
+    const [dataStatuse, setDataStatus] = useState(null);
+    const handleOpenModalStatusUpdate = (data) => {
+        setOpenModalStatuseUpdate(true);   
+        setDataStatus(data);
+    };
+    const handleCloseModalStatusUpdate = () => {
+        setOpenModalStatuseUpdate(false);
+    }
+
+
     const rowMi = dataVehicle;
+
+
     return (
         <>
             <div className="p-2">
                 <div className="">
                     <div className="mb-2">
                     <button
+                    onClick={()=>handleOpenModalStatusUpdate(rowMi)}
                             className="btn "
                             style={{ background: "Teal", color: '#ffffff' }}
                             // onClick={() => handleOpenModalRepairRequest()}
@@ -87,6 +103,10 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
 
             {isOpenModalCarMileageForm && (
                 <Modal_CarMileageForm isOpen={isOpenModalCarMileageForm} onClose={handleCloseModalCarMileageForm} />
+            )}
+
+            {isOpenModalStatusUpdate && (
+                <Modal_status_update isOpen={isOpenModalStatusUpdate} onClose={handleCloseModalStatusUpdate} onData={dataStatuse}  />
             )}
 
         </>

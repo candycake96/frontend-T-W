@@ -125,7 +125,9 @@ function App() {
           <Route path="CarCMI_Main" element={<CarCMI_Main/>} /> {/* หน้า main CMI พรบ */}
           <Route path="CarInsurance_Main" element={<CarInsurance_Main/>} /> {/* หน้า main  */}
           <Route path="CarStopTaxRemittanc" element={<CarStopTaxRemittanc/>} /> {/* หน้า ม.89-79 */}
-          <Route path="Vehicle_status" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */}
+          <Route path="Vehicle_status/:id" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */}
+
+
           </Route>
         </Routes>
       </Router>

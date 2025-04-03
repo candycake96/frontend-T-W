@@ -124,7 +124,10 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               <li>
                 <Link
                   to="/truck/CarStopTaxRemittanc"
-                  className={`nav-link ${["/truck/CarStopTaxRemittanc", "/truck/CarMileageDetails1"].includes(location.pathname) ? "active" : ""}`}
+                  className={`nav-link ${location.pathname === "/truck/CarStopTaxRemittanc" || location.pathname.startsWith("/truck/Vehicle_status/")
+                      ? "active"
+                      : ""
+                    }`}
                 >
                   รายงานรถ ม.79/ม.89
                 </Link>
@@ -133,25 +136,25 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           )}
         </li>
 
-                {/* 📌 เมนูข้อมูลรถ */}
-                <li className="nav-item">
+        {/* 📌 เมนูข้อมูลรถ */}
+        <li className="nav-item">
           <button onClick={() => toggleDropdown("CaeRepai")} className="nav-link">
-          <i class="bi bi-tools"></i>  ระบบแจ้งซ่อมรถ
+            <i class="bi bi-tools"></i>  ระบบแจ้งซ่อมรถ
           </button>
           {activeDropdown === "CaeRepai" && (
-            <ul className="list-unstyled ps-4"> 
-                          <li>
+            <ul className="list-unstyled ps-4">
+              <li>
                 <Link to="/truck/RepairRequestForm"
                   className={`nav-link ${["/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
                   แจ้งซ่อม
                 </Link>
-              </li>            
+              </li>
               <li>
                 <Link to="/truck/CarMainRepair"
                   className={`nav-link ${["/truck/CarMainRepair", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
                   งานซ่อม
                 </Link>
-              </li>            
+              </li>
             </ul>
           )}
         </li>

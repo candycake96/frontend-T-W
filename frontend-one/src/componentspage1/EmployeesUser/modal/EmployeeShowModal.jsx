@@ -16,7 +16,6 @@ import { apiUrl } from "../../../config/apiConfig";
 
 const EmployeeShowModal = ({ isOpen, onClose, emp }) => {
   if (!emp) return null;
-
   const [actionShow, setActiveShow] = useState("employeeInfo");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState(null);
