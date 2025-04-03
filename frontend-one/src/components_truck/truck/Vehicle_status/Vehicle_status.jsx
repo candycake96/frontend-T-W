@@ -3,11 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import CardDetailsVehicle from "../Vehicle/expanded/CardDetailsVehicle";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_vehicle_status_edit from "./modal/Modal_vehicle_status_edit";
 
 const Vehicle_status = () => {
     const [data, setData] = useState(null); // เก็บข้อมูลรถ
     const [isStatusData, setStatusData] = useState([]); // เก็บข้อมูลสถานะรถ
     const { id } = useParams(); // ดึง `id` จาก URL
+    const [isOpenModalStatusEdit, setOpenModalStatusEdit] = useState(false);
+    const [isDataModalStatusEdit, setDataModalStatusEdit] = useState(null);
 
     useEffect(() => {
         if (id) {
@@ -33,11 +36,11 @@ const Vehicle_status = () => {
             fetchStatusShow();
         }
     }, [data?.reg_id]);
+    
 
     if (!data) {
         return <div>กำลังโหลดข้อมูล...</div>; // แสดงข้อความโหลดข้อมูล
     }
-
 
     // ฟังก์ชันแปลงวันที่
     const formatDate = (dateString) => {
@@ -49,6 +52,18 @@ const Vehicle_status = () => {
             day: "numeric",
         });
     };
+
+
+    const handleCloseModalStatusEdit = (data) => {
+        setOpenModalStatusEdit(true);
+        setDataModalStatusEdit(data); // รีเซ็ตข้อมูล
+    };
+    
+    const handleColseModalStatusEdit = (data) => {
+        setOpenModalStatusEdit(false);
+    };
+    
+
     return (
         <div className="container">
             <div className="text-center fw-bolder fs-5 p-3 mb-3">
@@ -64,11 +79,10 @@ const Vehicle_status = () => {
                                         <div key={index}>
                                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                 <strong>สถานะ : {row.status}</strong>
-                                                <button className="btn-animated" style={{ color: 'green' }} onClick={() => handleOpenModalTax(dataVehicle)}>
+                                                <button className="btn-animated" style={{ color: 'green' }} onClick={() => handleCloseModalStatusEdit(row)}>
                                                     <i className="bi bi-pencil-square"></i>
                                                 </button>
                                             </div>
-
                                             <p>
                                                 เอกสารเพิ่มเติม :{" "}
                                                 <a
@@ -97,6 +111,11 @@ const Vehicle_status = () => {
                     <CardDetailsVehicle dataVehicle={data} />
                 </div>
             </div>
+
+            {isOpenModalStatusEdit && (
+                <Modal_vehicle_status_edit isOpen={isOpenModalStatusEdit} onClose={handleColseModalStatusEdit} onData={isDataModalStatusEdit} />
+            )}
+
         </div>
     );
 };

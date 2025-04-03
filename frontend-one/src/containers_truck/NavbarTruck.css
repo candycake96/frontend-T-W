@@ -61,3 +61,18 @@
 .text-Navy {
   color: #083b72;
 }
+
+
+.dropdown-menu-navbar-A {
+  background-color: #007bff !important; /* สีฟ้า */
+  color: white !important; /* ตัวอักษรสีขาว */
+  min-width: 300px !important;
+}
+
+.dropdown-item-navbar-A {
+  color: white !important;
+}
+
+.dropdown-item-navbar-A:hover {
+  background-color: #0056b3 !important; /* สีฟ้าเข้มเมื่อ Hover */
+}

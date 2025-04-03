@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactModal from "react-modal";
-import { apiUrl } from "../../../../config/apiConfig";
 import axios from "axios";
+import { apiUrl } from "../../../../config/apiConfig";
 
-const Modal_status_update = ({ isOpen, onClose, onData }) => {
+const Modal_vehicle_status_edit = ({isOpen, onClose, onData}) => {
     const [formData, setFormdata] = useState({
         status: "",
         status_annotation: "",
@@ -84,7 +84,8 @@ const Modal_status_update = ({ isOpen, onClose, onData }) => {
 
             // ส่งข้อมูลไปยัง Backend
             const response = await axios.post(
-                `${ apiUrl }/api/vehicle_status_upddate/${onData.reg_id}`,
+                `${apiUrl}/api/vehicle_status_upddate/${onData.reg_id}`,
+
                 formDataObj,
                 { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } }
             );
@@ -101,37 +102,36 @@ const Modal_status_update = ({ isOpen, onClose, onData }) => {
             setIsLoading(false); // ปิด Loading
         }
     };
-
     return (
         <ReactModal
-            isOpen={isOpen}
-            onRequestClose={onClose} // ป้องกันปิด Modal ขณะกำลังบันทึก
-            ariaHideApp={false}
-            contentLabel="Manage Vehicle Status"
-            style={{
-                content: {
-                    width: "100%",
-                    maxWidth: "950px",
-                    maxHeight: "60vh",
-                    height: "auto",
-                    margin: "auto",
-                    padding: "0",
-                    border: "none",
-                    borderRadius: "0.5rem",
-                    overflowY: "auto",
-                },
-                overlay: {
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    zIndex: 9999,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                },
-            }}
+        isOpen={isOpen}
+        onRequestClose={onClose} // ป้องกันปิด Modal ขณะกำลังบันทึก
+        ariaHideApp={false}
+        contentLabel="Manage Vehicle Status"
+        style={{
+            content: {
+                width: "100%",
+                maxWidth: "950px",
+                maxHeight: "60vh",
+                height: "auto",
+                margin: "auto",
+                padding: "0",
+                border: "none",
+                borderRadius: "0.5rem",
+                overflowY: "auto",
+            },
+            overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                zIndex: 9999,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            },
+        }}
         >
-            <div className="p-4">
+ <div className="p-4">
                 <div className="text-center fw-bolder mb-3">
-                    <p>จัดการสถานะรถทะเบียน: {onData?.reg_number || "-"}</p>
+                    <p>จัดการสถานะรถทะเบียน: {onData?.reg_id || "-"}</p>
                 </div>
 
                 {message && (
@@ -206,7 +206,7 @@ const Modal_status_update = ({ isOpen, onClose, onData }) => {
                 </div>
             </div>
         </ReactModal>
-    );
-};
+    )
+}
 
-export default Modal_status_update;
+export default Modal_vehicle_status_edit;
