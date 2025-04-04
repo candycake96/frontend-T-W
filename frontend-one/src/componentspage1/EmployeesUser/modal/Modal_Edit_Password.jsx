@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+
 
 const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
     const [formData, setFormData] = useState({
@@ -26,7 +27,13 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
         setShowPassword(!showPassword); // เปลี่ยนสถานะการแสดงรหัสผ่าน
     };
 
-    
+    // ด้านใน component
+    useEffect(() => {
+        if (!isOpen) {
+            setFormData({ password: "", confirmPassword: "" });
+            setShowPassword(false);
+        }
+    }, [isOpen]);
 
     if (!onData) return null;
 
@@ -40,7 +47,7 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
                 content: {
                     width: "100%",
                     maxWidth: "600px",
-                    height: "auto",
+                    height: "350px",
                     margin: "auto",
                     padding: "20px",
                     border: "none",
@@ -63,24 +70,28 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
                 <div className="col-12 mb-3">
                     <label htmlFor="password" className="form-label fw-medium">รหัสผ่าน</label>
                     <input
-                        type={showPassword ? "text" : "password"} // ถ้าติ๊กให้แสดงรหัสผ่าน
+                        type={showPassword === true ? "text" : "password"}
                         id="password"
                         name="password"
                         className="form-control"
                         value={formData.password}
                         onChange={handleChange}
+                        autoComplete="new-password"
                     />
+
                 </div>
                 <div className="col-12 mb-3">
                     <label htmlFor="confirmPassword" className="form-label fw-medium">ยืนยันรหัสผ่าน</label>
                     <input
-                        type={showPassword ? "text" : "password"} // ถ้าติ๊กให้แสดงรหัสผ่าน
+                        type={showPassword === true ? "text" : "password"}
                         id="confirmPassword"
                         name="confirmPassword"
                         className="form-control"
                         value={formData.confirmPassword}
                         onChange={handleChange}
+                        autoComplete="new-password"
                     />
+
                 </div>
             </div>
             <div className="form-check mb-3">

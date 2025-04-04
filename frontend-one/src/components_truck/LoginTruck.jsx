@@ -102,10 +102,15 @@ const LoginTruck = () => {
           </div>
         </div>
 
-        <button type="submit" className="login-button" disabled={loading}>
+        <button type="submit" className="login-button mb-3" disabled={loading}>
           {loading ? "Loading..." : "Login"}
         </button>
+        <div className="">
+          <p><a href="" className="link" style={{color: "#008080"}}>ลืมรหัสผ่าน?</a></p>
+        
+      </div>
       </form>
+
     </div>
   );
 };

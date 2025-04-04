@@ -35,6 +35,9 @@ const NavbarPage1 = ({ toggleSidebar }) => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const handleOpenModal = (modalEmployee) => {
+    if (isModalOpenEditPassword) {
+      handleCloseModalEditPassword(); // ปิดอีกอันก่อน
+    }
     setIsModalOpen(true);
     setSelectedEmployee(modalEmployee);
   };
@@ -47,6 +50,9 @@ const NavbarPage1 = ({ toggleSidebar }) => {
   const [isModalOpenEditPassword, setModalOpenEditPassword] = useState(false);
   const [isDataModalEditPassword, setDataModalEditPassword] = useState(null);
   const handleOpenModalEditPassword = (data) => {
+    if (isModalOpen) {
+      handleCloseModal(); // ปิดอีกอันก่อน
+    }
     setModalOpenEditPassword(true);
     setDataModalEditPassword(data);
   };
@@ -89,15 +95,16 @@ const NavbarPage1 = ({ toggleSidebar }) => {
 
             <ul className="dropdown-menu dropdown-menu-end " aria-labelledby="userDropdown"  style={{ minWidth: "320px" }}>
     <li key="profile">
-        <button className="dropdown-item" onClick={() => handleOpenModal(user)}>
-            <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrY2_0UqAYEc1icF1aCTVxsp2o4BYq_1Nitg&s"
-                alt="Profile"
-                className="rounded-circle mb-2"
-                style={{ width: "50px", height: "50px", objectFit: "cover" }}
-            />
-            <div className="fw-bold">{user.fname} {user.lname}</div>
-        </button>
+    <button className="dropdown-item-navbar w-100" onClick={() => handleOpenModal(user)}>
+  <img
+    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrY2_0UqAYEc1icF1aCTVxsp2o4BYq_1Nitg&s"
+    alt="Profile"
+    className="rounded-circle mb-2"
+    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+  />
+  <div className="fw-bold">{user.fname} {user.lname}</div>
+</button>
+
     </li>
     <hr />
     <li key="passwordChange">
@@ -128,7 +135,7 @@ const NavbarPage1 = ({ toggleSidebar }) => {
       )}
 
       {isModalOpenEditPassword && (
-          <Modal_Edit_Password isOpen={isModalOpenEditPassword} onClose={handleCloseModalEditPassword} onData={isDataModalEditPassword} />
+          <Modal_Edit_Password  key={isModalOpenEditPassword ? "open" : "closed"} isOpen={isModalOpenEditPassword} onClose={handleCloseModalEditPassword} onData={isDataModalEditPassword} />
       )}
     </>
   );
