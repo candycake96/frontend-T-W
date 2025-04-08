@@ -14,6 +14,28 @@ const VehicleAddForm = () => {
     useEffect(() => {
         setActiveForm('vehicleForm');
     }, []);
+    
+    const [formTransportInsurance, setFormTransportInsurance] = useState({
+        insurance_type: "vehicle", 
+        insurance_coverage_amount: "", 
+        insurance_premium: "", 
+        insurance_company: "", 
+        insurance_start_date: "", 
+        insurance_end_date: "", 
+        insurance_file: null
+    });
+    
+    const [formGoodsInsurance, setFormGoodsInsurance] = useState({
+        insurance_type: "goods", 
+        insurance_coverage_amount: "", 
+        insurance_premium: "", 
+        insurance_company: "", 
+        insurance_start_date: "", 
+        insurance_end_date: "", 
+        insurance_goods_file: null
+    });
+    
+    
 
     const [isFinance, setFinance] = useState({
         loan_amount: "",
@@ -65,9 +87,9 @@ const VehicleAddForm = () => {
         tax_end: "",
         cmi_start: "",
         cmi_end: "",
-        insurance_start: "",
-        insurance_end: "",
-        insurance_name: "",
+        // insurance_start: "",
+        // insurance_end: "",
+        // insurance_name: "",
         status: "active"
     })
 
@@ -114,9 +136,9 @@ const VehicleAddForm = () => {
         tax_end: "กรุณากรอกข้อมูล",
         cmi_start: "กรุณากรอกข้อมูล",
         cmi_end: "กรุณากรอกข้อมูล",
-        insurance_start: "กรุณากรอกข้อมูล",
-        insurance_end: "กรุณากรอกข้อมูล",
-        insurance_name: "กรุณากรอกข้อมูล",
+        // insurance_start: "กรุณากรอกข้อมูล",
+        // insurance_end: "กรุณากรอกข้อมูล",
+        // insurance_name: "กรุณากรอกข้อมูล",
       };
     
       const newErrors = {};
@@ -189,6 +211,8 @@ const VehicleAddForm = () => {
 
         console.log('FormData before submission:', formData);
         console.log('IsFinance before submission:', isFinance);
+        console.log('formTransportInsurance brfore submision:', formTransportInsurance);
+        console.log('formGoodsInsurance brfore submision:', formGoodsInsurance);
     
         const formDataToSend = new FormData(); 
 
@@ -215,6 +239,26 @@ const VehicleAddForm = () => {
                 formDataToSend.append(key, isFinance[key]);
             }
         });
+
+
+                // Append fields from formTransportInsurance
+                Object.keys(formTransportInsurance).forEach((key) => {
+                    if (key === "file_finance" && formTransportInsurance[key]) {
+                        formDataToSend.append(key, formTransportInsurance[key]);
+                    } else if (key !== "file_finance") {
+                        formDataToSend.append(key, formTransportInsurance[key]);
+                    }
+                });
+
+                        // Append fields from isFinance
+        Object.keys(formGoodsInsurance).forEach((key) => {
+            if (key === "file_finance" && formGoodsInsurance[key]) {
+                formDataToSend.append(key, formGoodsInsurance[key]);
+            } else if (key !== "file_finance") {
+                formDataToSend.append(key, formGoodsInsurance[key]);
+            }
+        });
+
     
         // Log the FormData manually
         for (let pair of formDataToSend.entries()) {
@@ -238,6 +282,8 @@ const VehicleAddForm = () => {
         
 formDataToSend.append('formData', JSON.stringify(formData)); // ใช้ JSON.stringify()
 formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON.stringify()
+formDataToSend.append('formTransportInsurance', JSON.stringify(formTransportInsurance)); // ใช้ JSON.stringify()
+formDataToSend.append('formGoodsInsurance', JSON.stringify(formGoodsInsurance)); // ใช้ JSON.stringify()
     
         try {
             const response = await axios.post(
@@ -296,11 +342,42 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
                     tax_end: "",
                     cmi_start: "",
                     cmi_end: "",
-                    insurance_start: "",
-                    insurance_end: "",
-                    insurance_name: "",
+                    // insurance_start: "",
+                    // insurance_end: "",
+                    // insurance_name: "",
                     status: "active"}
                 );
+                
+                setFormTransportInsurance({
+                    insurance_type: "vehicle", 
+                    insurance_coverage_amount: "", 
+                    insurance_premium: "", 
+                    insurance_company: "", 
+                    insurance_start_date: "", 
+                    insurance_end_date: "", 
+                    insurance_file: null
+                });
+                
+                setFormGoodsInsurance({
+                    insurance_type: "goods", 
+                    insurance_coverage_amount: "", 
+                    insurance_premium: "", 
+                    insurance_company: "", 
+                    insurance_start_date: "", 
+                    insurance_end_date: "", 
+                    insurance_goods_file: null
+                });
+
+                setFinance({
+                    loan_amount: "",
+                    interest_rate: "",
+                    monthly_payment: "",
+                    start_date: "",
+                    end_date: "",
+                    insurance_company: "",
+                    file_finance: null
+                });
+
 
         } catch (error) {
             console.error("Upload Error:", error.response ? error.response.data : error.message);
@@ -380,7 +457,16 @@ formDataToSend.append('isFinance', JSON.stringify(isFinance)); // ใช้ JSON
                             )}
 
                             {activeForm === 'taxForm' && (
-                                <TaxForm formData={formData} setFormdata={setFormdata} errors={errors} />
+                                <TaxForm 
+                                formData={formData} 
+                                setFormdata={setFormdata} 
+                                errors={errors} 
+                                formTransportInsurance={formTransportInsurance} 
+                                setFormTransportInsurance={setFormTransportInsurance}
+                                formGoodsInsurance={formGoodsInsurance} 
+                                setFormGoodsInsurance={setFormGoodsInsurance}
+                            />
+                            
                             )}
 
                             <div className="text-center mb-3">
