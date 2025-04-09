@@ -154,15 +154,14 @@ const handleCarTypeChange = (e) => {
                 <div className="mb-3">
                     <div className="row">
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                     <label htmlFor="input_insurance_start" className="form-label fw-medium">
                                  ค้าหาข้อมูล<span ></span>
                             </label>
                             <input
                                 type="text"
                                 className="form-control mb-2"
-                                placeholder="ค้นหาทะเบียน"
-                                value={searchRegNumber}
+_                                value={searchRegNumber}
                                 onChange={(e) => setSearchRegNumber(e.target.value)}
                             />
                         </div>
@@ -198,9 +197,10 @@ const handleCarTypeChange = (e) => {
                     </div>
                     <div className="col-lg-3">
                     <label htmlFor="input_insurance_start" className="form-label fw-medium">
-                                 ประเถทประกัน<span ></span>
+                                 การคุ้มครอง<span ></span>
                             </label>
-                        <select className="form-select" value={searchInsuranceType}
+                        <select className="form-select" 
+                        value={searchInsuranceType}
                         onChange={(e) => setSearchInsuranceType(e.target.value)}
                         >
                             <option value="">ทั้งหมด</option>
@@ -208,7 +208,22 @@ const handleCarTypeChange = (e) => {
                             <option value="goods">ประกันสินค้า</option>
                         </select>
                     </div>
+                    <div className="col-lg-2">
+                    <label htmlFor="input_insurance_start" className="form-label fw-medium">
+                                 ประเภทประกัน<span ></span>
+                            </label>
+                        <select className="form-select" 
+                        value={searchInsuranceType}
+                        onChange={(e) => setSearchInsuranceType(e.target.value)}
+                        >
+                            <option value="">ทั้งหมด</option>
+                            <option value="vehicle">ชั้น 1 </option>
+                            <option value="goods">ชั้น 2 </option>
+                            <option value="goods">ชั้น 2+ </option>
+                        </select>
                     </div>
+                    </div>
+                    
 
 
                 </div>
