@@ -160,7 +160,10 @@ const CarStopTaxRemittanc = () => {
                 </div>
             </div>
             <div>
-                <table className="table table-bordered">
+
+                <div className="card">
+                    <div className="card-body">
+                    <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
@@ -192,6 +195,9 @@ const CarStopTaxRemittanc = () => {
                         ))}
                     </tbody>
                 </table>
+                    </div>
+                </div>
+                
             </div>
 
             {/* ตัวแบ่งหน้า */}

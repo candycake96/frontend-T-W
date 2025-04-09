@@ -109,7 +109,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               </li>
               <li>
                 <Link to="/truck/CarInsurance_Main"
-                  className={`nav-link ${["/truck/CarInsurance_Main"].includes(location.pathname) ? "active" : ""}`}>
+                  className={`nav-link ${["/truck/CarInsurance_Main" , "/truck/Insurance_Details"].includes(location.pathname) ? "active" : ""}`}>
                   ข้อมูลรถต่อ ประกัน
                 </Link>
               </li>
