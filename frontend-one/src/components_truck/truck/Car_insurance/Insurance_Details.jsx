@@ -6,8 +6,8 @@ import { useLocation } from "react-router-dom";
 const Insurance_Details = () => {
 
 
-        const location = useLocation();
-        const rowMiData = location.state || {};
+    const location = useLocation();
+    const rowMiData = location.state || {};
 
     const [isInsuranceData, setInsuraceData] = useState([]);
 
@@ -22,12 +22,12 @@ const Insurance_Details = () => {
                 }
             );
             setInsuraceData(response.data);
-        }catch (error) {
+        } catch (error) {
             console.error("Error fetching vehicle data:", error);
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchInsuranceData();
     }, []);
 
@@ -40,72 +40,73 @@ const Insurance_Details = () => {
 
     return (
         <>
-        <div className="container">
-            <div className="p-3">
-                <div className=" mb-3 d-flex gap-2 btn-sm">
-                    <p className="fw-bolder fs-4">ประกันภัยรถ รถทะเบียน {rowMiData.reg_number}</p>
-
-
-                </div>
-
-
-                <div className="card">
-                    <div className="card-body">
-
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>ลำดับ</th>
-                                <th>วันที่เริ่มต้น</th>
-                                <th>วันที่สิ้นสุด</th>
-                                <th>ทุนประกัน</th>
-                                <th>เบี้ยประกัน</th>
-                                <th>สถานะ</th>
-                                <th className="text-center">เอกสารเพิ่มเติม</th>
-                                <th>#</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-  {isInsuranceData && isInsuranceData.length > 0 ? (
-    isInsuranceData.map((row, index) => (
-      <tr key={index}>
-        <td><p>{index + 1}</p></td>
-        <td>{formatDate(row.insurance_start_date)}</td>
-        <td>{formatDate(row.insurance_end_date)}</td>
-        <td>{row.insurance_converage_amount}</td>
-        <td>{row.insurance_premium}</td>
-        <td>{row.status}</td>
-        <td className="text-center">
-          {row.insurance_file ? (
-            <a href={row.insurance_file} style={{ color: "#cd6155" }}>
-              <i className="bi bi-file-pdf-fill"></i> ไฟล์
-            </a>
-          ) : (
-            <p>NO!</p>
-          )}
-        </td>
-        <td>
-          <button className="btn btn-primary">แก้ไข</button>
-          <button className="btn btn-danger">ลบ</button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="8" className="text-center text-muted">
-        ไม่มีข้อมูลประกัน
-      </td>
-    </tr>
-  )}
-</tbody>
-
-                        
-                    </table>
+            <div className="container">
+                <div className="p-3">
+                    <div className=" mb-3 d-flex gap-2 btn-sm">
+                        <p className="fw-bolder fs-4">ประกันภัยรถ รถทะเบียน {rowMiData.reg_number}</p>
+                        <button className="btn btn-primary">เพิ่มข้อมูลประกันภัย</button>
                     </div>
-                    
+<div className="mb-3">
+    <hr />
+</div>
+
+                    <div className="card">
+                        <div className="card-body">
+
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>วันที่เริ่มต้น</th>
+                                        <th>วันที่สิ้นสุด</th>
+                                        <th>ทุนประกัน</th>
+                                        <th>เบี้ยประกัน</th>
+                                        <th>สถานะ</th>
+                                        <th className="text-center">เอกสารเพิ่มเติม</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {isInsuranceData && isInsuranceData.length > 0 ? (
+                                        isInsuranceData.map((row, index) => (
+                                            <tr key={index}>
+                                                <td><p>{index + 1}</p></td>
+                                                <td>{formatDate(row.insurance_start_date)}</td>
+                                                <td>{formatDate(row.insurance_end_date)}</td>
+                                                <td>{row.insurance_converage_amount}</td>
+                                                <td>{row.insurance_premium}</td>
+                                                <td>{row.status}</td>
+                                                <td className="text-center">
+                                                    {row.insurance_file ? (
+                                                        <a href={row.insurance_file} style={{ color: "#cd6155" }}>
+                                                            <i className="bi bi-file-pdf-fill"></i> ไฟล์
+                                                        </a>
+                                                    ) : (
+                                                        <p>NO!</p>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <button className="btn btn-primary">แก้ไข</button>
+                                                    <button className="btn btn-danger">ลบ</button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="8" className="text-center text-muted">
+                                                ไม่มีข้อมูลประกัน
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+
+
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     )
 };
