@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 import { useLocation } from "react-router-dom";
+import Insurance_Add_form from "./modal/Insurance_Add_Form";
 
 const Insurance_Details = () => {
 
@@ -10,6 +11,18 @@ const Insurance_Details = () => {
     const rowMiData = location.state || {};
 
     const [isInsuranceData, setInsuraceData] = useState([]);
+    const [isOpenPopoverInsurance, setOpenPopoverInsurance] = useState(false);
+    const [isPopoverInsuranceData, setPopoverInsuranceData] = useState(null);
+
+// ฟังก์ชันสำหรับเปิด/ปิด popover
+const handleTogglePopoverInsuranceAddForm = (data) => {
+    setOpenPopoverInsurance((prevState) => !prevState);  // เปลี่ยนสถานะให้เปิด/ปิด
+    if (!isOpenPopoverInsurance) {
+        setPopoverInsuranceData(data); // ตั้งค่า data เมื่อเปิด popover
+    } else {
+        setPopoverInsuranceData(null); // รีเซ็ตข้อมูลเมื่อปิด popover
+    }
+}
 
     const fetchInsuranceData = async () => {
         try {
@@ -44,8 +57,21 @@ const Insurance_Details = () => {
                 <div className="p-3">
                     <div className=" mb-3 d-flex gap-2 btn-sm">
                         <p className="fw-bolder fs-4">ประกันภัยรถ รถทะเบียน {rowMiData.reg_number}</p>
-                        <button className="btn btn-primary">เพิ่มข้อมูลประกันภัย</button>
+                        <button className="btn btn-primary" onClick={()=> handleTogglePopoverInsuranceAddForm(rowMiData)}> <i class="bi bi-journal-plus"></i> เพิ่มข้อมูลประกันภัย</button>
                     </div>
+<div className="mb-3">
+    <div className="">
+        {isOpenPopoverInsurance && (
+            <div className="">
+                <div className="mb-2">
+                    <hr />
+                </div>
+            <Insurance_Add_form dataCar={isPopoverInsuranceData} />                
+            </div>
+        )  
+        }
+    </div>
+</div>
 <div className="mb-3">
     <hr />
 </div>
