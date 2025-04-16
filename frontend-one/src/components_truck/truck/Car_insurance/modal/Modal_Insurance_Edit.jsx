@@ -1,7 +1,16 @@
 import React from "react";
 import ReactModal from "react-modal";
 
-const Modal_Insurance_Edit = ({isOpen, onClose}) => {
+const Modal_Insurance_Edit = ({isOpen, onClose, onData}) => {
+    if(!onData) return null;
+
+// ฟังก์ชันแปลงวันที่
+const formatDate = (dateString) => {
+    const date = new Date(dateString); // สร้างอ็อบเจกต์ Date จากวันที่ที่ได้รับ
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('th-TH', options); // แสดงผลในรูปแบบวัน เดือน ปี (ภาษาไทย)
+};
+
     return (
         <ReactModal
         isOpen={isOpen}
@@ -28,15 +37,25 @@ const Modal_Insurance_Edit = ({isOpen, onClose}) => {
             },
         }}
         >
+
             <div className="p-3">
-                <div className="text-center">
+                <div className="text-center mb-3">
                     <p className="fw-bolder">test modal Edit</p>
                 </div>
+                <div className="">
+                    <form action="">
+
+                    </form>
+                </div>
             </div>
-        
+
+        {formatDate(onData.insurance_start_date)}
+
         </ReactModal>
     )
 }
 
 
 export default Modal_Insurance_Edit;
+
+
