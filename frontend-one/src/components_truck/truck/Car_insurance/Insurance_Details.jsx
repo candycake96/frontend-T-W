@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 import { useLocation } from "react-router-dom";
 import Insurance_Add_form from "./modal/Insurance_Add_Form";
+import Modal_Insurance_Edit from "./modal/Modal_Insurance_Edit";
 
 const Insurance_Details = () => {
 
@@ -14,6 +15,10 @@ const Insurance_Details = () => {
     const [isOpenPopoverInsurance, setOpenPopoverInsurance] = useState(false);
     const [isPopoverInsuranceData, setPopoverInsuranceData] = useState(null);
     const [reload, setReload] = useState(false); // โหลดใหม่เมื่อ `reload` เปลี่ยน
+
+    // modal
+    const [isOpenModalInsuranceEdit, setOpenModalInsuranceEdit] = useState(false);
+    const [isDataModalInsuranceEdit, setDataModalInsuranceEdit] = useState(null);
 
 // ฟังก์ชันสำหรับเปิด/ปิด popover
 const handleTogglePopoverInsuranceAddForm = (data) => {
@@ -54,6 +59,16 @@ const fetchInsuranceData = async () => {
         const date = new Date(dateString); // สร้างอ็อบเจกต์ Date จากวันที่ที่ได้รับ
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return date.toLocaleDateString('th-TH', options); // แสดงผลในรูปแบบวัน เดือน ปี (ภาษาไทย)
+    };
+
+
+    const handleOpenModalInsuranceEdit = (data) => {
+        setOpenModalInsuranceEdit(true);
+        setDataModalInsuranceEdit(data);
+    };
+    const handleClassOpenModalInsuranceEdit = () => {
+        setOpenModalInsuranceEdit(false);
+        setDataModalInsuranceEdit(null);
     };
 
     return (
@@ -117,7 +132,9 @@ const fetchInsuranceData = async () => {
                                                     )}
                                                 </td>
                                                 <td>
-                                                    <button className="btn btn-primary">แก้ไข</button>
+                                                    <button className="btn btn-primary"
+                                                    onClick={()=>handleOpenModalInsuranceEdit(row)}
+                                                    >แก้ไข</button>
                                                     <button className="btn btn-danger">ลบ</button>
                                                 </td>
                                             </tr>
@@ -131,13 +148,17 @@ const fetchInsuranceData = async () => {
                                     )}
                                 </tbody>
 
-
                             </table>
                         </div>
 
                     </div>
                 </div>
             </div>
+
+
+            {isOpenModalInsuranceEdit && (
+                <Modal_Insurance_Edit isOpen={isOpenModalInsuranceEdit} onClose={handleClassOpenModalInsuranceEdit} onData={isDataModalInsuranceEdit}/>
+            )}
         </>
     )
 };
