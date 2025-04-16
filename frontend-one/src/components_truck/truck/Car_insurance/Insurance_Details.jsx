@@ -13,6 +13,7 @@ const Insurance_Details = () => {
     const [isInsuranceData, setInsuraceData] = useState([]);
     const [isOpenPopoverInsurance, setOpenPopoverInsurance] = useState(false);
     const [isPopoverInsuranceData, setPopoverInsuranceData] = useState(null);
+    const [reload, setReload] = useState(false); // โหลดใหม่เมื่อ `reload` เปลี่ยน
 
 // ฟังก์ชันสำหรับเปิด/ปิด popover
 const handleTogglePopoverInsuranceAddForm = (data) => {
@@ -24,25 +25,29 @@ const handleTogglePopoverInsuranceAddForm = (data) => {
     }
 }
 
-    const fetchInsuranceData = async () => {
-        try {
-            const response = await axios.get(
-                `${apiUrl}/api/car_insurance_details/${rowMiData.reg_id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                }
-            );
-            setInsuraceData(response.data);
-        } catch (error) {
-            console.error("Error fetching vehicle data:", error);
-        }
-    };
+const fetchInsuranceData = async () => {
+    try {
+        const response = await axios.get(
+            `${apiUrl}/api/car_insurance_details/${rowMiData.reg_id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            }
+        );
+        console.log('Insurance data fetched:', response.data);
+        setInsuraceData(response.data);
+    } catch (error) {
+        console.error("Error fetching vehicle data:", error);
+    }
+};
+
 
     useEffect(() => {
+        console.log('Reload state changed:', reload);
         fetchInsuranceData();
-    }, []);
+    }, [reload]);
+    
 
     // ฟังก์ชันแปลงวันที่
     const formatDate = (dateString) => {
@@ -66,7 +71,7 @@ const handleTogglePopoverInsuranceAddForm = (data) => {
                 <div className="mb-2">
                     <hr />
                 </div>
-            <Insurance_Add_form dataCar={isPopoverInsuranceData} />                
+            <Insurance_Add_form dataCar={isPopoverInsuranceData}  onSuccess={() => setReload((prev) => !prev)}/>                
             </div>
         )  
         }
