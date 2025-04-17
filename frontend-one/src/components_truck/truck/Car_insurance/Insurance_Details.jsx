@@ -71,6 +71,32 @@ const fetchInsuranceData = async () => {
         setDataModalInsuranceEdit(null);
     };
 
+    const handleDeleteinsurance = async (id) => {
+        try {
+            // Send DELETE request to the API
+            const response = await axios.delete(`${apiUrl}/api/car_insurance_delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Authorization header with token
+                    "Content-Type": "multipart/form-data" // Specify content type if needed
+                },
+            });
+    
+            // Check if the response status is OK (200)
+            if (response.status === 200) {
+                fetchInsuranceData(); // Reload the insurance data
+                alert("Insurance deleted successfully!"); // Success alert
+            } else {
+                alert("Failed to delete insurance. Please try again."); // If response status is not 200
+            }
+        } catch (error) {
+            // Handle any errors from the API call
+            console.error("Error deleting insurance:", error);
+            alert("Failed to delete insurance. Please try again."); // Error alert
+        }
+    };
+    
+    
+
     return (
         <>
             <div className="container">
@@ -107,6 +133,8 @@ const fetchInsuranceData = async () => {
                                         <th>วันที่สิ้นสุด</th>
                                         <th>ทุนประกัน</th>
                                         <th>เบี้ยประกัน</th>
+                                        <th>ชั้นประกัน</th>
+                                        <th>คุ้มครอง</th>
                                         <th>สถานะ</th>
                                         <th className="text-center">เอกสารเพิ่มเติม</th>
                                         <th>#</th>
@@ -119,8 +147,11 @@ const fetchInsuranceData = async () => {
                                                 <td><p>{index + 1}</p></td>
                                                 <td>{formatDate(row.insurance_start_date)}</td>
                                                 <td>{formatDate(row.insurance_end_date)}</td>
-                                                <td>{row.insurance_converage_amount}</td>
-                                                <td>{row.insurance_premium}</td>
+                                                <td>{row.insurance_converage_amount!= null ? row.insurance_converage_amount.toLocaleString( { style: 'currency', currency: 'THB' }) : '-'}</td>
+                                                <td>{row.insurance_premium != null ? row.insurance_premium.toLocaleString( { style: 'currency', currency: 'THB' }) : '-'}
+                                                </td>
+                                                <td>{row.insurance_class}</td>
+                                                <td>{row.coverage_type}</td>
                                                 <td>{row.status}</td>
                                                 <td className="text-center">
                                                     {row.insurance_file ? (
@@ -130,12 +161,13 @@ const fetchInsuranceData = async () => {
                                                     ) : (
                                                         <p>NO!</p>
                                                     )}
+                                                    
                                                 </td>
                                                 <td>
                                                     <button className="btn btn-primary"
                                                     onClick={()=>handleOpenModalInsuranceEdit(row)}
                                                     >แก้ไข</button>
-                                                    <button className="btn btn-danger">ลบ</button>
+                                                    <button className="btn btn-danger" onClick={()=> handleDeleteinsurance(row.insurance_id)}>ลบ</button>
                                                 </td>
                                             </tr>
                                         ))
@@ -157,7 +189,7 @@ const fetchInsuranceData = async () => {
 
 
             {isOpenModalInsuranceEdit && (
-                <Modal_Insurance_Edit isOpen={isOpenModalInsuranceEdit} onClose={handleClassOpenModalInsuranceEdit} onData={isDataModalInsuranceEdit}/>
+                <Modal_Insurance_Edit isOpen={isOpenModalInsuranceEdit} onClose={handleClassOpenModalInsuranceEdit} onData={isDataModalInsuranceEdit} onSuccess={() => setReload((prev) => !prev)}/>
             )}
         </>
     )

@@ -110,6 +110,7 @@ const Insurance_Add_form = ({ dataCar, onSuccess }) => {
                 coverage_id: "",
                 insurance_company: "",
                 insurance_start_date: "",
+                insurance_converage_amount: "",
                 insurance_end_date: "",
                   insurance_premium: "",
                 insurance_file: null, // แก้ชื่อให้ตรงกับ backend

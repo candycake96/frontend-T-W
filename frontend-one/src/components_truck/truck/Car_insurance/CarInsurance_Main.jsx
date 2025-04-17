@@ -271,6 +271,7 @@ const CarInsurance_Main = () => {
                                                     ) : (
                                                         <p className="text-danger">ไม่มีข้อมูล</p>
                                                     )}
+                                                    
                                                 </td>
                                                 <td className="d-flex gap-2">
                                                     {/* <button
