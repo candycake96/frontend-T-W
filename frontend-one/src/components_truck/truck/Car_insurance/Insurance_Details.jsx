@@ -102,7 +102,7 @@ const fetchInsuranceData = async () => {
             <div className="container">
                 <div className="p-3">
                     <div className=" mb-3 d-flex gap-2 btn-sm">
-                        <p className="fw-bolder fs-4">ประกันภัยรถ รถทะเบียน {rowMiData.reg_number}</p>
+                        <p className="fw-bolder fs-4">ประกันภัย รถทะเบียน {rowMiData.reg_number}</p>
                         <button className="btn btn-primary" onClick={()=> handleTogglePopoverInsuranceAddForm(rowMiData)}> <i class="bi bi-journal-plus"></i> เพิ่มข้อมูลประกันภัย</button>
                     </div>
 <div className="mb-3">
