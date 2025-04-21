@@ -13,8 +13,8 @@ const Vender_table_details = () => {
     };
 
     return (
-        <>
-            <div>
+        <div className="card">
+            <div className="card-body">
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -61,7 +61,7 @@ const Vender_table_details = () => {
                     onClose={handleCloseModalVanderDetails}
                 />
             )}
-        </>
+        </div>
     );
 };
 

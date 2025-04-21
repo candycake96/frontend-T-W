@@ -22,9 +22,11 @@ const Vender = () => {
               <Vender_add/>
             )}
 
-            <hr />
+            <hr className="mb-3" />
+<div className="mb-3">
+            <Vender_table_details />    
+</div>
 
-            <Vender_table_details />
         </div>
     );
 };
