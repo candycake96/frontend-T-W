@@ -136,6 +136,29 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           )}
         </li>
 
+                {/* 📌 เมนูข้อมูลรถ */}
+                <li className="nav-item">
+          <button onClick={() => toggleDropdown("vender")} className="nav-link">
+          <i class="bi bi-handbag-fill"></i> ผู้จำหน่ายสินค้า/อู่ซ่อม
+          </button>
+          {activeDropdown === "vender" && (
+            <ul className="list-unstyled ps-4">
+              <li>
+                <Link to="/truck/RepairRequestForm"
+                  className={`nav-link ${["/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  ผู้จำหน่ายสินค้า/อู่ซ่อม
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/CarMainRepair"
+                  className={`nav-link ${["/truck/CarMainRepair", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  งานซ่อม
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+
         {/* 📌 เมนูข้อมูลรถ */}
         <li className="nav-item">
           <button onClick={() => toggleDropdown("CaeRepai")} className="nav-link">
