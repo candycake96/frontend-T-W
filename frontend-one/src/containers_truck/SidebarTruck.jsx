@@ -144,8 +144,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           {activeDropdown === "vender" && (
             <ul className="list-unstyled ps-4">
               <li>
-                <Link to="/truck/RepairRequestForm"
-                  className={`nav-link ${["/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/Vender"
+                  className={`nav-link ${["/truck/Vender", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
                   ผู้จำหน่ายสินค้า/อู่ซ่อม
                 </Link>
               </li>
