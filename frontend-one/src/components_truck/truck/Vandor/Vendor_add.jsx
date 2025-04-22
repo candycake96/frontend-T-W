@@ -17,7 +17,8 @@ const Vendor_add = () => {
         file_vendor: null,
         credit_terms: "",
         warranty_policy: "",
-        vendor_type_id: 1
+        vendor_type_id: "",
+        remarks: "",
     });
 
     const handleChange = (e) => {
@@ -73,7 +74,8 @@ const Vendor_add = () => {
                 file_vendor: null,
                 credit_terms: "",
                 warranty_policy: "",
-                vendor_type_id: ""
+                vendor_type_id: "",
+                remarks: ""
             });
             
         } catch (error) {
@@ -126,43 +128,13 @@ const Vendor_add = () => {
         <div className="card p-4 shadow-sm">
             <h5 className="mb-4 fw-bold">ฟอร์มเพิ่มข้อมูลผู้ขาย</h5>
             <div className="row g-3">
+
                 <div className="col-md-6">
                     <label className="form-label">ชื่อผู้ขาย / อู่</label>
                     <input
                         className="form-control"
                         name="vendor_name"
                         value={formDataVendor.vendor_name}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label">เบอร์โทร</label>
-                    <input
-                        className="form-control"
-                        name="phone"
-                        value={formDataVendor.phone}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label">ผู้ติดต่อ</label>
-                    <input
-                        className="form-control"
-                        name="contact_person"
-                        value={formDataVendor.contact_person}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="col-md-6">
-                    <label className="form-label">อีเมล</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        name="email"
-                        value={formDataVendor.email}
                         onChange={handleChange}
                     />
                 </div>
@@ -177,7 +149,39 @@ const Vendor_add = () => {
                     />
                 </div>
 
-                <div className="col-md-6">
+                <div className="col-md-4">
+                    <label className="form-label">เบอร์โทร</label>
+                    <input
+                        className="form-control"
+                        name="phone"
+                        value={formDataVendor.phone}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="col-md-4">
+                    <label className="form-label">ผู้ติดต่อ</label>
+                    <input
+                        className="form-control"
+                        name="contact_person"
+                        value={formDataVendor.contact_person}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="col-md-4">
+                    <label className="form-label">อีเมล</label>
+                    <input
+                        type="email"
+                        className="form-control"
+                        name="email"
+                        value={formDataVendor.email}
+                        onChange={handleChange}
+                    />
+                </div>
+
+
+                <div className="col-lg-4">
                     <label className="form-label">เงื่อนไขเครดิต (วัน)</label>
                     <input
                         type="number"
@@ -188,7 +192,7 @@ const Vendor_add = () => {
                     />
                 </div>
 
-                <div className="col-md-6">
+                <div className="col-md-4">
                     <label className="form-label">ลักษณะประกอบการ</label>
                     <select
                         className="form-select"
@@ -205,8 +209,8 @@ const Vendor_add = () => {
                     </select>
                 </div>
 
-                <div className="col-md-6">
-                    <label className="form-label">หมวดหมู่ธุรกิจ</label>
+                <div className="col-md-4">
+                    <label className="form-label">หมวดหมู่</label>
                     <select
                         className="form-select"
                         name="vendor_type_id"
@@ -222,7 +226,7 @@ const Vendor_add = () => {
                     </select>
                 </div>
 
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <label className="form-label">ที่อยู่</label>
                     <textarea
                         className="form-control"
@@ -233,7 +237,7 @@ const Vendor_add = () => {
                     />
                 </div>
 
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <label className="form-label">ที่อยู่จัดส่ง</label>
                     <textarea
                         className="form-control"
@@ -244,12 +248,23 @@ const Vendor_add = () => {
                     />
                 </div>
 
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <label className="form-label">นโยบายการรับประกัน</label>
                     <textarea
                         className="form-control"
                         name="warranty_policy"
                         value={formDataVendor.warranty_policy}
+                        onChange={handleChange}
+                        rows={2}
+                    />
+                </div>
+
+                <div className="col-md-6">
+                    <label className="form-label">หมายเหตุเพิ่มเติม</label>
+                    <textarea
+                        className="form-control"
+                        name="remarks"
+                        value={formDataVendor.remarks}
                         onChange={handleChange}
                         rows={2}
                     />
