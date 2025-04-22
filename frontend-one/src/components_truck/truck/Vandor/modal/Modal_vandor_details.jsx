@@ -1,7 +1,8 @@
 import React from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../config/apiConfig";
 
-const Modal_vander_details = ({isOpen, onClose}) => {
+const Modal_vendor_details = ({isOpen, onClose}) => {
     return (
         <ReactModal
         isOpen={isOpen}
@@ -36,4 +37,4 @@ const Modal_vander_details = ({isOpen, onClose}) => {
     )
 }
 
-export default Modal_vander_details;
+export default Modal_vendor_details;

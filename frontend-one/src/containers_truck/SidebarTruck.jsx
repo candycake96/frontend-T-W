@@ -138,14 +138,14 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
 
                 {/* 📌 เมนูข้อมูลรถ */}
                 <li className="nav-item">
-          <button onClick={() => toggleDropdown("vender")} className="nav-link">
+          <button onClick={() => toggleDropdown("vendor")} className="nav-link">
           <i class="bi bi-handbag-fill"></i> ผู้จำหน่ายสินค้า/อู่ซ่อม
           </button>
-          {activeDropdown === "vender" && (
+          {activeDropdown === "vendor" && (
             <ul className="list-unstyled ps-4">
               <li>
-                <Link to="/truck/Vender"
-                  className={`nav-link ${["/truck/Vender", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/Vendor"
+                  className={`nav-link ${["/truck/Vendor", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
                   ผู้จำหน่ายสินค้า/อู่ซ่อม
                 </Link>
               </li>

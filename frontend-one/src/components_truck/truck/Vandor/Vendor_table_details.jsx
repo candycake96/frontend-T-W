@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import Modal_vander_details from "./modal/Modal_vander_details";
+import Modal_vandor_details from "./modal/Modal_vandor_details";
 
-const Vender_table_details = () => {
-    const [isOpenModalVenderDetails, setOpenModalVenderDetails] = useState(false);
+const Vendor_table_details = () => {
+    const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
 
-    const handleOpenModalVanderDetails = () => {
-        setOpenModalVenderDetails(true);
+    const handleOpenModalVandorDetails = () => {
+        setOpenModalVendorDetails(true);
     };
 
-    const handleCloseModalVanderDetails = () => {
-        setOpenModalVenderDetails(false);
+    const handleCloseModalVandorDetails = () => {
+        setOpenModalVendorDetails(false);
     };
 
     return (
@@ -34,7 +34,7 @@ const Vender_table_details = () => {
                             <td>debit</td>
                             <td>บริษัท</td>
                             <td>
-                                <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVanderDetails}>
+                                <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVandorDetails}>
                                     <i className="bi bi-file-text-fill"></i>
                                 </button>
                             </td>
@@ -46,7 +46,7 @@ const Vender_table_details = () => {
                             <td>debit</td>
                             <td>อู่ซ่อม</td>
                             <td>
-                                <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVanderDetails}>
+                                <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVandorDetails}>
                                     <i className="bi bi-file-text-fill"></i>
                                 </button>
                             </td>
@@ -55,14 +55,14 @@ const Vender_table_details = () => {
                 </table>
             </div>
 
-            {isOpenModalVenderDetails && (
-                <Modal_vander_details
-                    isOpen={isOpenModalVenderDetails}
-                    onClose={handleCloseModalVanderDetails}
+            {isOpenModalVendorDetails && (
+                <Modal_vandor_details
+                    isOpen={isOpenModalVendorDetails}
+                    onClose={handleCloseModalVandorDetails}
                 />
             )}
         </div>
     );
 };
 
-export default Vender_table_details;
+export default Vendor_table_details;

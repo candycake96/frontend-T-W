@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Vender_table_details from "./Vender_table_details";
-import Vender_add from "./Vender_add";
+import Vendor_table_details from "./Vendor_table_details";
+import Vendor_add from "./Vendor_add";
 
-const Vender = () => {
+const Vendor = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
 
     const toggleForm = () => {
@@ -19,16 +19,16 @@ const Vender = () => {
             </div>
 
             {isFormOpen && (
-              <Vender_add/>
+              <Vendor_add/>
             )}
 
             <hr className="mb-3" />
 <div className="mb-3">
-            <Vender_table_details />    
+            <Vendor_table_details />    
 </div>
 
         </div>
     );
 };
 
-export default Vender;
+export default Vendor;

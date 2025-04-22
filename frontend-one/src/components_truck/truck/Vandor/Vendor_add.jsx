@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 
-const Vender_add = () => {
-    const [formDataVender, setFormDataVender] = useState({
+const Vendor_add = () => {
+    const [isVendorType, setVendorType] = useState([]);
+    const [formDataVendor, setFormDataVendor] = useState({
         vendor_name: "",
         contact_person: "",
         phone: "",
@@ -12,40 +13,40 @@ const Vender_add = () => {
         delivery_address: "",
         tax_id: "",
         organization_type: "",
-        file_vender: null,
+        file_vendor: null,
         credit_terms: "",
         status: "active",
         warranty_policy: "",
-        vendor_type_id: ""
+        vendor_type_id: 1
     });
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === "file") {
-            setFormDataVender({ ...formDataVender, [name]: files[0] });
+            setFormDataVendor({ ...formDataVendor, [name]: files[0] });
         } else {
-            setFormDataVender({ ...formDataVender, [name]: value });
+            setFormDataVendor({ ...formDataVendor, [name]: value });
         }
     };
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("📦 Form Submitted:", formDataVender);
+        console.log("📦 Form Submitted:", formDataVendor);
     
         const payload = new FormData();
     
-        Object.keys(formDataVender).forEach((key) => {
-            if (key === "file_vender" && formDataVender[key]) {
-                payload.append(key, formDataVender[key]);
-            } else if (key !== "file_vender") {
-                payload.append(key, formDataVender[key]);
+        Object.keys(formDataVendor).forEach((key) => {
+            if (key === "file_vendor" && formDataVendor[key]) {
+                payload.append(key, formDataVendor[key]);
+            } else if (key !== "file_vendor") {
+                payload.append(key, formDataVendor[key]);
             }
         });
     
         try {
             const response = await axios.post(
-                `${apiUrl}/api/vender_add`,
+                `${apiUrl}/api/vendor_add`,
                 payload,
                 {
                     headers: {
@@ -57,7 +58,7 @@ const Vender_add = () => {
             alert("บันทึกสำเร็จ");
     
             // ✅ Optional: Reset form
-            setFormDataVender({
+            setFormDataVendor({
                 vendor_name: "",
                 contact_person: "",
                 phone: "",
@@ -66,18 +67,38 @@ const Vender_add = () => {
                 delivery_address: "",
                 tax_id: "",
                 organization_type: "",
-                file_vender: null,
+                file_vendor: null,
                 credit_terms: "",
-                status: "active",
                 warranty_policy: "",
                 vendor_type_id: ""
             });
-    
+            
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการส่งข้อมูล", error);
             alert("เกิดข้อผิดพลาดในการบันทึก");
         }
     };
+
+
+    const fetchVendorType = async () => {
+        try{
+            const response = await axios.get(
+                `${apiUrl}/api/vendor_type_show`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        },
+                    }
+                );
+                setVendorType(response.data);
+        } catch (error) {
+
+        }
+    };
+
+    useEffect(()=>{
+        fetchVendorType();
+    }, []);
     
     return (
         <>
@@ -91,7 +112,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="ชื่อผู้ขาย / อู่"
                                     name="vendor_name"
-                                    value={formDataVender.vendor_name}
+                                    value={formDataVendor.vendor_name}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -100,7 +121,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="เบอร์โทร"
                                     name="phone"
-                                    value={formDataVender.phone}
+                                    value={formDataVendor.phone}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -110,7 +131,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="ผู้ติดต่อ"
                                     name="contact_person"
-                                    value={formDataVender.contact_person}
+                                    value={formDataVendor.contact_person}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -120,7 +141,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="อีเมล"
                                     name="email"
-                                    value={formDataVender.email}
+                                    value={formDataVendor.email}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -130,7 +151,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="เลขผู้เสียภาษี"
                                     name="tax_id"
-                                    value={formDataVender.tax_id}
+                                    value={formDataVendor.tax_id}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -140,7 +161,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="เงื่อนไขเครดิต"
                                     name="credit_terms"
-                                    value={formDataVender.credit_terms}
+                                    value={formDataVendor.credit_terms}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -150,7 +171,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="ลักษณะประกอบการ (บริษัท, ร้าน, อู่)"
                                     name="organization_type"
-                                    value={formDataVender.organization_type}
+                                    value={formDataVendor.organization_type}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -159,11 +180,13 @@ const Vender_add = () => {
                                 <select
                                     className="form-select"
                                     name="status"
-                                    value={formDataVender.status}
+                                    value={formDataVendor.status}
                                     onChange={handleChange}
                                 >
-                                    <option value="active">เปิดใช้งาน</option>
-                                    <option value="inactive">ปิดใช้งาน</option>
+                                    <option value="">ลักษณะประกอบการ (บริษัท, ร้าน, อู่)</option>
+                                    {isVendorType.map((row, index) => (
+                                    <option value={row.vendor_type_id} key={index}>{row.vendor_type_name}</option>
+                                    ))}
                                 </select>
                             </div>
 
@@ -172,7 +195,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="ที่อยู่"
                                     name="address"
-                                    value={formDataVender.address}
+                                    value={formDataVendor.address}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -182,7 +205,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="ที่อยู่จัดส่ง"
                                     name="delivery_address"
-                                    value={formDataVender.delivery_address}
+                                    value={formDataVendor.delivery_address}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -192,7 +215,7 @@ const Vender_add = () => {
                                     className="form-control"
                                     placeholder="นโยบายการรับประกัน"
                                     name="warranty_policy"
-                                    value={formDataVender.warranty_policy}
+                                    value={formDataVendor.warranty_policy}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -202,7 +225,7 @@ const Vender_add = () => {
                                 <input
                                     type="file"
                                     className="form-control"
-                                    name="file_vender"
+                                    name="file_vendor"
                                     onChange={handleChange}
                                 />
                             </div>
@@ -219,4 +242,4 @@ const Vender_add = () => {
     );
 };
 
-export default Vender_add;
+export default Vendor_add;
