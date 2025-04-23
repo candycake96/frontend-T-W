@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal_vandor_details from "./modal/Modal_vandor_details";
 import { apiUrl } from "../../../config/apiConfig";
+import axios from "axios";
 
-const Vendor_table_details = () => {
+const Vendor_table_details = ({refresh }) => {
     const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
     const [isShowDataVendor, setShowDataVender] = useState([]);
 
@@ -21,7 +22,7 @@ const Vendor_table_details = () => {
 
     useEffect(()=>{
         fetchVendorShowData();
-    }, []);
+    }, [refresh ]);
 
     const handleOpenModalVandorDetails = () => {
         setOpenModalVendorDetails(true);
@@ -46,20 +47,20 @@ const Vendor_table_details = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {isShowDataVendor && (
-                        <tr>
-                            <td>1</td>
-                            <td>A</td>
-                            <td>xx-xxxx</td>
-                            <td>debit</td>
-                            <td>บริษัท</td>
+                        {isShowDataVendor.map((row, index) => (
+                        <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row.vendor_name}</td>
+                            <td>{row.phone}</td>
+                            <td>{row.credit_terms} วัน</td>
+                            <td>{row.organization_type_name}</td>
                             <td>
                                 <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVandorDetails}>
                                     <i className="bi bi-file-text-fill"></i>
                                 </button>
                             </td>
                         </tr>
-                       )}
+                      ))}
                     </tbody>
                 </table>
             </div>

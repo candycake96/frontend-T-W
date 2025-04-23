@@ -4,6 +4,13 @@ import Vendor_add from "./Vendor_add";
 
 const Vendor = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [refreshTable, setRefreshTable] = useState(false); // trigger refresh
+
+  const handleVendorAdded = () => {
+    // Toggle refresh to force child to re-fetch
+    setRefreshTable(prev => !prev);
+  };
+
 
     const toggleForm = () => {
         setIsFormOpen(prev => !prev);
@@ -19,12 +26,12 @@ const Vendor = () => {
             </div>
 
             {isFormOpen && (
-              <Vendor_add/>
+              <Vendor_add onVendorAdded={handleVendorAdded}/>
             )}
 
             <hr className="mb-3" />
 <div className="mb-3">
-            <Vendor_table_details />    
+            <Vendor_table_details refresh={refreshTable}  />    
 </div>
 
         </div>

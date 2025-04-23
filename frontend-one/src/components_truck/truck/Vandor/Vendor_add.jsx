@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 
-const Vendor_add = () => {
+const Vendor_add = ({onVendorAdded }) => {
     const [isVendorType, setVendorType] = useState([]);
     const [isOrganization, setOrganization] = useState([]);
     const [formDataVendor, setFormDataVendor] = useState({
@@ -77,6 +77,10 @@ const Vendor_add = () => {
                 vendor_type_id: "",
                 remarks: ""
             });
+
+        
+                onVendorAdded(); // <-- สำคัญ!
+   
             
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการส่งข้อมูล", error);
