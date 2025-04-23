@@ -3,7 +3,7 @@ import Modal_vandor_details from "./modal/Modal_vandor_details";
 import { apiUrl } from "../../../config/apiConfig";
 import axios from "axios";
 
-const Vendor_table_details = ({refresh }) => {
+const Vendor_table_details = ({ refresh }) => {
     const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
     const [isShowDataVendor, setShowDataVender] = useState([]);
 
@@ -20,9 +20,9 @@ const Vendor_table_details = ({refresh }) => {
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchVendorShowData();
-    }, [refresh ]);
+    }, [refresh]);
 
     const handleOpenModalVandorDetails = () => {
         setOpenModalVendorDetails(true);
@@ -48,19 +48,23 @@ const Vendor_table_details = ({refresh }) => {
                     </thead>
                     <tbody>
                         {isShowDataVendor.map((row, index) => (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{row.vendor_name}</td>
-                            <td>{row.phone}</td>
-                            <td>{row.credit_terms} วัน</td>
-                            <td>{row.organization_type_name}</td>
-                            <td>
-                                <button className="btn btn-sm btn-outline-primary rounded-circle" onClick={handleOpenModalVandorDetails}>
-                                    <i className="bi bi-file-text-fill"></i>
-                                </button>
-                            </td>
-                        </tr>
-                      ))}
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{row.vendor_name}</td>
+                                <td>{row.phone}</td>
+                                <td>{row.credit_terms} วัน</td>
+                                <td>{row.organization_type_name}</td>
+                                <td>
+                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={handleOpenModalVandorDetails}>
+                                        <i className="bi bi-file-text-fill"></i>
+                                    </button>
+                                    <button className="btn btn-sm btn-outline-primary rounded-circle" >
+                                    <i className="bi bi-box-arrow-up-right"></i>{/* เปลี่ยนไอคอนเพื่อแยกความต่างก็ได้ */}
+                                    </button>
+
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

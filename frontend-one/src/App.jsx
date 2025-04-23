@@ -59,6 +59,7 @@ import Vehicle_status from "./components_truck/truck/Vehicle_status/Vehicle_stat
 import Insurance_Details from "./components_truck/truck/Car_insurance/Insurance_Details";
 import InsuranceDataComparison from "./components_truck/truck/Car_insurance/InsuranceDataComparison";
 import Vendor from "./components_truck/truck/Vandor/Vendor";
+import Vendor_add from "./components_truck/truck/Vandor/Vendor_add";
 
 Modal.setAppElement("#root");
 
@@ -131,7 +132,8 @@ function App() {
           <Route path="Vehicle_status/:id" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */}
           <Route path="Insurance_Details" element={<Insurance_Details/>} /> {/* หน้า  แสดงข้อมูลแต่ละคันอย่างระเอียด */}
           <Route path="InsuranceDataComparison" element={<InsuranceDataComparison/>} /> {/* หน้า  เปรียบเทียบราคา ข้อมูล ประกันภัย */}
-          <Route path="Vendor" element={<Vendor/>} /> หน้า  ผู้จำหน่ายสินค้า/อู่ซ่อม
+          <Route path="Vendor" element={<Vendor/>} /> {/*  หน้า  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
+          <Route path="Vendor_add" element={<Vendor_add/>} /> {/*  หน้า เพิ่ม  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
 
 
           </Route>
