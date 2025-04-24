@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_orginization_type_details from "./modal/Modal_orginization_type_details";
+import Modal_vandor_type from "./modal/Modal_vander_type";
+import Modal_service_type from "./modal/Modal_service_type";
 
 const Vendor_add = ({ onVendorAdded }) => {
     const [message, setMessage] = useState("");
@@ -25,7 +28,14 @@ const Vendor_add = ({ onVendorAdded }) => {
         service_id: [],
     });
 
+// ประเภทองค์กร
+    const [isOpenModalOrganizition, setOpenModalOrganizition] = useState(false);
+// หมวดหมู่
+    const [isOpenModalVendolType, setOpenModalVendolType] = useState(false);
+// ประเภทบริการ
+    const [isOpenModalServiceType, setOpenModalServitType] = useState(false);
 
+    
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === "file") {
@@ -168,6 +178,29 @@ const Vendor_add = ({ onVendorAdded }) => {
         }
     };
 
+// ประเภทองค์กร
+    const handleOpenModalOrpganizition = (data) => {
+        setOpenModalOrganizition(true);
+    };
+    const handleClossModalOrganizition = () => {
+        setOpenModalOrganizition(false);
+    };
+
+// หมวดหมู่
+    const handleOpenModalVendorType = () => {
+        setOpenModalVendolType(true);
+    };
+    const handleClossModalVerdorType = () => {
+        setOpenModalVendolType(false);
+    }
+
+// xประเภทบริการ
+    const handleOpenModaalServiceType = () => {
+        setOpenModalServitType(true);
+    }
+    const handleClossModalServiceType = () => {
+        setOpenModalServitType(false);
+    }
 
     return (
         <div className="container">
@@ -189,21 +222,21 @@ const Vendor_add = ({ onVendorAdded }) => {
                     <button
                         type="button"
                         className="btn btn-secondary px-4 me-1"
-                        onClick={() => window.history.back()}
+                        onClick={()=>handleOpenModalOrpganizition()}
                     >
                         ประเภทองค์กร
                     </button>
                     <button
                         type="button"
                         className="btn btn-secondary px-4 me-1"
-                        onClick={() => window.history.back()}
+                        onClick={()=>handleOpenModalVendorType()}
                     >
                         หมวดหมู่
                     </button>
                     <button
                         type="button"
                         className="btn btn-secondary px-4 me-1"
-                        onClick={() => window.history.back()}
+                        onClick={()=>handleOpenModaalServiceType()}
                     >
                         ประเภทการบริการ
                     </button>
@@ -417,7 +450,15 @@ const Vendor_add = ({ onVendorAdded }) => {
                 </form>
             </div>
 
-
+{isOpenModalOrganizition && (
+    <Modal_orginization_type_details isOpen={isOpenModalOrganizition} onClose={handleClossModalOrganizition} />
+)}
+{isOpenModalVendolType && (
+    <Modal_vandor_type isOpen={isOpenModalVendolType} onClose={handleClossModalVerdorType} />
+)}
+{isOpenModalServiceType && (
+    <Modal_service_type isOpen={isOpenModalServiceType} onClose={handleClossModalServiceType} />
+)}
         </div>
     );
 };
