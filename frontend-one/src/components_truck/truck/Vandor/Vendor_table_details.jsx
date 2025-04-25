@@ -5,6 +5,7 @@ import axios from "axios";
 
 const Vendor_table_details = ({ refresh }) => {
     const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
+    const [isVendorID, setVendorID] = useState(null);
     const [isShowDataVendor, setShowDataVender] = useState([]);
 
     const fetchVendorShowData = async () => {
@@ -24,7 +25,8 @@ const Vendor_table_details = ({ refresh }) => {
         fetchVendorShowData();
     }, [refresh]);
 
-    const handleOpenModalVandorDetails = () => {
+    const handleOpenModalVandorDetails = (data) => {
+        setVendorID(data);        
         setOpenModalVendorDetails(true);
     };
 
@@ -54,11 +56,15 @@ const Vendor_table_details = ({ refresh }) => {
                                 <td>{row.phone}</td>
                                 <td>{row.credit_terms} วัน</td>
                                 <td>{row.organization_type_name}</td>
+                                <td>{row.vendor_id}</td>
                                 <td>
-                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={handleOpenModalVandorDetails}>
+                                <button className="btn btn-sm btn-outline-primary rounded-circle me-1" >
+                                <i class="bi bi-pencil-square"></i>{/* เปลี่ยนไอคอนเพื่อแยกความต่างก็ได้ */}
+                                    </button>
+                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={()=>handleOpenModalVandorDetails(row)}>
                                         <i className="bi bi-file-text-fill"></i>
                                     </button>
-                                    <button className="btn btn-sm btn-outline-primary rounded-circle" >
+                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" >
                                     <i className="bi bi-box-arrow-up-right"></i>{/* เปลี่ยนไอคอนเพื่อแยกความต่างก็ได้ */}
                                     </button>
 
@@ -73,6 +79,7 @@ const Vendor_table_details = ({ refresh }) => {
                 <Modal_vandor_details
                     isOpen={isOpenModalVendorDetails}
                     onClose={handleCloseModalVandorDetails}
+                    vendorID={isVendorID}
                 />
             )}
         </div>
