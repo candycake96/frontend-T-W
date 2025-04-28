@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import Modal_vandor_details from "./modal/Modal_vandor_details";
 import { apiUrl } from "../../../config/apiConfig";
 import axios from "axios";
+import Modal_vendor_edit from "./modal/Modal_vendor_edit";
+import { Link } from "react-router-dom";
 
 const Vendor_table_details = ({ refresh }) => {
+    // ข้อมูล
     const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
     const [isVendorID, setVendorID] = useState(null);
+    // แก้ไข
+    const [isOpenModalVendorEdit, setOpenModalVendorEdit] = useState(false);
+    const [isDataVendorEdit, setDataVendorEdit] = useState(null);
+    // 
     const [isShowDataVendor, setShowDataVender] = useState([]);
 
     const fetchVendorShowData = async () => {
@@ -19,20 +26,30 @@ const Vendor_table_details = ({ refresh }) => {
         } catch (error) {
             console.error("Error fetching coverage type:", error);
         }
-    }
+    };
 
     useEffect(() => {
         fetchVendorShowData();
     }, [refresh]);
 
+// ข้อมูล 
     const handleOpenModalVandorDetails = (data) => {
         setVendorID(data);        
         setOpenModalVendorDetails(true);
     };
-
     const handleCloseModalVandorDetails = () => {
         setOpenModalVendorDetails(false);
     };
+// แก้ไข
+    const handOpenModalVendorEdit = (data) => {
+        setOpenModalVendorEdit(true);
+        setDataVendorEdit(data);
+    };
+    const handClossModalVendorEdit = () => {
+        setOpenModalVendorEdit(false);
+    }
+
+
 
     return (
         <div className="card">
@@ -58,15 +75,15 @@ const Vendor_table_details = ({ refresh }) => {
                                 <td>{row.organization_type_name}</td>
                                 <td>{row.vendor_id}</td>
                                 <td>
-                                <button className="btn btn-sm btn-outline-primary rounded-circle me-1" >
+                                <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={()=>handOpenModalVendorEdit(row)} >
                                 <i class="bi bi-pencil-square"></i>{/* เปลี่ยนไอคอนเพื่อแยกความต่างก็ได้ */}
                                     </button>
                                     <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={()=>handleOpenModalVandorDetails(row)}>
                                         <i className="bi bi-file-text-fill"></i>
                                     </button>
-                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" >
+                                    <Link to='/truck/VendorInfo' className="btn btn-sm btn-outline-primary rounded-circle me-1" >
                                     <i className="bi bi-box-arrow-up-right"></i>{/* เปลี่ยนไอคอนเพื่อแยกความต่างก็ได้ */}
-                                    </button>
+                                    </Link>
 
                                 </td>
                             </tr>
@@ -80,6 +97,13 @@ const Vendor_table_details = ({ refresh }) => {
                     isOpen={isOpenModalVendorDetails}
                     onClose={handleCloseModalVandorDetails}
                     vendorID={isVendorID}
+                />
+            )}
+            {isOpenModalVendorEdit && (
+                <Modal_vendor_edit  
+                isOpen={isOpenModalVendorEdit}
+                onClose={handClossModalVendorEdit}
+                isData={isDataVendorEdit}
                 />
             )}
         </div>

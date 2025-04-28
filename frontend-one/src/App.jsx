@@ -60,6 +60,7 @@ import Insurance_Details from "./components_truck/truck/Car_insurance/Insurance_
 import InsuranceDataComparison from "./components_truck/truck/Car_insurance/InsuranceDataComparison";
 import Vendor from "./components_truck/truck/Vandor/Vendor";
 import Vendor_add from "./components_truck/truck/Vandor/Vendor_add";
+import VendorInfo from "./components_truck/truck/Vandor/VendorInfo";
 
 Modal.setAppElement("#root");
 
@@ -134,6 +135,7 @@ function App() {
           <Route path="InsuranceDataComparison" element={<InsuranceDataComparison/>} /> {/* หน้า  เปรียบเทียบราคา ข้อมูล ประกันภัย */}
           <Route path="Vendor" element={<Vendor/>} /> {/*  หน้า  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
           <Route path="Vendor_add" element={<Vendor_add/>} /> {/*  หน้า เพิ่ม  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
+          <Route path="VendorInfo" element={<VendorInfo/>} /> {/*  หน้า แสดงข้อมูล  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
 
 
           </Route>

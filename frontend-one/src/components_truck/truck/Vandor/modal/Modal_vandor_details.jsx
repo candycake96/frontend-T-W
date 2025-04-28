@@ -77,7 +77,7 @@ const Modal_vendor_details = ({ isOpen, onClose, vendorID }) => {
                     ×
                 </button>
                 <h5 className="modal-title text-center fw-bolder">
-                    ข้อมูลผู้จำหน่าย (อู่ซ่อม) {vendorID.vendor_id}
+                    ข้อมูลผู้จำหน่าย (อู่ซ่อม) 
                 </h5>
             </div>
 <div className="p-3">
@@ -133,12 +133,14 @@ const Modal_vendor_details = ({ isOpen, onClose, vendorID }) => {
                                 หมวดหมู่
                             </th>
                             <td>{vendorDetails.vendor_type_name}</td>
-                        </tr>   
-
-        
+                        </tr>           
                         <tr>
                             <th>หมายเหตุ</th>
                             <td>{vendorDetails.remarks}</td>
+                        </tr>
+                        <tr>
+                            <th>เอกสารสำคัญ</th>
+                            <td><a href={vendorDetails.file_vendor} className="" target="_blank" rel="noopener noreferrer" id="btn-animated" style={{ color: '#c0392b' }}> <i className="bi bi-file-earmark-pdf-fill"></i> ไฟล์เอกสาร</a></td>
                         </tr>
                     </tbody>
                 </table>

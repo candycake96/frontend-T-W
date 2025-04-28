@@ -4,18 +4,18 @@ import Vendor_table_details from "./Vendor_table_details";
 import Vendor_add from "./Vendor_add";
 
 const Vendor = () => {
-//     const [isFormOpen, setIsFormOpen] = useState(false);
-//     const [refreshTable, setRefreshTable] = useState(false); // trigger refresh
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [refreshTable, setRefreshTable] = useState(false); // trigger refresh
 
-// //   const handleVendorAdded = () => {
-// //     // Toggle refresh to force child to re-fetch
-// //     setRefreshTable(prev => !prev);
-// //   };
+  const handleVendorAdded = () => {
+    // Toggle refresh to force child to re-fetch
+    setRefreshTable(prev => !prev);
+  };
 
 
-//     const toggleForm = () => {
-//         setIsFormOpen(prev => !prev);
-//     };
+    const toggleForm = () => {
+        setIsFormOpen(prev => !prev);
+    };
 
     return (
         <div className="container">
@@ -33,9 +33,7 @@ const Vendor = () => {
 
             <hr className="mb-3" />
 <div className="mb-3">
-            <Vendor_table_details 
-            // refresh={refreshTable} 
-             />    
+            <Vendor_table_details refresh={refreshTable}  />    
 </div>
 
         </div>
