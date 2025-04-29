@@ -137,7 +137,6 @@ function App() {
           <Route path="Vendor_add" element={<Vendor_add/>} /> {/*  หน้า เพิ่ม  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
           <Route path="VendorInfo" element={<VendorInfo/>} /> {/*  หน้า แสดงข้อมูล  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
 
-
           </Route>
         </Routes>
       </Router>
