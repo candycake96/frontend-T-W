@@ -175,19 +175,25 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               <li>
                 <Link to="/truck/CarMainRepair"
                   className={`nav-link ${["/truck/1"].includes(location.pathname) ? "active" : ""}`}>
-                  งานแจ้งซ่อม
+                  ตรวจสอบความพร้อม
                 </Link>
               </li>
               <li>
                 <Link to="/truck/CarMainRepair"
                   className={`nav-link ${["/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  งานวิเคราะห์แผนซ่อมบำรุง
+                  วิเคราะห์แผนซ่อมบำรุง
                 </Link>
               </li>
               <li>
                 <Link to="/truck/CarMainRepair"
                   className={`nav-link ${["/truck/3"].includes(location.pathname) ? "active" : ""}`}>
-                  รออนุมัติงานซ่อมบำรุง
+                  ตรวจสอบแผนซ่อมบำรุง
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/CarMainRepair"
+                  className={`nav-link ${["/truck/3"].includes(location.pathname) ? "active" : ""}`}>
+                  อนุมัติงานซ่อมบำรุง
                 </Link>
               </li>
             </ul>
