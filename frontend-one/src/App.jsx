@@ -61,6 +61,8 @@ import InsuranceDataComparison from "./components_truck/truck/Car_insurance/Insu
 import Vendor from "./components_truck/truck/Vandor/Vendor";
 import Vendor_add from "./components_truck/truck/Vandor/Vendor_add";
 import VendorInfo from "./components_truck/truck/Vandor/VendorInfo";
+import Vehicle_parts_details from "./components_truck/truck/Parts/Vehicle_parts_dtails";
+import Vehicle_parts_add from "./components_truck/truck/Parts/Vehicle_parts_add";
 
 Modal.setAppElement("#root");
 
@@ -124,22 +126,24 @@ function App() {
           <Route path="RepairRequestForm" element={<RepairRequestForm/>} /> {/* หน้าแจ้งซ่อม */}
           <Route path="CarMainRepair" element={<CarMainRepair/>} /> {/* หน้าแจ้งซ่อม main */}
           <Route path="CarMileageShow" element={<CarMileageShow/>} /> {/* หน้าเลขไมล์รถ */}
-          <Route path="CarMileageDetails" element={<CarMileageDetails/>} /> {/* หน้าเลขไมล์รถ */}
-          <Route path="ExcelUploader" element={<ExcelUploader/>} /> {/* หน้าเลขไมล์รถ */}
-          <Route path="CarTaxRenewal_Main" element={<CarTaxRenewal_Main/>} /> {/* หน้า main tax */}
-          <Route path="CarCMI_Main" element={<CarCMI_Main/>} /> {/* หน้า main CMI พรบ */}
-          <Route path="CarInsurance_Main" element={<CarInsurance_Main/>} /> {/* หน้า main  */}
-          <Route path="CarStopTaxRemittanc" element={<CarStopTaxRemittanc/>} /> {/* หน้า ม.89-79 */}
-          <Route path="Vehicle_status/:id" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */}
-          <Route path="Insurance_Details" element={<Insurance_Details/>} /> {/* หน้า  แสดงข้อมูลแต่ละคันอย่างระเอียด */}
-          <Route path="InsuranceDataComparison" element={<InsuranceDataComparison/>} /> {/* หน้า  เปรียบเทียบราคา ข้อมูล ประกันภัย */}
-          <Route path="Vendor" element={<Vendor/>} /> {/*  หน้า  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
-          <Route path="Vendor_add" element={<Vendor_add/>} /> {/*  หน้า เพิ่ม  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
-          <Route path="VendorInfo" element={<VendorInfo/>} /> {/*  หน้า แสดงข้อมูล  ผู้จำหน่ายสินค้า/อู่ซ่อม */}
+          <Route path="CarMileageDetails" element={<CarMileageDetails/>} /> {/* หน้าเลขไมล์รถ */} 
+          <Route path="ExcelUploader" element={<ExcelUploader/>} /> {/* หน้าเลขไมล์รถ */} 
+          <Route path="CarTaxRenewal_Main" element={<CarTaxRenewal_Main/>} /> {/* หน้า main tax */} 
+          <Route path="CarCMI_Main" element={<CarCMI_Main/>} /> {/* หน้า main CMI พรบ */} 
+          <Route path="CarInsurance_Main" element={<CarInsurance_Main/>} /> {/* หน้า main  */} 
+          <Route path="CarStopTaxRemittanc" element={<CarStopTaxRemittanc/>} /> {/* หน้า ม.89-79 */} 
+          <Route path="Vehicle_status/:id" element={<Vehicle_status/>} /> {/* หน้า ม.89-79 แสดงข้อมูลแต่ละคันอย่างระเอียด */} 
+          <Route path="Insurance_Details" element={<Insurance_Details/>} /> {/* หน้า  แสดงข้อมูลแต่ละคันอย่างระเอียด */} 
+          <Route path="InsuranceDataComparison" element={<InsuranceDataComparison/>} /> {/* หน้า  เปรียบเทียบราคา ข้อมูล ประกันภัย */} 
+          <Route path="Vendor" element={<Vendor/>} /> {/*  หน้า  ผู้จำหน่ายสินค้า/อู่ซ่อม */} 
+          <Route path="Vendor_add" element={<Vendor_add/>} /> {/*  หน้า เพิ่ม  ผู้จำหน่ายสินค้า/อู่ซ่อม */} 
+          <Route path="VendorInfo" element={<VendorInfo/>} /> {/*  หน้า แสดงข้อมูล  ผู้จำหน่ายสินค้า/อู่ซ่อม */} 
+          <Route path="Vehicle_parts_details" element={<Vehicle_parts_details />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
+          <Route path="Vehicle_parts_add" element={<Vehicle_parts_add />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
 
-          </Route>
-        </Routes>
-      </Router>
+          </Route> 
+        </Routes> 
+      </Router> 
     </>
   );
 }

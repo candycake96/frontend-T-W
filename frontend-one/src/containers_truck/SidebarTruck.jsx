@@ -150,9 +150,9 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/CarMainRepair"
-                  className={`nav-link ${["/truck/CarMainRepair", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  งานซ่อม
+                <Link to="/truck/Vehicle_parts_details"
+                  className={`nav-link ${["/truck/Vehicle_parts_details", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                  ราคากลางอะไหล่รถ
                 </Link>
               </li>
             </ul>
@@ -208,7 +208,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           {activeDropdown === "driver" && (
             <ul className="list-unstyled ps-4">
               <li>
-                <Link to="/truck/driver"
+                <Link to="/truck/driverๅ"
                   className={`nav-link ${location.pathname === "/truck/driver" ? "active" : ""}`}>
                   ข้อมูลคนขับ
                 </Link>
