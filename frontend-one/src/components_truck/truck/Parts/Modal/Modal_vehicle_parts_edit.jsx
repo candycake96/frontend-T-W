@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { apiUrl } from "../../../../config/apiConfig";
 
-const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
-
+const Modal_vehicle_part_edit = ({isOpen, onClose, onData, onSuccess}) => {
+  
     const [message, setMessage] = useState('');
     const [partsData, setPartsData] = useState({
                 system_id: "",
@@ -42,15 +42,27 @@ const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
 
     useEffect(() => {
         fetchSystemsShows();
-    }, []);
+        if (onData && Object.keys(onData).length > 0) {
+            setPartsData({
+                system_id: onData.system_id || "",
+                part_name: onData.part_name || "",
+                part_code: onData.part_code || "",
+                unit: onData.unit || "",
+                brand: onData.brand || "",
+                model: onData.model || "",
+                price: onData.price || ""
+            });
+        }
+    }, [onData]);
+    
 
 
-    const handleSubmitParts = async (e) => {
+    const handleSubmitPartsEdit = async (e) => {
         e.preventDefault();
     
         try {
-            const response = await axios.post(
-                `${apiUrl}/api/parts_add`,
+            const response = await axios.put(
+                `${apiUrl}/api/parts_edit/${onData.part_id}`,
                 partsData,
                 {
                     headers: {
@@ -135,7 +147,7 @@ const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
                 </h5>
             </div>
             {message && <div className="mt-3 alert alert-info">{message}</div>}
-            <form action="" onSubmit={handleSubmitParts}>
+            <form action="" onSubmit={handleSubmitPartsEdit}>
                 <div className="p-3">
                     <div className="row ">
                         <div className="col-lg-4 mb-3">
@@ -143,6 +155,7 @@ const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
                             <select
                                 className="form-select "
                                 name="system_id"
+                                value={partsData.system_id}
                                 onChange={handleChange}
                             >
                                 <option value="">เลือกหมวดหมู่ระบบอะไหล่</option>
@@ -155,30 +168,30 @@ const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
                         </div>
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="system" className="form-label">รหัสสินค้า (Code) </label>
-                            <input type="text" name="part_code" id="system" className="form-control" onChange={handleChange} />
+                            <input type="text" name="part_code" id="system" className="form-control" value={partsData.part_code} onChange={handleChange} />
                         </div>
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="system" className="form-label">ชื่ออะไหล่</label>
-                            <input type="text" name="part_name" id="system" className="form-control" onChange={handleChange} />
+                            <input type="text" name="part_name" id="system" className="form-control" value={partsData.part_name} onChange={handleChange} />
                         </div>
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="brand" className="form-label">ยี่ห้อ</label>
-                            <input type="text" name="brand" id="brand" className="form-control" onChange={handleChange} />
+                            <input type="text" name="brand" id="brand" className="form-control" value={partsData.brand} onChange={handleChange} />
                         </div>
 
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="model" className="form-label">รุ่น</label>
-                            <input type="text" name="model" id="model" className="form-control" onChange={handleChange} />
+                            <input type="text" name="model" id="model" className="form-control" value={partsData.model} onChange={handleChange} />
                         </div>
 
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="price" className="form-label">ราคา</label>
-                            <input type="number" name="price" id="price" className="form-control" onChange={handleChange} />
+                            <input type="number" name="price" id="price" className="form-control" value={partsData.price} onChange={handleChange} />
                         </div>
 
                         <div className="col-lg-4 mb-3">
                             <label htmlFor="unit" className="form-label">หน่วย</label>
-                            <input type="text" name="unit" id="unit" className="form-control" onChange={handleChange}  />
+                            <input type="text" name="unit" id="unit" className="form-control" value={partsData.unit} onChange={handleChange}  />
                         </div>
 
                     </div>
@@ -193,4 +206,5 @@ const Modal_vehicle_parts_add = ({ isOpen, onClose, onSuccess }) => {
     )
 }
 
-export default Modal_vehicle_parts_add;
+
+export default Modal_vehicle_part_edit;

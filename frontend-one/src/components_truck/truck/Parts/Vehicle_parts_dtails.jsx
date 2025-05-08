@@ -4,11 +4,17 @@ import Modal_vehicle_parts_add from "./Modal/Modal_vehicle_parts_add";
 import Modal_vehicle_systems from "./Modal/Modal_vehicle_systems";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_vehicle_part_edit from "./Modal/Modal_vehicle_parts_edit";
 
 const Vehicle_parts_details = () => {
+    const [reload, setReload] = useState(false); // Reload when `reload` changes
+
     const [isDataParts, setDataParts] = useState([]);
     const [isOpenModalParteAdd, setOpenModalPartsAdd] = useState(false);
     const [isOpenModalVehicleSystems, setOpenModalVehicleSystems] = useState(false);
+    const [isOpenModalPartsEdit, setOpenModalPartsEdit] = useState(false);
+    const [isDataModalPartsEdit, setDataModalPartsEdit] = useState(null);
+    const [isSystemSearch, setSystemSearch] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 20;
@@ -17,6 +23,27 @@ const Vehicle_parts_details = () => {
     const handleClossModalVehicleSystems = () => setOpenModalVehicleSystems(false);
     const handleOpenModalPartsAdd = () => setOpenModalPartsAdd(true);
     const handleClossModalpartsAdd = () => setOpenModalPartsAdd(false);
+    const handleOpenModalPartsEdit = (data) => { setOpenModalPartsEdit(true); setDataModalPartsEdit(data) };
+    const handleClossModalPartsEdit = () => setOpenModalPartsEdit(false);
+    const [isSystemsShow, setSystemsShow] = useState([]);
+
+    const fetchSystemsShows = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/systems_show_all`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            setSystemsShow(response.data);
+        } catch (error) {
+            console.error("Error fetching coverage type:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSystemsShows();
+    }, []);
+
 
     const fetchPartsShow = async () => {
         try {
@@ -33,12 +60,19 @@ const Vehicle_parts_details = () => {
 
     useEffect(() => {
         fetchPartsShow();
-    }, []);
+    }, [reload]);
 
     // ค้นหาอะไหล่ตามชื่อ
-    const filteredData = isDataParts.filter((row) =>
-        row.part_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredData = isDataParts.filter((row) => {
+        return (
+            row.system_name.toLowerCase().includes(isSystemSearch.toLowerCase()) &&
+            (
+                row.part_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                row.part_code.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+    });
+
 
     // Pagination
     const pageCount = Math.ceil(filteredData.length / itemsPerPage);
@@ -52,6 +86,27 @@ const Vehicle_parts_details = () => {
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
         setCurrentPage(0); // รีเซ็ตหน้าเมื่อพิมพ์ค้นหา
+    };
+
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("คุณต้องการลบข้อมูลนี้หรือไม่?\nการลบอาจมีผลกระทบกับเอกสารหรือข้อมูลอื่นที่เกี่ยวข้อง")) return;
+        try {
+            const response = await axios.delete(`${apiUrl}/api/part_delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            alert(response.data.message || "ลบสำเร็จ");
+            fetchPartsShow();
+        } catch (error) {
+            console.error(error);
+            alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการลบ");
+        }
+    };
+
+    const handleSystemsChande = (e) => {
+        setSystemSearch(e.target.value);
     };
 
     return (
@@ -69,11 +124,13 @@ const Vehicle_parts_details = () => {
 
                     <div className="mb-3 col-12">
                         <div className="d-flex flex-nowrap align-items-center gap-2">
-                            <select className="form-select form-select-sm" style={{ width: "200px" }}>
-                                <option defaultValue>เลือกหมวดหมู่ระบบ</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                            <select className="form-select form-select-sm" style={{ width: "200px" }} onChange={handleSystemsChande}>
+                                <option value="">หมวดหมู่ระบบ (ทั้งหมด)</option>
+                                {isSystemsShow.map((row, index) => (
+
+                                    <option key={index} value={row.system_name}>{row.system_name}</option>
+
+                                ))}
                             </select>
 
                             <div className="input-group input-group-sm" style={{ flex: 1 }}>
@@ -108,7 +165,7 @@ const Vehicle_parts_details = () => {
                                             <th>ยี่ห้อ</th>
                                             <th>รุ่น</th>
                                             <th>ราคา</th>
-                                            <th>#</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -121,7 +178,10 @@ const Vehicle_parts_details = () => {
                                                 <td>{row.brand}</td>
                                                 <td>{row.model}</td>
                                                 <td>{row.price}</td>
-                                                <td>#</td>
+                                                <td>
+                                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={() => handleOpenModalPartsEdit(row)} ><i class="bi bi-pencil-square"></i></button>
+                                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={() => handleDelete(row.part_id)} ><i className="bi bi-trash3-fill"></i></button>
+                                                </td>
                                             </tr>
                                         ))}
                                         {currentItems.length === 0 && (
@@ -135,22 +195,22 @@ const Vehicle_parts_details = () => {
                                 </table>
 
                                 <ReactPaginate
-    previousLabel={"<"}
-    nextLabel={">"}
-    breakLabel={"..."}
-    pageCount={pageCount}
-    marginPagesDisplayed={1}
-    pageRangeDisplayed={3}
-    onPageChange={handlePageClick}
-    containerClassName={"pagination pagination-sm justify-content-center"}  // เพิ่ม pagination-sm
-    pageClassName={"page-item"}
-    pageLinkClassName={"page-link"}
-    previousClassName={"page-item"}
-    previousLinkClassName={"page-link"}
-    nextClassName={"page-item"}
-    nextLinkClassName={"page-link"}
-    activeClassName={"active"}
-/>
+                                    previousLabel={"<"}
+                                    nextLabel={">"}
+                                    breakLabel={"..."}
+                                    pageCount={pageCount}
+                                    marginPagesDisplayed={1}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={handlePageClick}
+                                    containerClassName={"pagination pagination-sm justify-content-center"}  // เพิ่ม pagination-sm
+                                    pageClassName={"page-item"}
+                                    pageLinkClassName={"page-link"}
+                                    previousClassName={"page-item"}
+                                    previousLinkClassName={"page-link"}
+                                    nextClassName={"page-item"}
+                                    nextLinkClassName={"page-link"}
+                                    activeClassName={"active"}
+                                />
 
                             </div>
                         </div>
@@ -159,11 +219,14 @@ const Vehicle_parts_details = () => {
             </div>
 
             {isOpenModalParteAdd && (
-                <Modal_vehicle_parts_add isOpen={isOpenModalParteAdd} onClose={handleClossModalpartsAdd} />
+                <Modal_vehicle_parts_add isOpen={isOpenModalParteAdd} onClose={handleClossModalpartsAdd} onSuccess={() => setReload(prev => !prev)} />
             )}
             {isOpenModalVehicleSystems && (
                 <Modal_vehicle_systems isOpen={isOpenModalVehicleSystems} onClose={handleClossModalVehicleSystems} />
             )}
+            {isOpenModalPartsEdit &&
+                <Modal_vehicle_part_edit isOpen={isOpenModalPartsEdit} onClose={handleClossModalPartsEdit} onData={isDataModalPartsEdit} onSuccess={() => setReload(prev => !prev)} />
+            }
         </>
     );
 };
