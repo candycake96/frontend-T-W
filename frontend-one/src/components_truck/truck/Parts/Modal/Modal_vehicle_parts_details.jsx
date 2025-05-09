@@ -6,7 +6,7 @@ import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_vehicle_parts_details = ({ isOpen, onClose, onSubmit }) => {
 
-
+    const [reload, setReload] = useState(false);
     const [formData, setFormData] = useState({
         system_id: '',
         part_name: '',
@@ -32,7 +32,7 @@ const Modal_vehicle_parts_details = ({ isOpen, onClose, onSubmit }) => {
 
     useEffect(() => {
         fetchSystemsShows();
-    }, []);
+    }, [reload]);
 
     const handleChange = (e) => {
         setFormData(prev => ({
@@ -113,28 +113,32 @@ const Modal_vehicle_parts_details = ({ isOpen, onClose, onSubmit }) => {
                 },
             }}
         >
-            <div
-                className="modal-header"
-                style={{
-                    padding: "1rem",
-                    backgroundColor: "#f8f9fa",
-                    borderTopLeftRadius: "0.5rem",
-                    borderTopRightRadius: "0.5rem",
-                }}
-            >
-                <button
-                    onClick={onClose}
-                    style={{
-                        background: "transparent",
-                        border: "none",
-                        fontSize: "1.5rem",
-                        fontWeight: "bold",
-                        position: "absolute",
-                        top: "1rem",
-                        right: "1rem",
-                        cursor: "pointer",
-                    }}
-                >
+            {/* Header: ค้างด้านบน */}
+  <div
+    className="modal-header"
+    style={{
+      padding: "1rem",
+      backgroundColor: "#f8f9fa",
+      borderTopLeftRadius: "0.5rem",
+      borderTopRightRadius: "0.5rem",
+      position: "sticky",
+      top: 0,
+      zIndex: 2,
+    }}
+  >
+    <button
+      onClick={onClose}
+      style={{
+        background: "transparent",
+        border: "none",
+        fontSize: "1.5rem",
+        fontWeight: "bold",
+        position: "absolute",
+        top: "1rem",
+        right: "1rem",
+        cursor: "pointer",
+      }}
+    >
                     ×
                 </button>
                 <h5 className="modal-title text-center fw-bolder">
@@ -247,13 +251,24 @@ const Modal_vehicle_parts_details = ({ isOpen, onClose, onSubmit }) => {
 
                     </table>
                 </div>
-                <div className="position-absolute" style={{ bottom: "10px", right: "20px", fontSize: "0.875rem", color: "#666" }}>
-                    จำนวนทั้งหมด {results.length} รายการ
-                </div>
+     {/* แสดงจำนวนทั้งหมด ค้างด้านล่าง */}
+     <div
+      style={{
+        position: "sticky",
+        bottom: 0,
+        textAlign: "right",
+        padding: "0.5rem",
+        background: "white",
+        fontSize: "0.875rem",
+        color: "#666",
+        zIndex: 1,
+      }}
+    >
+      จำนวนทั้งหมด {results.length} รายการ
+    </div>
             </div>
-
             {isOpenModalVehiclePartsAdd && (
-                <Modal_vehicle_parts_add isOpen={isOpenModalVehiclePartsAdd} onClose={handleClossModalVehiclePartsAdd} />
+                <Modal_vehicle_parts_add isOpen={isOpenModalVehiclePartsAdd} onClose={handleClossModalVehiclePartsAdd} onSuccess={() => setReload(prev => !prev)} />
             )}
 
 
