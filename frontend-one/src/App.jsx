@@ -63,6 +63,7 @@ import Vendor_add from "./components_truck/truck/Vandor/Vendor_add";
 import VendorInfo from "./components_truck/truck/Vandor/VendorInfo";
 import Vehicle_parts_details from "./components_truck/truck/Parts/Vehicle_parts_dtails";
 import Vehicle_parts_add from "./components_truck/truck/Parts/Vehicle_parts_add";
+import MainternanceRequest from "./components_truck/truck/Repair/MainternanceRequest";
 
 Modal.setAppElement("#root");
 
@@ -140,6 +141,7 @@ function App() {
           <Route path="VendorInfo" element={<VendorInfo/>} /> {/*  หน้า แสดงข้อมูล  ผู้จำหน่ายสินค้า/อู่ซ่อม */} 
           <Route path="Vehicle_parts_details" element={<Vehicle_parts_details />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
           <Route path="Vehicle_parts_add" element={<Vehicle_parts_add />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
+          <Route path="MainternanceRequest" element={<MainternanceRequest />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
 
           </Route> 
         </Routes> 

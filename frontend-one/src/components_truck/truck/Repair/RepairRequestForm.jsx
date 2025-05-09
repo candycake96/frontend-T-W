@@ -3,6 +3,7 @@ import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_deta
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_Check_PM from "./Mobal/Modal_Check_PM";
 
 const RepairRequestForm = () => {
 
@@ -19,15 +20,26 @@ const RepairRequestForm = () => {
         }
     }, []);
 
+    // ////
+    const [summary, setSummary] = useState({
+        total: 0,
+        vat: 0,
+        grandTotal: 0,
+    });
+
+
+
+
+    const [isOpenCheckPM, setOpenCheckPM] = useState(false);
     const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
     const [selectedPartIndex, setSelectedPartIndex] = useState(null);
 
     const [parts, setParts] = useState([
-        { part_id: "", system: "", part: "", price: "", qty: "", vat: "", total: "" },
+        { part_id: "", system: "", part: "", price: "", qty: "", discount: "", vat: "", total: "" },
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { part_id: "", system: "", part: "", price: "", qty: "", vat: "", total: "" }]);
+        setParts([...parts, { part_id: "", system: "", part: "", price: "", qty: "", discount: "", vat: "", total: "" }]);
     };
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
@@ -61,10 +73,11 @@ const RepairRequestForm = () => {
         const price = parseFloat(updatedParts[index].price) || 0;
         const qty = parseFloat(updatedParts[index].qty) || 0;
         const vat = parseFloat(updatedParts[index].vat) || 0;
+        const discount = parseFloat(updatedParts[index].discount) || 0;
 
         const subtotal = price * qty;
         const total = subtotal + (subtotal * vat / 100); // รวม VAT
-
+        // const grandTotal = total - discount; 
         updatedParts[index].total = total.toFixed(2); // เก็บทศนิยม 2 ตำแหน่ง
 
         setParts(updatedParts);
@@ -81,25 +94,60 @@ const RepairRequestForm = () => {
         setOpenModalVehicleParteDtails(false);
     }
 
+
+    useEffect(() => {
+        let total = 0;
+        let vatAmount = 0;
+
+        parts.forEach((part) => {
+            const price = parseFloat(part.price) || 0;
+            const qty = parseFloat(part.qty) || 0;
+            const vat = parseFloat(part.vat) || 0;
+
+            const subtotal = price * qty;
+            const vatVal = subtotal * vat / 100;
+
+            total += subtotal;
+            vatAmount += vatVal;
+        });
+
+        setSummary({
+            total: total.toFixed(2),
+            vat: vatAmount.toFixed(2),
+            grandTotal: (total + vatAmount).toFixed(2),
+        });
+
+    }, [parts]);
+
+
+
+    // Modal
+    const handleOpenModalChackPM = () => setOpenCheckPM(true);
+    const handleClossModalChackPM = () => setOpenCheckPM(false);
+
     return (
-        <div className="container p-3">
+        <div className=" p-3">
             <div className=" mb-3">
                 <p className="fw-bolder fs-4">ฟอร์มแจ้งซ่อม</p>
             </div>
             <div className="mb-1">
                 <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
-                    <ol className="breadcrumb">
-                        {/* <li className="breadcrumb-item">
-                            <Link to="/truck">หน้าแรก</Link>
-                        </li>
-                        <li className="breadcrumb-item">
-                            <Link to="/truck/Vendor">ผู้จำหน่ายสินค้า อู่ซ่อม (ทั้งหมด)</Link>
-                        </li> */}
-                        <li className="breadcrumb-item active" aria-current="page">
-                            ฟอร์มแจ้งซ่อม
-                        </li>
-                    </ol>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <ol className="breadcrumb mb-0">
+                            {/* <li className="breadcrumb-item">
+        <Link to="/truck">หน้าแรก</Link>
+      </li>
+      <li className="breadcrumb-item">
+        <Link to="/truck/Vendor">ผู้จำหน่ายสินค้า อู่ซ่อม (ทั้งหมด)</Link>
+      </li> */}
+                            <li className="breadcrumb-item active" aria-current="page">
+                                ฟอร์มแจ้งซ่อม
+                            </li>
+                        </ol>
+                        <button className="btn btn-primary" onClick={()=>handleOpenModalChackPM()}>ตรวจสอบ PM</button>
+                    </div>
                 </nav>
+
             </div>
             <hr className="mb-3" />
 
@@ -125,12 +173,22 @@ const RepairRequestForm = () => {
                                 <input type="text" className="form-control" value={user?.position_name || ""} disabled />
                             </div>
                             <div className="col-lg-3 mb-3">
-                                <label className="form-label">ทะเบียนรถ</label>
+                                <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
                                 <input type="text" className="form-control" />
                             </div>
-                            <div className="col-lg-3 mb-3">
-                                <label className="form-label">เลขไมล์ปัจจุบัน</label>
+                            <div className="col-lg-3">
+                                <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
                                 <input type="text" className="form-control" />
+                            </div>
+                            <div className="col-lg-3">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked/>
+                                    <label htmlFor="exampleRadios1" className="form-check-label">PM (ซ่อมก่อนเสีย)</label>
+                                </div>
+                                <div className="form-check">
+                                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked/>
+                                    <label htmlFor="exampleRadios1" className="form-check-label">CM (เสียก่อนซ่อม)</label>
+                                </div>
                             </div>
                         </div>
 
@@ -140,7 +198,7 @@ const RepairRequestForm = () => {
                             <div className="row mb-3" key={index}>
                                 <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
                                 <div className="col-lg-2">
-                                    <label className="form-label">ระบบ</label>
+                                    <label className="form-label text-sm">ระบบ</label>
                                     <input
                                         type="text"
                                         className="form-control form-control-sm"
@@ -149,7 +207,7 @@ const RepairRequestForm = () => {
                                     />
                                 </div>
                                 <div className="col-lg-3">
-                                    <label htmlFor={`partSearch-${index}`} className="form-label">อะไหล่</label>
+                                    <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
                                     <div className="input-group input-group-sm">
                                         <input
                                             type="text"
@@ -169,7 +227,7 @@ const RepairRequestForm = () => {
                                     </div>
                                 </div>
                                 <div className="col-lg-1">
-                                    <label className="form-label">ราคา</label>
+                                    <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
                                         type="number"
                                         className="form-control form-control-sm"
@@ -178,7 +236,7 @@ const RepairRequestForm = () => {
                                     />
                                 </div>
                                 <div className="col-lg-1">
-                                    <label className="form-label">หน่วย</label>
+                                    <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
                                         type="text"
                                         className="form-control form-control-sm"
@@ -186,8 +244,17 @@ const RepairRequestForm = () => {
                                         onChange={(e) => handleChange(index, "unit", e.target.value)}
                                     />
                                 </div>
+                                {/* <div className="col-lg-1">
+                                    <label className="form-label text-sm">ส่วนลด </label>
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        value={part.discount}
+                                        onChange={(e) => handleChange(index, "discount", e.target.value)}
+                                    />
+                                </div> */}
                                 <div className="col-lg-1">
-                                    <label className="form-label">จำนวน</label>
+                                    <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
                                         type="number"
                                         className="form-control form-control-sm"
@@ -196,7 +263,7 @@ const RepairRequestForm = () => {
                                     />
                                 </div>
                                 <div className="col-lg-1">
-                                    <label className="form-label">VAT</label>
+                                    <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
                                         type="number"
                                         className="form-control form-control-sm"
@@ -205,7 +272,7 @@ const RepairRequestForm = () => {
                                     />
                                 </div>
                                 <div className="col-lg-2">
-                                    <label className="form-label">ราคารวม</label>
+                                    <label className="form-label text-sm">ราคารวม</label>
                                     <input
                                         type="number"
                                         className="form-control form-control-sm"
@@ -236,6 +303,23 @@ const RepairRequestForm = () => {
 
                         <hr className="mb-3" />
 
+                        <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
+                            <div className="space-y-1 text-right">
+                                <p className="text-gray-700 text-sm">
+                                    ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
+                                </p>
+                                <p className="text-gray-700 text-sm">
+                                    ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
+                                </p>
+                                <p className="text-gray-900 text-sm font-semibold border-t pt-1">
+                                    ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
+                                </p>
+                            </div>
+                        </div>
+
+
+
+
                         <div className="text-center">
                             <button className="btn btn-primary">บันทึก</button>
                         </div>
@@ -245,6 +329,10 @@ const RepairRequestForm = () => {
             {isOpenModalVehicleParteDtails && (
                 <Modal_vehicle_parts_details
                     isOpen={isOpenModalVehicleParteDtails} onClose={handleClossModalVehicleParteDtails} onSubmit={handleDataFromAddModal} />
+            )}
+
+            {isOpenCheckPM && (
+                <Modal_Check_PM isOpen={isOpenCheckPM} onClose={handleClossModalChackPM} />
             )}
         </div>
     );
