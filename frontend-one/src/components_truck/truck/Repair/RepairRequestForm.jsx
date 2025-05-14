@@ -8,7 +8,11 @@ import { useLocation } from "react-router-dom";
 
 const RepairRequestForm = () => {
 
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
+
     const [formData, setFormData] = useState({
+        emp_id: "",
         reg_number: "",
         odometer: "",
     });
@@ -34,24 +38,29 @@ const RepairRequestForm = () => {
     });
 
     const location = useLocation();
-    const rowMiData = location.state || {};
-    const carData = rowMiData;
-    useEffect(()=>{
-        setFormData({
-            reg_number: carData.reg_number
-        })
-    }, [carData]);
+    const [rowMiData] = useState(location.state || {});
+    const carData = rowMiData;    
+    useEffect(() => {
+        if (user && carData) {
+            setFormData({
+                reg_number: carData.reg_number || '',
+                emp_id: user.id_emp || '',
+                odometer: ''
+            });
+        }
+    }, [user, carData]);
+    
 
     const [isOpenCheckPM, setOpenCheckPM] = useState(false);
     const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
     const [selectedPartIndex, setSelectedPartIndex] = useState(null);
 
     const [parts, setParts] = useState([
-        { part_id: "", system: "", part: "", price: "", qty: "", discount: "", vat: "", total: "" },
+        { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { part_id: "", system: "", part: "", price: "", qty: "", discount: "", vat: "", total: "" }]);
+        setParts([...parts, { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "",  qty: "", discount: "", vat: "", total: "" }]);
     };
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
@@ -132,15 +141,49 @@ const RepairRequestForm = () => {
     }, [parts]);
 
 
-    useEffect(() => {
-
-    }, [carData]);
-
+    const handleChangeRequestjob = (e) => {
+        const {name, value} = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
 
 
     // Modal
     const handleOpenModalChackPM = () => setOpenCheckPM(true);
     const handleClossModalChackPM = () => setOpenCheckPM(false);
+    
+    const handleMaintenanceAdd = async (e) => {
+        e.preventDefault(); // ป้องกันการ reload หน้า
+        console.log("ข้อมูล formData",formData );
+        console.log("ข้อมูล parts",parts );
+        try {
+            const response = await axios.post(
+                `${apiUrl}/api/repair_requests_add`,
+                {
+                    ...formData,
+                    parts: parts
+                },
+                { headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` } }
+            );
+            setFormData({
+                reg_number: '',
+                emp_id: '',
+                odometer: ''
+            });
+            setParts([
+                { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
+            ])
+            setMessage(response.data.message);
+            setMessageType("success");
+        } catch (error) {
+            console.error("Error saving  data:", error);
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
+        } 
+    }
 
     return (
         <div className=" p-3">
@@ -169,7 +212,16 @@ const RepairRequestForm = () => {
 
             <div className="card mb-3">
                 <div className="card-body">
-                    <form action="">
+                                        {/* Display success or error message */}
+                                        {message && (
+                        <div
+                            className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
+                        >
+                            {message}
+                        </div>
+                    )}
+
+                    <form action="" onSubmit={handleMaintenanceAdd}>
                         <div className="row">
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">เลขที่ใบแจ้งซ่อม</label>
@@ -190,11 +242,23 @@ const RepairRequestForm = () => {
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
-                                <input type="text" className="form-control" value={formData?.reg_number || ""} />
+                                <input 
+                                type="text" 
+                                className="form-control" 
+                                name="reg_number"
+                                value={formData?.reg_number} 
+                                onChange={handleChangeRequestjob}
+                                />
                             </div>
                             <div className="col-lg-3">
                                 <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
-                                <input type="text" className="form-control" />
+                                <input 
+                                type="text" 
+                                className="form-control" 
+                                name="odometer"
+                                value={formData?.odometer}
+                                onChange={handleChangeRequestjob}
+                                 />
                             </div>
                         </div>
 
@@ -238,7 +302,12 @@ const RepairRequestForm = () => {
                                     </div>
                                     <div className="col-lg-1">
                                         <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
-                                        <select name="" id="" className="form-select  mb-3  form-select-sm" aria-label="Large select example">
+                                        <select 
+                                        className="form-select  mb-3  form-select-sm" 
+                                        aria-label="Large select example"
+                                        value={part.maintenance_type}
+                                        onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
+                                        >
                                             <option value=""></option>
                                             <option value="CM">CM</option>
                                             <option value="PM">PM</option>
@@ -333,7 +402,7 @@ const RepairRequestForm = () => {
 
 
                         <div className="text-center">
-                            <button className="btn btn-primary">บันทึก</button>
+                            <button type="submit" className="btn btn-primary">บันทึก</button>
                         </div>
                     </form>
 
