@@ -4,8 +4,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_Check_PM from "./Mobal/Modal_Check_PM";
+import { useLocation } from "react-router-dom";
 
 const RepairRequestForm = () => {
+
+    const [formData, setFormData] = useState({
+        reg_number: "",
+        odometer: "",
+    });
 
     const [user, setUser] = useState(null);
     const [date, setDate] = useState(() => {
@@ -27,8 +33,14 @@ const RepairRequestForm = () => {
         grandTotal: 0,
     });
 
-
-
+    const location = useLocation();
+    const rowMiData = location.state || {};
+    const carData = rowMiData;
+    useEffect(()=>{
+        setFormData({
+            reg_number: carData.reg_number
+        })
+    }, [carData]);
 
     const [isOpenCheckPM, setOpenCheckPM] = useState(false);
     const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
@@ -120,6 +132,11 @@ const RepairRequestForm = () => {
     }, [parts]);
 
 
+    useEffect(() => {
+
+    }, [carData]);
+
+
 
     // Modal
     const handleOpenModalChackPM = () => setOpenCheckPM(true);
@@ -127,28 +144,27 @@ const RepairRequestForm = () => {
 
     return (
         <div className=" p-3">
-            <div className=" mb-3">
+            <div className=" mb-1">
                 <p className="fw-bolder fs-4">ฟอร์มแจ้งซ่อม</p>
             </div>
             <div className="mb-1">
                 <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex justify-content-between align-items-center small">
                         <ol className="breadcrumb mb-0">
-                            {/* <li className="breadcrumb-item">
-        <Link to="/truck">หน้าแรก</Link>
-      </li>
-      <li className="breadcrumb-item">
-        <Link to="/truck/Vendor">ผู้จำหน่ายสินค้า อู่ซ่อม (ทั้งหมด)</Link>
-      </li> */}
+                            <li className="breadcrumb-item">
+                                <Link to="/truck/MainternanceRequest">รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา</Link>
+                            </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 ฟอร์มแจ้งซ่อม
                             </li>
                         </ol>
-                        <button className="btn btn-primary" onClick={()=>handleOpenModalChackPM()}>ตรวจสอบ PM</button>
+                        <button className="btn btn-sm btn-primary" onClick={() => handleOpenModalChackPM()}>
+                            ตรวจสอบ PM
+                        </button>
                     </div>
                 </nav>
-
             </div>
+
             <hr className="mb-3" />
 
             <div className="card mb-3">
@@ -174,126 +190,122 @@ const RepairRequestForm = () => {
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
-                                <input type="text" className="form-control" />
+                                <input type="text" className="form-control" value={formData?.reg_number || ""} />
                             </div>
                             <div className="col-lg-3">
                                 <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
                                 <input type="text" className="form-control" />
                             </div>
-                            <div className="col-lg-3">
-                                <div className="form-check">
-                                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked/>
-                                    <label htmlFor="exampleRadios1" className="form-check-label">PM (ซ่อมก่อนเสีย)</label>
-                                </div>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked/>
-                                    <label htmlFor="exampleRadios1" className="form-check-label">CM (เสียก่อนซ่อม)</label>
-                                </div>
-                            </div>
                         </div>
 
                         <hr />
                         {/* <p className="">รายการอะไหล่</p> */}
+                                        <div className=""
+                            style={{ overflowX: "auto" }}
+                            >
                         {parts.map((part, index) => (
-                            <div className="row mb-3" key={index}>
-                                <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
-                                <div className="col-lg-2">
-                                    <label className="form-label text-sm">ระบบ</label>
-                                    <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        value={part.system_name}
-                                        onChange={(e) => handleChange(index, "system", e.target.value)} disabled
-                                    />
-                                </div>
-                                <div className="col-lg-3">
-                                    <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
-                                    <div className="input-group input-group-sm">
+            
+                                <div className="row  mb-3" key={index}>
+                                    <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
+                                    <div className="col-lg-2">
+                                        <label className="form-label text-sm">ระบบ</label>
                                         <input
                                             type="text"
-                                            className="form-control"
-                                            id={`partSearch-${index}`}
-                                            value={part.part_name}
-                                            onChange={(e) => handleChange(index, "part_name", e.target.value)}
-                                            placeholder="ค้นหาอะไหล่..."
+                                            className="form-control form-control-sm"
+                                            value={part.system_name}
+                                            onChange={(e) => handleChange(index, "system", e.target.value)} disabled
                                         />
+                                    </div>
+                                    <div className="col-lg-2">
+                                        <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
+                                        <div className="input-group input-group-sm">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id={`partSearch-${index}`}
+                                                value={part.part_name}
+                                                onChange={(e) => handleChange(index, "part_name", e.target.value)}
+                                                placeholder="ค้นหาอะไหล่..."
+                                            />
+                                            <button
+                                                className="btn btn-outline-secondary btn-sm"
+                                                type="button"
+                                                onClick={() => handleOpenModalVehicleParteDtails(index)}
+                                            >
+                                                <i className="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-1">
+                                        <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
+                                        <select name="" id="" className="form-select  mb-3  form-select-sm" aria-label="Large select example">
+                                            <option value=""></option>
+                                            <option value="CM">CM</option>
+                                            <option value="PM">PM</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="col-lg-1">
+                                        <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            value={part.price}
+                                            onChange={(e) => handleChange(index, "price", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-lg-1">
+                                        <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
+                                        <input
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            value={part.unit}
+                                            onChange={(e) => handleChange(index, "unit", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-lg-1">
+                                        <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            value={part.qty}
+                                            onChange={(e) => handleChange(index, "qty", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-lg-1">
+                                        <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            value={part.vat}
+                                            onChange={(e) => handleChange(index, "vat", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="col-lg-2">
+                                        <label className="form-label text-sm">ราคารวม</label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            value={part.total}
+                                            onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
+                                            disabled
+                                        />
+
+                                    </div>
+                                    <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
                                         <button
-                                            className="btn btn-outline-secondary btn-sm"
+                                            className="btn btn-sm btn-danger"
                                             type="button"
-                                            onClick={() => handleOpenModalVehicleParteDtails(index)}
+                                            onClick={() => handleRemovePart(index)}
                                         >
-                                            <i className="bi bi-search"></i>
+                                            <i className="bi bi-trash3-fill"></i>
                                         </button>
                                     </div>
-                                </div>
-                                <div className="col-lg-1">
-                                    <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control form-control-sm"
-                                        value={part.price}
-                                        onChange={(e) => handleChange(index, "price", e.target.value)}
-                                    />
-                                </div>
-                                <div className="col-lg-1">
-                                    <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        value={part.unit}
-                                        onChange={(e) => handleChange(index, "unit", e.target.value)}
-                                    />
-                                </div>
-                                {/* <div className="col-lg-1">
-                                    <label className="form-label text-sm">ส่วนลด </label>
-                                    <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        value={part.discount}
-                                        onChange={(e) => handleChange(index, "discount", e.target.value)}
-                                    />
-                                </div> */}
-                                <div className="col-lg-1">
-                                    <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control form-control-sm"
-                                        value={part.qty}
-                                        onChange={(e) => handleChange(index, "qty", e.target.value)}
-                                    />
-                                </div>
-                                <div className="col-lg-1">
-                                    <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control form-control-sm"
-                                        value={part.vat}
-                                        onChange={(e) => handleChange(index, "vat", e.target.value)}
-                                    />
-                                </div>
-                                <div className="col-lg-2">
-                                    <label className="form-label text-sm">ราคารวม</label>
-                                    <input
-                                        type="number"
-                                        className="form-control form-control-sm"
-                                        value={part.total}
-                                        onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
-                                        disabled
-                                    />
 
                                 </div>
-                                <div className="col-lg-1 d-flex align-items-end">
-                                    <button
-                                        className="btn btn-sm btn-danger  me-1"
-                                        type="button"
-                                        onClick={() => handleRemovePart(index)}
-                                    >
-                                        <i className="bi bi-trash3-fill"></i>   {/* ลบแถว */}
-                                    </button>
-                                </div>
-                            </div>
-
+                          
                         ))}
+                          </div>
 
                         <div className="d-flex justify-content-end mb-3">
                             <button className="btn btn-outline-primary" type="button" onClick={handleAddPart}>
@@ -324,6 +336,7 @@ const RepairRequestForm = () => {
                             <button className="btn btn-primary">บันทึก</button>
                         </div>
                     </form>
+
                 </div>
             </div>
             {isOpenModalVehicleParteDtails && (
@@ -335,6 +348,7 @@ const RepairRequestForm = () => {
                 <Modal_Check_PM isOpen={isOpenCheckPM} onClose={handleClossModalChackPM} />
             )}
         </div>
+
     );
 };
 

@@ -169,7 +169,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               <li>
                 <Link to="/truck/MainternanceRequest"
                   className={`nav-link ${["/truck/MainternanceRequest", "/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  แจ้งซ่อม
+                  แจ้งซ่อม / งานซ่อม
                 </Link>
               </li>
               <li>

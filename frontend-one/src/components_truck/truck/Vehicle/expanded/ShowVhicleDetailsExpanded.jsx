@@ -48,20 +48,21 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
                     <div className="mb-2">
                     <button
                     onClick={()=>handleOpenModalStatusUpdate(rowMi)}
-                            className="btn "
+                            className="btn me-1 "
                             style={{ background: "Teal", color: '#ffffff' }}
                             // onClick={() => handleOpenModalRepairRequest()}
                         ><i class="bi bi-clipboard"></i> ม.89 / ม.79 
                         </button>
-                        <Link to="/truck/CarMileageDetails" state={rowMi} className="btn" style={{ background: "Teal", color: '#ffffff' }}>
+                        <Link to="/truck/CarMileageDetails" state={rowMi} className="btn me-1" style={{ background: "Teal", color: '#ffffff' }}>
                         <i class="bi bi-speedometer2"></i> เลขไมล์รถ
                         </Link>
-                        <button
-                            className="btn "
+                        <Link
+                        to="/truck/RepairRequestForm"
+                        state={rowMi}
+                            className="btn me-1"
                             style={{ background: "Teal", color: '#ffffff' }}
-                            onClick={() => handleOpenModalRepairRequest()}
                         ><i class="bi bi-tools"></i> แจ้งซ่อม
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="row mb-3">
