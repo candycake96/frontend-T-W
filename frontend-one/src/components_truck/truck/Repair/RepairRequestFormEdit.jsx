@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
+import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
 
 const RepairRequestFormEdit = () => {
@@ -26,131 +26,132 @@ const RepairRequestFormEdit = () => {
         const options = { year: "numeric", month: "numeric", day: "numeric", calendar: "gregory" };
         return date.toLocaleDateString("th-TH-u-ca-gregory", options);
     };
-    
+
     const [requestParts, setRequestParts] = useState([]);
-   // ดึงข้อมูลจาก API
-useEffect(() => {
-    const fetchRequestAndParts = async () => {
-        try {
-            const response = await axios.get(
-                `${apiUrl}/api/repair_requests_and_part_detail/${dataRepairID?.request_id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                }
-            );
-            setRequestParts(response.data);
-        } catch (error) {
-            console.error("Error fetching parts:", error);
+    // ดึงข้อมูลจาก API
+    useEffect(() => {
+        const fetchRequestAndParts = async () => {
+            try {
+                const response = await axios.get(
+                    `${apiUrl}/api/repair_requests_and_part_detail/${dataRepairID?.request_id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        },
+                    }
+                );
+                setRequestParts(response.data);
+            } catch (error) {
+                console.error("Error fetching parts:", error);
+            }
+        };
+
+        if (dataRepairID?.request_id) {
+            fetchRequestAndParts();
+        }
+    }, [dataRepairID]);
+
+    // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
+    useEffect(() => {
+        if (requestParts?.request_id) {
+            setFormData({
+                request_id: requestParts.request_id,
+                request_informer_emp_id: requestParts.request_informer_emp_id,
+                request_no: requestParts.request_no,
+                request_date: requestParts.request_date,
+                status: requestParts.status,
+                reg_id: requestParts.reg_id,
+                car_mileage: requestParts.car_mileage,
+                fname: requestParts.fname,
+                lname: requestParts.lname,
+                reg_number: requestParts.reg_number,
+            });
+            if (Array.isArray(requestParts.parts_used)) {
+                const mappedParts = requestParts.parts_used.map((item) => {
+                    const price = parseFloat(item.repair_part_price) || 0;
+                    const qty = parseFloat(item.repair_part_qty) || 0;
+                    const vat = parseFloat(item.repair_part_vat) || 0;
+                    const subtotal = price * qty;
+                    const total = subtotal + (subtotal * vat / 100);
+                    return {
+                        parts_used_id: item.parts_used_id || "", 
+                        part_id: item.part_id || "",
+                        system_name: item.system_name || "",
+                        part_name: item.repair_part_name || "",
+                        price: price.toString(),
+                        unit: item.repair_part_unit || "",
+                        maintenance_type: item.maintenance_type || "",
+                        qty: qty.toString(),
+                        discount: "",
+                        vat: vat.toString(),
+                        total: total.toFixed(2),
+                    };
+                });
+                setParts(mappedParts);
+            } else {
+                setParts([]);
+            }
+        }
+    }, [requestParts]);
+
+    const [summary, setSummary] = useState({
+        total: 0,
+        vat: 0,
+        grandTotal: 0,
+    });
+
+
+    const [parts, setParts] = useState([
+        { parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
+    ]);
+
+    const handleAddPart = () => {
+        setParts([...parts, { parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
+    };
+
+    // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
+    const handleDataFromAddModal = (data) => {
+        if (selectedPartIndex !== null) {
+            const updatedParts = [...parts];
+            updatedParts[selectedPartIndex] = {
+                ...updatedParts[selectedPartIndex],
+                ...data
+            };
+            setParts(updatedParts);
+            setSelectedPartIndex(null); // reset after update
+        } else {
+            setParts([...parts, data]); // fallback: add new
         }
     };
 
-    if (dataRepairID?.request_id) {
-        fetchRequestAndParts();
-    }
-}, [dataRepairID]);
+    // ฟังก์ชันลบข้อมูลอะไหล่
+    const handleRemovePart = (index) => {
+        const updatedParts = [...parts];
+        updatedParts.splice(index, 1);
+        setParts(updatedParts);
+    };
 
-    // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
-useEffect(() => {
-    if (requestParts?.request_id) {
-        setFormData({
-            request_id: requestParts.request_id,
-            request_informer_emp_id: requestParts.request_informer_emp_id,
-            request_no: requestParts.request_no,
-            request_date: requestParts.request_date,
-            status: requestParts.status,
-            reg_id: requestParts.reg_id,
-            car_mileage: requestParts.car_mileage,
-            fname: requestParts.fname,
-            lname: requestParts.lname,
-            reg_number: requestParts.reg_number,
-        });
-        if (Array.isArray(requestParts.parts_used)) {
-            const mappedParts = requestParts.parts_used.map((item) => {
-                const price = parseFloat(item.repair_part_price) || 0;
-                const qty = parseFloat(item.repair_part_qty) || 0;
-                const vat = parseFloat(item.repair_part_vat) || 0;
-                const subtotal = price * qty;
-                const total = subtotal + (subtotal * vat / 100);
-                return {
-                    part_id: item.part_id || "",
-                    system_name: item.system_name || "",
-                    part_name: item.repair_part_name || "",
-                    price: price.toString(),
-                    unit: item.repair_part_unit || "",
-                    maintenance_type: item.maintenance_type || "",
-                    qty: qty.toString(),
-                    discount: "",
-                    vat: vat.toString(),
-                    total: total.toFixed(2),
-                };
-            });
-            setParts(mappedParts);
-        } else {
-            setParts([]);
-        }
-    }
-}, [requestParts]);
 
-     const [summary, setSummary] = useState({
-            total: 0,
-            vat: 0,
-            grandTotal: 0,
-        });
-    
+    // ฟังก์ชันการเปลี่ยนแปลงข้อมูลอะไหล่  
+    const handleChange = (index, field, value) => {
+        const updatedParts = [...parts];
+        updatedParts[index][field] = value;
 
-    const [parts, setParts] = useState([
-            { part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
-        ]);
-    
-        const handleAddPart = () => {
-            setParts([...parts, { part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "",  qty: "", discount: "", vat: "", total: "" }]);
-        };
-    
-        // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
-        const handleDataFromAddModal = (data) => {
-            if (selectedPartIndex !== null) {
-                const updatedParts = [...parts];
-                updatedParts[selectedPartIndex] = {
-                    ...updatedParts[selectedPartIndex],
-                    ...data
-                };
-                setParts(updatedParts);
-                setSelectedPartIndex(null); // reset after update
-            } else {
-                setParts([...parts, data]); // fallback: add new
-            }
-        };
-    
-        // ฟังก์ชันลบข้อมูลอะไหล่
-        const handleRemovePart = (index) => {
-            const updatedParts = [...parts];
-            updatedParts.splice(index, 1);
-            setParts(updatedParts);
-        };
-    
-        
-        // ฟังก์ชันการเปลี่ยนแปลงข้อมูลอะไหล่  
-        const handleChange = (index, field, value) => {
-            const updatedParts = [...parts];
-            updatedParts[index][field] = value;
-    
-            // แปลงเป็นตัวเลขเพื่อคำนวณ
-            const price = parseFloat(updatedParts[index].price) || 0;
-            const qty = parseFloat(updatedParts[index].qty) || 0;
-            const vat = parseFloat(updatedParts[index].vat) || 0;
-            const discount = parseFloat(updatedParts[index].discount) || 0;
-    
-            const subtotal = price * qty;
-            const total = subtotal + (subtotal * vat / 100); // รวม VAT
-            // const grandTotal = total - discount; 
-            updatedParts[index].total = total.toFixed(2); // เก็บทศนิยม 2 ตำแหน่ง
-    
-            setParts(updatedParts);
-    
-        };
-    
+        // แปลงเป็นตัวเลขเพื่อคำนวณ
+        const price = parseFloat(updatedParts[index].price) || 0;
+        const qty = parseFloat(updatedParts[index].qty) || 0;
+        const vat = parseFloat(updatedParts[index].vat) || 0;
+        const discount = parseFloat(updatedParts[index].discount) || 0;
+
+        const subtotal = price * qty;
+        const total = subtotal + (subtotal * vat / 100); // รวม VAT
+        // const grandTotal = total - discount; 
+        updatedParts[index].total = total.toFixed(2); // เก็บทศนิยม 2 ตำแหน่ง
+
+        setParts(updatedParts);
+
+    };
+
 
     useEffect(() => {
         let total = 0;
@@ -178,8 +179,37 @@ useEffect(() => {
 
 
     return (
-        <div className="p-1">
+        <div className="p-3">
             <div className="container">
+                <div className="mb-3 ">
+                    <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
+                        <div className="d-flex justify-content-between align-items-center small">
+                            <ol className="breadcrumb mb-0 d-flex align-items-center" style={{ gap: '0.5rem' }}>
+                                <li className="breadcrumb-item">
+                                    <Link to="/truck/MaintenanceRequest">
+                                        <i className="bi bi-arrow-left"></i>
+                                    </Link>
+                                </li>
+                                <i className="bi bi-chevron-right"></i>
+
+                                <li>
+                                <Link to="/truck/MaintenanceRequest"> รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา </Link>
+                                </li>
+                                <i className="bi bi-chevron-right"></i>
+
+                                <li className="breadcrumb-item">
+                                    <Link to="/truck/MaintenanceJob" state={dataRepairID}> รายละเอียดการซ่อม </Link>
+                                </li>
+                                <i className="bi bi-chevron-right"></i>
+
+                                <li className="breadcrumb-item active" aria-current="page">
+                                    แก้ไขแจ้งซ่อม
+                                </li>
+                            </ol>
+                        </div>
+                    </nav>
+
+                </div>
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
                         Repair Details Edit
@@ -187,12 +217,12 @@ useEffect(() => {
                 </div>
                 <hr className="mb-3" />
                 <div className="mb-2">
-                <div className="mb-2">
-    {/* <div className="d-flex justify-content-end">
+                    <div className="mb-2">
+                        {/* <div className="d-flex justify-content-end">
         <button className="btn btn-primary me-1">Report  <i class="bi bi-printer-fill"></i></button>
         <button className="btn btn-primary">Edit  <i class="bi bi-pencil-fill"></i></button>
     </div> */}
-</div>
+                    </div>
 
                 </div>
                 <div className="card">
@@ -215,7 +245,7 @@ useEffect(() => {
                                 </div>
                                 <div className="col-lg-3 mb-3">
                                     <label className="form-label">ตำแหน่ง</label>
-                                    <input type="text" className="form-control"  disabled />
+                                    <input type="text" className="form-control" disabled />
                                 </div>
                                 <div className="col-lg-3 mb-3">
                                     <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
@@ -224,8 +254,8 @@ useEffect(() => {
                                         className="form-control"
                                         name="reg_number"
                                         value={formData?.reg_number}
-                                    // onChange={handleChangeRequestjob}
-                                    disabled
+                                        // onChange={handleChangeRequestjob}
+                                        disabled
                                     />
                                 </div>
                                 <div className="col-lg-3">
@@ -235,8 +265,8 @@ useEffect(() => {
                                         className="form-control"
                                         name="odometer"
                                         value={formData?.car_mileage}
-                                    // onChange={handleChangeRequestjob}
-                                    disabled
+                                        // onChange={handleChangeRequestjob}
+                                        disabled
                                     />
                                 </div>
                             </div>
@@ -248,119 +278,115 @@ useEffect(() => {
                             >
 
 
-{parts.map((part, index) => (
-            
-            <div className="row  mb-3" key={index}>
-                <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
-                <div className="col-lg-2">
-                    <label className="form-label text-sm">ระบบ</label>
-                    <input
-                        type="text"
-                        className="form-control form-control-sm"
-                        value={part.system_name}
-                        onChange={(e) => handleChange(index, "system_name", e.target.value)} disabled
-                    />
-                </div>
-                <div className="col-lg-2">
-                    <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
-                    <div className="input-group input-group-sm">
-                        <input
-                            type="text"
-                            className="form-control"
-                            id={`partSearch-${index}`}
-                            value={part.part_name}
-                            onChange={(e) => handleChange(index, "part_name", e.target.value)}
-                            placeholder="ค้นหาอะไหล่..."
-                            disabled
-                        />
-                        <button
-                            className="btn btn-outline-secondary btn-sm"
-                            type="button"
-                            onClick={() => handleOpenModalVehicleParteDtails(index)}
-                        >
-                            <i className="bi bi-search"></i>
-                        </button>
-                    </div>
-                </div>
-                <div className="col-lg-1">
-                    <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
-                    <select 
-                    className="form-select  mb-3  form-select-sm" 
-                    aria-label="Large select example"
-                    value={part.maintenance_type}
-                    onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
-                    disabled
-                    >
-                        <option value=""></option>
-                        <option value="CM">CM</option>
-                        <option value="PM">PM</option>
-                    </select>
-                </div>
+                                {parts.map((part, index) => (
 
-                <div className="col-lg-1">
-                    <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        value={part.price}
-                        onChange={(e) => handleChange(index, "price", e.target.value)}
-                        disabled
-                    />
-                </div>
-                <div className="col-lg-1">
-                    <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="text"
-                        className="form-control form-control-sm"
-                        value={part.unit}
-                        onChange={(e) => handleChange(index, "unit", e.target.value)}
-                        disabled
-                    />
-                </div>
-                <div className="col-lg-1">
-                    <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        value={part.qty}
-                        onChange={(e) => handleChange(index, "qty", e.target.value)}
-                        disabled
-                    />
-                </div>
-                <div className="col-lg-1">
-                    <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
-                    <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        value={part.vat}
-                        onChange={(e) => handleChange(index, "vat", e.target.value)}
-                        disabled
-                    />
-                </div>
-                <div className="col-lg-2">
-                    <label className="form-label text-sm">ราคารวม</label>
-                    <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        value={part.total || ""}
-                        onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
-                        disabled
-                    />
+                                    <div className="row  mb-3" key={index}>
+                                        <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
+                                        <div className="col-lg-2">
+                                            <label className="form-label text-sm">ระบบ</label>
+                                            <input
+                                                type="text"
+                                                className="form-control form-control-sm"
+                                                value={part.system_name}
+                                                onChange={(e) => handleChange(index, "system_name", e.target.value)} disabled
+                                            />
+                                        </div>
+                                        <div className="col-lg-2">
+                                            <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
+                                            <div className="input-group input-group-sm">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id={`partSearch-${index}`}
+                                                    value={part.part_name}
+                                                    onChange={(e) => handleChange(index, "part_name", e.target.value)}
+                                                    placeholder="ค้นหาอะไหล่..."
 
-                </div>
-                <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
-                    <button
-                        className="btn btn-sm btn-danger"
-                        type="button"
-                        onClick={() => handleRemovePart(index)}
-                    >
-                        <i className="bi bi-trash3-fill"></i>
-                    </button>
-                </div>
+                                                />
+                                                <button
+                                                    className="btn btn-outline-secondary btn-sm"
+                                                    type="button"
+                                                    onClick={() => handleOpenModalVehicleParteDtails(index)}
+                                                >
+                                                    <i className="bi bi-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
+                                            <select
+                                                className="form-select  mb-3  form-select-sm"
+                                                aria-label="Large select example"
+                                                value={part.maintenance_type}
+                                                onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
+                                            >
+                                                <option value=""></option>
+                                                <option value="CM">CM</option>
+                                                <option value="PM">PM</option>
+                                            </select>
+                                        </div>
 
-            </div>
-      
-    ))}
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
+                                            <input
+                                                type="number"
+                                                className="form-control form-control-sm"
+                                                value={part.price}
+                                                onChange={(e) => handleChange(index, "price", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control form-control-sm"
+                                                value={part.unit}
+                                                onChange={(e) => handleChange(index, "unit", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
+                                            <input
+                                                type="number"
+                                                className="form-control form-control-sm"
+                                                value={part.qty}
+                                                onChange={(e) => handleChange(index, "qty", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
+                                            <input
+                                                type="number"
+                                                className="form-control form-control-sm"
+                                                value={part.vat}
+                                                onChange={(e) => handleChange(index, "vat", e.target.value)}
+                                                disabled
+                                            />
+                                        </div>
+                                        <div className="col-lg-2">
+                                            <label className="form-label text-sm">ราคารวม</label>
+                                            <input
+                                                type="number"
+                                                className="form-control form-control-sm"
+                                                value={part.total || ""}
+                                                onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
+                                                disabled
+                                            />
+
+                                        </div>
+                                        <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                type="button"
+                                                onClick={() => handleRemovePart(index)}
+                                            >
+                                                <i className="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                ))}
 
 
 

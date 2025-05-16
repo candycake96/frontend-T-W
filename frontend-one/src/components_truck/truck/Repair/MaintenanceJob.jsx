@@ -180,6 +180,31 @@ useEffect(() => {
     return (
         <div className="p-1">
             <div className="container">
+                                <div className="mb-3 ">
+                                    <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
+                                        <div className="d-flex justify-content-between align-items-center small">
+                                            <ol className="breadcrumb mb-0 d-flex align-items-center" style={{ gap: '0.5rem' }}>
+                                                <li className="breadcrumb-item">
+                                                    <Link to="/truck/MaintenanceRequest">
+                                                        <i className="bi bi-arrow-left"></i>
+                                                    </Link>
+                                                </li>
+                                                <i className="bi bi-chevron-right"></i>
+                
+                                                <li>
+                                                <Link to="/truck/MaintenanceRequest"> รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา </Link>
+                                                </li>
+                                                <i className="bi bi-chevron-right"></i>
+                
+                                                <li className="breadcrumb-item active" aria-current="page">
+                                                    รายละเอียดการซ่อม 
+                                                </li>
+
+                                            </ol>
+                                        </div>
+                                    </nav>
+                
+                                </div>
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
                         Repair Details 
@@ -214,11 +239,10 @@ useEffect(() => {
                                     <input type="text" className="form-control" value={(formData?.fname || "") + " " + (formData?.lname || "")} disabled
                                     />
                                 </div>
-                                <div className="col-lg-3 mb-3">
-                                    <label className="form-label">ตำแหน่ง</label>
-                                    <input type="text" className="form-control"  disabled />
-                                </div>
-                                <div className="col-lg-3 mb-3">
+                               
+                            </div>
+                            <div className="row">
+                            <div className="col-lg-3 mb-3">
                                     <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
                                         type="text"

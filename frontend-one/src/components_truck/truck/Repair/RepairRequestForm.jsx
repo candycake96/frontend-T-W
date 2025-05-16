@@ -39,7 +39,7 @@ const RepairRequestForm = () => {
 
     const location = useLocation();
     const [rowMiData] = useState(location.state || {});
-    const carData = rowMiData;    
+    const carData = rowMiData;
     useEffect(() => {
         if (user && carData) {
             setFormData({
@@ -49,7 +49,7 @@ const RepairRequestForm = () => {
             });
         }
     }, [user, carData]);
-    
+
 
     const [isOpenCheckPM, setOpenCheckPM] = useState(false);
     const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
@@ -60,7 +60,7 @@ const RepairRequestForm = () => {
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "",  qty: "", discount: "", vat: "", total: "" }]);
+        setParts([...parts, { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
     };
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
@@ -142,23 +142,23 @@ const RepairRequestForm = () => {
 
 
     const handleChangeRequestjob = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value
         }));
     };
-    
+
 
 
     // Modal
     const handleOpenModalChackPM = () => setOpenCheckPM(true);
     const handleClossModalChackPM = () => setOpenCheckPM(false);
-    
+
     const handleMaintenanceAdd = async (e) => {
         e.preventDefault(); // ป้องกันการ reload หน้า
-        console.log("ข้อมูล formData",formData );
-        console.log("ข้อมูล parts",parts );
+        console.log("ข้อมูล formData", formData);
+        console.log("ข้อมูล parts", parts);
         try {
             const response = await axios.post(
                 `${apiUrl}/api/repair_requests_add`,
@@ -182,21 +182,25 @@ const RepairRequestForm = () => {
             console.error("Error saving  data:", error);
             setMessage("เกิดข้อผิดพลาด");
             setMessageType("error");
-        } 
+        }
     }
 
     return (
         <div className=" p-3">
-            <div className=" mb-1">
-                <p className="fw-bolder fs-4">ฟอร์มแจ้งซ่อม</p>
-            </div>
             <div className="mb-1">
                 <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
                     <div className="d-flex justify-content-between align-items-center small">
                         <ol className="breadcrumb mb-0">
                             <li className="breadcrumb-item">
+                                <Link to="/truck/MaintenanceRequest">
+                                    <i className="bi bi-arrow-left"></i>
+                                </Link>
+                            </li>
+                            <i className="bi bi-chevron-right"></i>
+                            <li className="breadcrumb-item">
                                 <Link to="/truck/MaintenanceRequest">รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา</Link>
                             </li>
+                            <i className="bi bi-chevron-right"></i>
                             <li className="breadcrumb-item active" aria-current="page">
                                 ฟอร์มแจ้งซ่อม
                             </li>
@@ -208,12 +212,16 @@ const RepairRequestForm = () => {
                 </nav>
             </div>
 
+            <div className=" mb-1">
+                <p className="fw-bolder fs-4">ฟอร์มแจ้งซ่อม</p>
+            </div>
+
             <hr className="mb-3" />
 
             <div className="card mb-3">
                 <div className="card-body">
-                                        {/* Display success or error message */}
-                                        {message && (
+                    {/* Display success or error message */}
+                    {message && (
                         <div
                             className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
                         >
@@ -242,33 +250,33 @@ const RepairRequestForm = () => {
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
-                                <input 
-                                type="text" 
-                                className="form-control" 
-                                name="reg_number"
-                                value={formData?.reg_number} 
-                                onChange={handleChangeRequestjob}
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="reg_number"
+                                    value={formData?.reg_number}
+                                    onChange={handleChangeRequestjob}
                                 />
                             </div>
                             <div className="col-lg-3">
                                 <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
-                                <input 
-                                type="text" 
-                                className="form-control" 
-                                name="odometer"
-                                value={formData?.odometer}
-                                onChange={handleChangeRequestjob}
-                                 />
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="odometer"
+                                    value={formData?.odometer}
+                                    onChange={handleChangeRequestjob}
+                                />
                             </div>
                         </div>
 
                         <hr />
                         {/* <p className="">รายการอะไหล่</p> */}
-                                        <div className=""
+                        <div className=""
                             style={{ overflowX: "auto" }}
-                            >
-                        {parts.map((part, index) => (
-            
+                        >
+                            {parts.map((part, index) => (
+
                                 <div className="row  mb-3" key={index}>
                                     <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
                                     <div className="col-lg-2">
@@ -302,11 +310,11 @@ const RepairRequestForm = () => {
                                     </div>
                                     <div className="col-lg-1">
                                         <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
-                                        <select 
-                                        className="form-select  mb-3  form-select-sm" 
-                                        aria-label="Large select example"
-                                        value={part.maintenance_type}
-                                        onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
+                                        <select
+                                            className="form-select  mb-3  form-select-sm"
+                                            aria-label="Large select example"
+                                            value={part.maintenance_type}
+                                            onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
                                         >
                                             <option value=""></option>
                                             <option value="CM">CM</option>
@@ -372,9 +380,9 @@ const RepairRequestForm = () => {
                                     </div>
 
                                 </div>
-                          
-                        ))}
-                          </div>
+
+                            ))}
+                        </div>
 
                         <div className="d-flex justify-content-end mb-3">
                             <button className="btn btn-outline-primary" type="button" onClick={handleAddPart}>
