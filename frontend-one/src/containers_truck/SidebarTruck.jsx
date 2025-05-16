@@ -167,8 +167,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           {activeDropdown === "CaeRepai" && (
             <ul className="list-unstyled ps-4">
               <li>
-                <Link to="/truck/MainternanceRequest"
-                  className={`nav-link ${["/truck/MainternanceRequest", "/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/MaintenanceRequest"
+                  className={`nav-link ${["/truck/MaintenanceRequest", "/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
                   แจ้งซ่อม / งานซ่อม
                 </Link>
               </li>

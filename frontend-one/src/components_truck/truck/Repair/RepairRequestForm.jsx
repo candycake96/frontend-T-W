@@ -195,7 +195,7 @@ const RepairRequestForm = () => {
                     <div className="d-flex justify-content-between align-items-center small">
                         <ol className="breadcrumb mb-0">
                             <li className="breadcrumb-item">
-                                <Link to="/truck/MainternanceRequest">รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา</Link>
+                                <Link to="/truck/MaintenanceRequest">รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 ฟอร์มแจ้งซ่อม
