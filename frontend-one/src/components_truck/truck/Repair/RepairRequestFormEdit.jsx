@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
+import { useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
 
-const MaintenanceJob = () => {
+const RepairRequestFormEdit = () => {
 
     const [formData, setFormData] = useState({
         request_id: "",
@@ -182,17 +182,16 @@ useEffect(() => {
             <div className="container">
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
-                        Repair Details 
+                        Repair Details Edit
                     </p>
                 </div>
                 <hr className="mb-3" />
                 <div className="mb-2">
                 <div className="mb-2">
-    <div className="d-flex justify-content-end">
-        <button className="btn btn-primary me-1">Cancelled  <i class="bi bi-x-octagon-fill"></i></button>
+    {/* <div className="d-flex justify-content-end">
         <button className="btn btn-primary me-1">Report  <i class="bi bi-printer-fill"></i></button>
-        <Link to="/truck/RepairRequestFormEdit" state={dataRepairID} className="btn btn-primary">Edit  <i class="bi bi-pencil-fill"></i></Link>
-    </div>
+        <button className="btn btn-primary">Edit  <i class="bi bi-pencil-fill"></i></button>
+    </div> */}
 </div>
 
                 </div>
@@ -244,7 +243,7 @@ useEffect(() => {
 
                             <hr />
                             {/* <p className="">รายการอะไหล่</p> */}
-                            <div className=""
+                            <div className="mb-3"
                                 style={{ overflowX: "auto" }}
                             >
 
@@ -349,7 +348,7 @@ useEffect(() => {
                     />
 
                 </div>
-                {/* <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
+                <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
                     <button
                         className="btn btn-sm btn-danger"
                         type="button"
@@ -357,7 +356,7 @@ useEffect(() => {
                     >
                         <i className="bi bi-trash3-fill"></i>
                     </button>
-                </div> */}
+                </div>
 
             </div>
       
@@ -368,12 +367,12 @@ useEffect(() => {
 
 
                             </div>
-{/* 
+
                             <div className="d-flex justify-content-end mb-3">
                                 <button className="btn btn-outline-primary" type="button" onClick={handleAddPart}>
                                     เพิ่มรายการอะไหล่
                                 </button>
-                            </div> */}
+                            </div>
 
                             <hr className="mb-3" />
 
@@ -391,9 +390,9 @@ useEffect(() => {
                                 </div>
                             </div>
 
-                            {/* <div className="text-center">
+                            <div className="text-center">
                                 <button type="submit" className="btn btn-primary">บันทึก</button>
-                            </div> */}
+                            </div>
                         </form>
 
 
@@ -404,4 +403,4 @@ useEffect(() => {
     );
 };
 
-export default MaintenanceJob;
+export default RepairRequestFormEdit;
