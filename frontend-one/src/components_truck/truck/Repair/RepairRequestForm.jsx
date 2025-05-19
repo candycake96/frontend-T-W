@@ -268,6 +268,16 @@ const RepairRequestForm = () => {
                                     onChange={handleChangeRequestjob}
                                 />
                             </div>
+                            <div className="col-lg-6 mb-3">
+                                <label className="form-label">หมายเหตุ <span className="" style={{ color: "red" }}>*</span></label>
+                                <textarea 
+                                    type="text"
+                                    className="form-control"
+                                    name="odometer"
+                                    value={formData?.odometer}
+                                    onChange={handleChangeRequestjob}
+                                ></textarea>
+                            </div>
                         </div>
 
                         <hr />

@@ -5,6 +5,7 @@ import { apiUrl } from "../../../config/apiConfig";
 
 const MaintenanceJob = () => {
 
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         request_id: "",
         request_informer_emp_id: "",
@@ -177,6 +178,30 @@ useEffect(() => {
     }, [parts]);
 
 
+
+    const generateReport = async () => {
+        setLoading(true); // เริ่มโหลด
+        try {
+          const response = await axios.post(
+            'http://localhost:3333/api/report-createRepair',
+            {},
+            { responseType: 'blob' }
+          );
+    
+          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(pdfBlob);
+          window.open(url, '_blank');
+          setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+        } catch (error) {
+          console.error("Error generating report:", error);
+        } finally {
+          setLoading(false); // โหลดเสร็จ
+        }
+      };
+    
+      
+
+
     return (
         <div className="p-1">
             <div className="container">
@@ -215,7 +240,22 @@ useEffect(() => {
                 <div className="mb-2">
     <div className="d-flex justify-content-end">
         <button className="btn btn-primary me-1">Cancelled  <i class="bi bi-x-octagon-fill"></i></button>
-        <button className="btn btn-primary me-1">Report  <i class="bi bi-printer-fill"></i></button>
+        <button
+      className="btn btn-primary me-1"
+      onClick={generateReport}
+      disabled={loading}
+    >
+      {loading ? (
+        <>
+          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Report
+        </>
+      ) : (
+        <>
+          Report <i className="bi bi-printer-fill"></i>
+        </>
+      )}
+    </button>
         <Link to="/truck/RepairRequestFormEdit" state={dataRepairID} className="btn btn-primary">Edit  <i class="bi bi-pencil-fill"></i></Link>
     </div>
 </div>
@@ -309,8 +349,8 @@ useEffect(() => {
                 </div>
                 <div className="col-lg-1">
                     <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
-                    <select 
-                    className="form-select  mb-3  form-select-sm" 
+                    <select
+                    className="form-select  mb-3  form-select-sm"
                     aria-label="Large select example"
                     value={part.maintenance_type}
                     onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
