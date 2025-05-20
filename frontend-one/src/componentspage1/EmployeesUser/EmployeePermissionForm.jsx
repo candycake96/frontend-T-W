@@ -63,10 +63,48 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
         <p>สิทธิ์การเข้าถึง</p>
       </div>
       <div className="mb-3">
-        <p>...</p>
+      <div className="row">
+            <div className="col-lg-3">
+              <p className="">จัดการข้อมูลพนักงาน</p>
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
+              </div>
+            </div>
+          </div>
       </div>
-      <div className="">
 
+      <hr className="mb-3" />
+      <div className="">
+        <div className="mb-3">
+          <p>สิทธิ์ในการอนุมัติ</p>
+        </div>
+        <div className="mb-3">
+        <div className="row">
+            <div className="col-lg-3">
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">อนุมัติลางาน</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">อนุมัติซ่อมรถ 1</label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input type="checkbox" name="" id="" className="form-check-input" />
+                <label htmlFor="checkbox" className="form-check-label">อนุมัติซ่อมรถ 2 </label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

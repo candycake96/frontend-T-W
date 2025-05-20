@@ -173,8 +173,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/CarMainRepair"
-                  className={`nav-link ${["/truck/1"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/MaintenancPlanning"
+                  className={`nav-link ${["/truck/MaintenancPlanning"].includes(location.pathname) ? "active" : ""}`}>
                   ตรวจสอบความพร้อม
                 </Link>
               </li>
