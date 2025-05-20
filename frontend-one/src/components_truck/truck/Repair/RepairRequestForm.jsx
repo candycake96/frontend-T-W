@@ -273,9 +273,9 @@ const RepairRequestForm = () => {
                                 <textarea 
                                     type="text"
                                     className="form-control"
-                                    name="odometer"
-                                    value={formData?.odometer}
-                                    onChange={handleChangeRequestjob}
+                                    // name="odometer"
+                                    // value={formData?.odometer}
+                                    // onChange={handleChangeRequestjob}
                                 ></textarea>
                             </div>
                         </div>

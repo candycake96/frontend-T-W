@@ -239,7 +239,7 @@ useEffect(() => {
                 <div className="mb-2">
                 <div className="mb-2">
     <div className="d-flex justify-content-end">
-        <button className="btn btn-primary me-1">Cancelled  <i class="bi bi-x-octagon-fill"></i></button>
+        <button className="btn btn-primary me-1">Cancelled <strong className="" > <i class="bi bi-x-octagon-fill"></i></strong> </button>
         <button
       className="btn btn-primary me-1"
       onClick={generateReport}

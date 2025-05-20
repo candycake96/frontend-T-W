@@ -16,7 +16,9 @@ const RepairRequestFormEdit = () => {
         fname: "",
         lname: "",
         reg_number: "",
-    })
+    });
+
+
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
@@ -178,6 +180,17 @@ const RepairRequestFormEdit = () => {
     }, [parts]);
 
 
+
+    const handleChangeRequestjob = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+
+
     return (
         <div className="p-3">
             <div className="container">
@@ -261,12 +274,12 @@ const RepairRequestFormEdit = () => {
                                 <div className="col-lg-3">
                                     <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
                                     <input
-                                        type="text"
+                                        type="number"
                                         className="form-control"
-                                        name="odometer"
+                                        name="car_mileage"
                                         value={formData?.car_mileage}
-                                        // onChange={handleChangeRequestjob}
-                                        disabled
+                                        onChange={handleChangeRequestjob}
+                                        // disabled
                                     />
                                 </div>
                             </div>
