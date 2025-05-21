@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_setting_doc_repair from "./Mobal/Modal_setting_doc_Repair";
 
 const MaintenanceRequest = () => {
 
@@ -56,6 +57,9 @@ const MaintenanceRequest = () => {
     };
 
 
+    const [isOpenModalSetting, setOpenModalSetting] = useState(false);
+    const handleOpenModalSetting = () => setOpenModalSetting(true);
+    const handleClossModalSetting = () => setOpenModalSetting(false);
 
     return (
         <>
@@ -64,7 +68,8 @@ const MaintenanceRequest = () => {
                     <div className="mb-3">
                         <p className="fw-bolder fs-5">รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา</p>
                         <Link to="/truck/RepairRequestForm" className="btn btn-primary me-1">แจ้งซ่อม</Link>
-                        <Link to="/truck/RepairRequestForm" className="btn btn-primary">ประวัติแจ้งซ่อม</Link>
+                        <Link to="/truck/RepairRequestForm" className="btn btn-primary me-1">ประวัติแจ้งซ่อม</Link>
+                        <button   className="btn btn-primary" onClick={handleOpenModalSetting}>Setting</button> {/* Repair Request Setting */}
                     </div>
                     <hr />
                 </div>
@@ -175,6 +180,9 @@ const MaintenanceRequest = () => {
                 </div>
             </div>
 
+{isOpenModalSetting && (
+    <Modal_setting_doc_repair isOpen={isOpenModalSetting} onClose={handleClossModalSetting} />
+)}
         </>
     )
 }
