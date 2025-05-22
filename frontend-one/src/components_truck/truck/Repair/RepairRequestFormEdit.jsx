@@ -5,6 +5,10 @@ import { apiUrl } from "../../../config/apiConfig";
 
 const RepairRequestFormEdit = () => {
 
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("success");
+    const [errorMessage, setErrorMessage] = useState("");
+
     const [formData, setFormData] = useState({
         request_id: "",
         request_informer_emp_id: "",
@@ -22,7 +26,7 @@ const RepairRequestFormEdit = () => {
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
-    console.log(dataRepairID); // ✅ ตรวจสอบข้อมูลที่ถูกส่งมา
+    // console.log(dataRepairID); // ✅ ตรวจสอบข้อมูลที่ถูกส่งมา
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const options = { year: "numeric", month: "numeric", day: "numeric", calendar: "gregory" };
@@ -76,7 +80,8 @@ const RepairRequestFormEdit = () => {
                     const subtotal = price * qty;
                     const total = subtotal + (subtotal * vat / 100);
                     return {
-                        parts_used_id: item.parts_used_id || "", 
+                        request_id: item.request_id || "",
+                        parts_used_id: item.parts_used_id || "",
                         part_id: item.part_id || "",
                         system_name: item.system_name || "",
                         part_name: item.repair_part_name || "",
@@ -104,11 +109,11 @@ const RepairRequestFormEdit = () => {
 
 
     const [parts, setParts] = useState([
-        { parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
+        { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
+        setParts([...parts, { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
     };
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
@@ -155,6 +160,8 @@ const RepairRequestFormEdit = () => {
     };
 
 
+
+
     useEffect(() => {
         let total = 0;
         let vatAmount = 0;
@@ -190,6 +197,40 @@ const RepairRequestFormEdit = () => {
     };
 
 
+    const handleSubmitMaintenance = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            setErrorMessage("Access token is missing. Please log in again.");
+            return;
+        }
+    
+        try {
+            const response = await axios.put(
+                `${apiUrl}/api/repair_requests_edit/${formData.request_id}`,
+                {
+                    ...formData,
+                    parts: parts // สมมติว่า parts เป็น array หรือ object
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            console.log("Updated successfully:", response.data);
+            setMessage(response.data.message);
+            setMessageType("success");
+        } catch (error) {
+            console.error("Error updating:", error);
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
+        }
+    };
+    
+    
+
 
     return (
         <div className="p-3">
@@ -206,7 +247,7 @@ const RepairRequestFormEdit = () => {
                                 <i className="bi bi-chevron-right"></i>
 
                                 <li>
-                                <Link to="/truck/MaintenanceRequest"> รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา </Link>
+                                    <Link to="/truck/MaintenanceRequest"> รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา </Link>
                                 </li>
                                 <i className="bi bi-chevron-right"></i>
 
@@ -240,8 +281,15 @@ const RepairRequestFormEdit = () => {
                 </div>
                 <div className="card">
                     <div className="card-body">
-
-                        <form action="">
+                        {/* Display success or error message */}
+                        {message && (
+                            <div
+                                className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
+                            >
+                                {message}
+                            </div>
+                        )}
+                        <form action="" onSubmit={handleSubmitMaintenance}>
                             <div className="row">
                                 <div className="col-lg-3 mb-3">
                                     <label className="form-label">เลขที่ใบแจ้งซ่อม</label>
@@ -249,7 +297,13 @@ const RepairRequestFormEdit = () => {
                                 </div>
                                 <div className="col-lg-3 mb-3">
                                     <label className="form-label">วันที่แจ้ง</label>
-                                    <input type="date" className="form-control" value={formatDate(formData?.request_date || "")} disabled />
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        value={formData?.request_date?.slice(0, 10) || ""} // Keep it ISO format
+                                        disabled
+                                    />
+
                                 </div>
                                 <div className="col-lg-3 mb-3">
                                     <label className="form-label">ผู้แจ้ง</label>
@@ -267,8 +321,8 @@ const RepairRequestFormEdit = () => {
                                         className="form-control"
                                         name="reg_number"
                                         value={formData?.reg_number}
-                                        // onChange={handleChangeRequestjob}
-                                        disabled
+                                        onChange={handleChangeRequestjob}
+                                    // disabled
                                     />
                                 </div>
                                 <div className="col-lg-3">
@@ -279,7 +333,7 @@ const RepairRequestFormEdit = () => {
                                         name="car_mileage"
                                         value={formData?.car_mileage}
                                         onChange={handleChangeRequestjob}
-                                        // disabled
+                                    // disabled
                                     />
                                 </div>
                             </div>

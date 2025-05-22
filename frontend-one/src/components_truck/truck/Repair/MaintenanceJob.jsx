@@ -464,7 +464,7 @@ const MaintenanceJob = () => {
                 </div>
                 <div className="card mb-3">
                     <div className="card-body">
-                                <div className="text-center">
+                                <div className="text-center alert alert-warning  " role="alert">
                                    <strong>
                                     {/* <p className="text-success fw-bolder">แจ้งซ่อม</p> */}
                                     <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
