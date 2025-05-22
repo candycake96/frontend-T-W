@@ -2,8 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
+import { useNavigate } from 'react-router-dom';
 
-const RepairRequestFormEdit = () => {
+const RepairRequestFormEdit = () => { 
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("success");
@@ -108,6 +110,9 @@ const RepairRequestFormEdit = () => {
     });
 
 
+    const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
+    const [selectedPartIndex, setSelectedPartIndex] = useState(null);
+
     const [parts, setParts] = useState([
         { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
     ]);
@@ -158,6 +163,15 @@ const RepairRequestFormEdit = () => {
         setParts(updatedParts);
 
     };
+
+// Modal
+const handleOpenModalVehicleParteDtails = (index) => {
+    setSelectedPartIndex(index);
+    setOpenModalVehicleParteDtails(true);
+}
+const handleClossModalVehicleParteDtails = () => {
+    setOpenModalVehicleParteDtails(false);
+}
 
 
 
@@ -427,7 +441,6 @@ const RepairRequestFormEdit = () => {
                                                 className="form-control form-control-sm"
                                                 value={part.vat}
                                                 onChange={(e) => handleChange(index, "vat", e.target.value)}
-                                                disabled
                                             />
                                         </div>
                                         <div className="col-lg-2">
@@ -484,7 +497,10 @@ const RepairRequestFormEdit = () => {
                             </div>
 
                             <div className="text-center">
-                                <button type="submit" className="btn btn-primary">บันทึก</button>
+                                <button type="submit" className="btn btn-primary me-1">บันทึก</button>
+                                <Link to="/truck/MaintenanceJob" state={dataRepairID} className="btn btn-secondary">
+        ยกเลิก
+      </Link>
                             </div>
                         </form>
 
@@ -492,6 +508,13 @@ const RepairRequestFormEdit = () => {
                     </div>
                 </div>
             </div>
+
+            {isOpenModalVehicleParteDtails && (
+                <Modal_vehicle_parts_details
+                    isOpen={isOpenModalVehicleParteDtails} onClose={handleClossModalVehicleParteDtails} onSubmit={handleDataFromAddModal} />
+            )}
+
+
         </div>
     );
 };
