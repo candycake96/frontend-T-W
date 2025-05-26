@@ -5,6 +5,8 @@ import { apiUrl } from "../../config/apiConfig";
 const EmployeePermissionForm = ({ roles, setRoles }) => {
   const [showRoles, setShowRoles] = useState([]);
   const [permissionAccess, setPermissionAccess] = useState([]);
+  const [submenuData, setSubmenueData] = useState([]);
+  const [moduleData, setModuleData] = useState([]);
 
   // Fetch roles from the API
   const fetchRoles = async () => {
@@ -22,7 +24,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
 
   const fetchPermissionAccess = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/access_details`, {
+      const response = await axios.get(`${apiUrl}/api/permissions/all`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -33,9 +35,38 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
     }
   };
 
+  const fetchPermissionModule = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/module/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setModuleData(response.data); // Set the fetched roles
+    } catch (error) {
+      console.error("Error fetching Permission Access:", error);
+    }
+  };
+
+  const fetchPermissionSudMenue = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/submenus/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setSubmenueData(response.data); // Set the fetched roles
+    } catch (error) {
+      console.error("Error fetching Permission Access:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRoles();
     fetchPermissionAccess()
+    fetchPermissionModule()
+    fetchPermissionSudMenue()
+
   }, []);
 
   // Handle checkbox change
@@ -79,48 +110,53 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
       </div>
       <div className="mb-3">
         <div className="container">
-         
-          {permissionAccess
-  .filter(p => p.permission_type === "main")
-  .map(mainPerm => (
-    <div className="mb-3 " key={mainPerm.permission_code}>
-      <div className="form-check">
-      <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id={mainPerm.permission_code}
-                  value={mainPerm.permission_code}
-                  // onChange={handleCheckboxChange} // สมมติว่ามีฟังก์ชันนี้
-                  // checked={selectedPermissions.includes(childPerm.permission_code)}
-                />
-                 <label className="form-check-label text-primary " htmlFor={mainPerm.permission_code}>
-                  {mainPerm.permission_description}
-                </label>
-      </div>
 
-      <div className="row">
-        {permissionAccess
-          .filter(child => child.permission_type === "child" && child.permission_module === mainPerm.permission_module)
-          .map(childPerm => (
-            <div className="col-md-4 mb-2" key={childPerm.permission_code}>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id={childPerm.permission_code}
-                  value={childPerm.permission_code}
-                  // onChange={handleCheckboxChange} // สมมติว่ามีฟังก์ชันนี้
-                  // checked={selectedPermissions.includes(childPerm.permission_code)}
-                />
-                <label className="form-check-label" htmlFor={childPerm.permission_code}>
-                  {childPerm.permission_description}
-                </label>
+          {moduleData
+            .map(mainPerm => (
+              <div className="mb-3 " key={mainPerm.module_id}>
+                <div className="form-check">
+                  <label className="form-check-label text-primary ">
+                    {mainPerm.name}
+                  </label>
+                </div>
+
+
+                {/* Menu Functions under Module */}
+
+
+                <div className="row">
+                  {submenuData
+                    .filter((section) => section.module_id === mainPerm.module_id) // <-- ใช้ module_id ที่เชื่อมโยง
+                    .map((sub) => (
+                      <div className="col-md-4 mb-2" key={sub.menu_id}>
+                        <p className="fw-bolder text-denger">{sub.name}</p>
+                        <div className="">
+                          {permissionAccess
+                            .filter((child) => child.menu_id === sub.menu_id) // <-- ใช้ module_id ที่เชื่อมโยง
+                            .map((fn) => (
+                              <div className="form-check " key={fn.function_id}>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  value={fn.function_id} // Set value as function_id
+                                  // onChange={() => handleCheckboxChange(fn.function_id)} // Trigger the change handler
+                                  // checked={roles.includes(fn.function_id)} // Mark checkbox as checked if function_id exists in roles
+                                />
+                                <label htmlFor={`checkbox-${fn.function_id}`} className="form-check-label">
+                                  {fn.function_name}
+                                </label>
+                                {/* <p className="fw-bolder">{fn.function_name}</p> */}
+                                <div className="">
+
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
-    </div>
-))}
+            ))}
 
 
         </div>
