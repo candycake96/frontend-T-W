@@ -4,6 +4,7 @@ import { apiUrl } from "../../config/apiConfig";
 
 const EmployeePermissionForm = ({ roles, setRoles }) => {
   const [showRoles, setShowRoles] = useState([]);
+  const [permissionAccess, setPermissionAccess] = useState([]);
 
   // Fetch roles from the API
   const fetchRoles = async () => {
@@ -19,8 +20,22 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
     }
   };
 
+  const fetchPermissionAccess = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/access_details`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setPermissionAccess(response.data); // Set the fetched roles
+    } catch (error) {
+      console.error("Error fetching Permission Access:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRoles();
+    fetchPermissionAccess()
   }, []);
 
   // Handle checkbox change
@@ -63,23 +78,53 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
         <p>สิทธิ์การเข้าถึง</p>
       </div>
       <div className="mb-3">
+        <div className="container">
+         
+          {permissionAccess
+  .filter(p => p.permission_type === "main")
+  .map(mainPerm => (
+    <div className="mb-3 " key={mainPerm.permission_code}>
+      <div className="form-check">
+      <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id={mainPerm.permission_code}
+                  value={mainPerm.permission_code}
+                  // onChange={handleCheckboxChange} // สมมติว่ามีฟังก์ชันนี้
+                  // checked={selectedPermissions.includes(childPerm.permission_code)}
+                />
+                 <label className="form-check-label text-primary " htmlFor={mainPerm.permission_code}>
+                  {mainPerm.permission_description}
+                </label>
+      </div>
+
       <div className="row">
-            <div className="col-lg-3">
-              <p className="">จัดการข้อมูลพนักงาน</p>
-              <div className="form-check form-check-inline">
-                <input type="checkbox" name="" id="" className="form-check-input" />
-                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
-              </div>
-              <div className="form-check form-check-inline">
-                <input type="checkbox" name="" id="" className="form-check-input" />
-                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
-              </div>
-              <div className="form-check form-check-inline">
-                <input type="checkbox" name="" id="" className="form-check-input" />
-                <label htmlFor="checkbox" className="form-check-label">เพิ่มข้อมูลพนักงาน</label>
+        {permissionAccess
+          .filter(child => child.permission_type === "child" && child.permission_module === mainPerm.permission_module)
+          .map(childPerm => (
+            <div className="col-md-4 mb-2" key={childPerm.permission_code}>
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id={childPerm.permission_code}
+                  value={childPerm.permission_code}
+                  // onChange={handleCheckboxChange} // สมมติว่ามีฟังก์ชันนี้
+                  // checked={selectedPermissions.includes(childPerm.permission_code)}
+                />
+                <label className="form-check-label" htmlFor={childPerm.permission_code}>
+                  {childPerm.permission_description}
+                </label>
               </div>
             </div>
-          </div>
+          ))}
+      </div>
+    </div>
+))}
+
+
+        </div>
+
       </div>
 
       <hr className="mb-3" />
@@ -88,7 +133,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
           <p>สิทธิ์ในการอนุมัติ</p>
         </div>
         <div className="mb-3">
-        <div className="row">
+          <div className="row">
             <div className="col-lg-3">
               <div className="form-check form-check-inline">
                 <input type="checkbox" name="" id="" className="form-check-input" />
