@@ -129,7 +129,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
                     .filter((section) => section.module_id === mainPerm.module_id) // <-- ใช้ module_id ที่เชื่อมโยง
                     .map((sub) => (
                       <div className="col-md-4 mb-2" key={sub.menu_id}>
-                        <p className="fw-bolder text-denger">{sub.name}</p>
+                        <p className="fw-bolder text-denger"><i class="bi bi-asterisk"></i> {sub.name}</p>
                         <div className="">
                           {permissionAccess
                             .filter((child) => child.menu_id === sub.menu_id) // <-- ใช้ module_id ที่เชื่อมโยง
