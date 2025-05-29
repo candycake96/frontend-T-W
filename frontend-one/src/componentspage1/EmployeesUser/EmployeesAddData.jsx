@@ -29,6 +29,7 @@ const EmployeesAddData = () => {
     image: null,
     passport: ''
   });
+
   const [currentAddress, setCurrentAddress] = useState({
     country: '',
     postal_code: '',
@@ -37,6 +38,8 @@ const EmployeesAddData = () => {
     city: '',
     province: ''
   });
+
+
   const [permanentAddress, setPermanentAddress] = useState({
     country: '',
     postal_code: '',
@@ -45,6 +48,7 @@ const EmployeesAddData = () => {
     city: '',
     province: ''
   });
+
   const [driverLicenses, setDriverLicenses] = useState([{
     license_number: '',
     issued_date: '',
@@ -53,21 +57,27 @@ const EmployeesAddData = () => {
     issuing_authority: '',
     status: 'Active'
   }]);
+
   const [roles, setRoles] = useState([]);
+
+  const [permissionCode, setPermpssionCode] = useState([]);
+
 const [salaryMaster, setSalaryMaster] = useState([{
   base_salary: '',
   effective_date: ''
-}])
+}]);
+
 const [socialsecurityMaster, setSocialsecurityMaster] = useState([{
   contribution_rate: '',
   contribution_amount: '',
   effective_date: ''
-}])
+}]);
+
 const [providentFundsMaster, setProvidentFundsMaster] = useState([{
   employee_rate: '',
   employee_contribution: '',
   effective_date: ''
-}])
+}]);
 
 
   const [activeForm, setActiveForm] = useState('employeeInfo');
@@ -115,6 +125,8 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
       formData.append('image', employeeInfo.image);
     }
 
+    console.log('Raw permissionCode:', permissionCode);
+console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
     // Append other data
     formData.append('employeeInfo', JSON.stringify(employeeInfo));
     formData.append('currentAddress', JSON.stringify(currentAddress));
@@ -124,7 +136,12 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
     formData.append('salaryMaster', JSON.stringify(salaryMaster));
     formData.append('socialsecurityMaster', JSON.stringify(socialsecurityMaster));
     formData.append('providentFundsMaster', JSON.stringify(providentFundsMaster));
+    formData.append('permissionCode', JSON.stringify(permissionCode));
 
+// / วิธีดูค่าทั้งหมดใน FormData
+// for (let pair of formData.entries()) {
+//   console.log(pair[0] + ': ' + pair[1]);
+// }
 
     // Log the FormData content
   console.log("Form data being submitted:");
@@ -307,7 +324,7 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
             )}
 
             {activeForm === 'permissions' && (
-              <EmployeePermissionForm roles={roles} setRoles={setRoles} />
+              <EmployeePermissionForm roles={roles} setRoles={setRoles} permissionCode={permissionCode} setPermissionCode={setPermpssionCode} />
             )}
 
             {activeForm === 'finance' && (

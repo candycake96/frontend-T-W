@@ -2,11 +2,36 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../config/apiConfig";
 
-const EmployeePermissionForm = ({ roles, setRoles }) => {
+const EmployeePermissionForm = ({ roles, setRoles, permissionCode, setPermissionCode }) => {
   const [showRoles, setShowRoles] = useState([]);
   const [permissionAccess, setPermissionAccess] = useState([]);
   const [submenuData, setSubmenueData] = useState([]);
   const [moduleData, setModuleData] = useState([]);
+
+  const handleCheckboxChangePermissions = (functionId) => {
+    setPermissionCode(prev => {
+      if (prev.includes(functionId)) {
+        return prev.filter(id => id !== functionId); // ลบออกถ้าเคยเลือกแล้ว
+      } else {
+        return [...prev, functionId]; // เพิ่มถ้ายังไม่เคยเลือก
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    const allFunctionIds = permissionAccess.map(fn => fn.function_code);
+    setPermissionCode(allFunctionIds);
+  };
+
+  const handleClearAll = () => {
+    setPermissionCode([]);
+  };
+
+
+
+
+  // 
+
 
   // Fetch roles from the API
   const fetchRoles = async () => {
@@ -22,6 +47,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
     }
   };
 
+
   const fetchPermissionAccess = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/permissions/all`, {
@@ -34,6 +60,7 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
       console.error("Error fetching Permission Access:", error);
     }
   };
+
 
   const fetchPermissionModule = async () => {
     try {
@@ -66,9 +93,9 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
     fetchPermissionAccess()
     fetchPermissionModule()
     fetchPermissionSudMenue()
-
   }, []);
 
+  
   // Handle checkbox change
   const handleCheckboxChange = (roleId) => {
     // Check if the role is already selected
@@ -107,6 +134,17 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
       <hr className="mb-3" />
       <div className="mb-3">
         <p>สิทธิ์การเข้าถึง</p>
+        <div className="mb-2">
+          <button type="button" className="btn btn-sm btn-success me-2" onClick={handleSelectAll}>
+            เลือกทั้งหมด
+          </button>
+          <button type="button" className="btn btn-sm btn-danger" onClick={handleClearAll}>
+            ล้างทั้งหมด
+          </button>
+          <p className="mt-2 text-success">เลือกแล้ว: {permissionCode.length} รายการ</p>
+        </div>
+
+
       </div>
       <div className="mb-3">
         <div className="container">
@@ -123,31 +161,54 @@ const EmployeePermissionForm = ({ roles, setRoles }) => {
 
                 {/* Menu Functions under Module */}
 
-
                 <div className="row">
                   {submenuData
                     .filter((section) => section.module_id === mainPerm.module_id) // <-- ใช้ module_id ที่เชื่อมโยง
                     .map((sub) => (
                       <div className="col-md-4 mb-2" key={sub.menu_id}>
-                        <p className="fw-bolder text-denger"><i class="bi bi-asterisk"></i> {sub.name}</p>
+                        <p className="fw-bolder text-denger"><i class="bi bi-asterisk"></i> {sub.name} <strong>
+
+                          {/* ✅ Checkbox เลือกทั้งหมดเฉพาะกลุ่มนี้ */}
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id={`select-all-${sub.menu_id}`}
+                            checked={
+                              permissionAccess.filter(p => p.menu_id === sub.menu_id)
+                                .every(fn => permissionCode.includes(fn.function_code))
+                            }
+                            onChange={(e) => {
+                              const groupFns = permissionAccess.filter(p => p.menu_id === sub.menu_id).map(p => p.function_code);
+                              if (e.target.checked) {
+                                // เพิ่มเฉพาะ function_id ที่ยังไม่มีใน permissionCode
+                                setPermissionCode(prev => [...new Set([...prev, ...groupFns])]);
+                              } else {
+                                // ลบ function_id ของกลุ่มนี้ออกจาก permissionCode
+                                setPermissionCode(prev => prev.filter(id => !groupFns.includes(id)));
+                              }
+                            }}
+                          />
+
+                        </strong>
+                        </p>
+
                         <div className="">
                           {permissionAccess
                             .filter((child) => child.menu_id === sub.menu_id) // <-- ใช้ module_id ที่เชื่อมโยง
                             .map((fn) => (
-                              <div className="form-check " key={fn.function_id}>
+                              <div className="form-check " key={fn.function_code}>
                                 <input
                                   type="checkbox"
+                                  id={`checkbox-${fn.function_code}`}
                                   className="form-check-input"
-                                  value={fn.function_id} // Set value as function_id
-                                  // onChange={() => handleCheckboxChange(fn.function_id)} // Trigger the change handler
-                                  // checked={roles.includes(fn.function_id)} // Mark checkbox as checked if function_id exists in roles
+                                  value={fn.function_code} // Set value as _code
+                                  checked={permissionCode.includes(fn.function_code)}
+                                  onChange={() => handleCheckboxChangePermissions(fn.function_code)}
                                 />
-                                <label htmlFor={`checkbox-${fn.function_id}`} className="form-check-label">
-                                  {fn.function_name}
+                                <label htmlFor={`checkbox-${fn.function_code}`} className="form-check-label">
+                                  {fn.function_name} 
                                 </label>
-                                {/* <p className="fw-bolder">{fn.function_name}</p> */}
                                 <div className="">
-
                                 </div>
                               </div>
                             ))}
