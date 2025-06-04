@@ -1,12 +1,23 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import EditPermission from "./EditPermission";
 
 const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
   if (!emp) return null;
 
   const [empRoles, setEmpRoles] = useState([]);
   const id = emp.id_emp;
+
+    const [isModalEditPermission, setModalEditPermission] = useState(false);
+    const [dataModalPermission, setDataModalPermission] = useState(null);
+  const handleOpenModalPermission = (data) => {
+    setModalEditPermission(true);
+    setDataModalPermission(data)
+  };
+  const handleClossModalEditPermission = () => {
+    setModalEditPermission(false);
+  };
 
   // Fetch employee roles when the employee ID changes
   const fetchEmpRoles = async () => {
@@ -26,7 +37,7 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
     } catch (error) {
       console.error("Error fetching employee roles:", error);
     }
-  };
+  }; 
 
   useEffect(() => {
     if (id) {
@@ -75,8 +86,29 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
           <p className="text-muted">No roles assigned to this employee.</p>
         )}
       </div>
-
       <hr className="mb-3" />
+      <div className="mb-3">
+        {/* Header Section */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="col-4 fw-bold">สิทธิ์การเข้าถึง</div>
+          <button
+            style={{
+              color: "#008000",
+              border: "none",
+              background: "transparent",
+            }}
+            onClick={() => handleOpenModalPermission(emp)}
+          >
+            <i className="bi bi-pencil-square"></i> แก้ไข
+          </button>
+        </div>
+        <div className="">
+            
+        </div>
+      </div>
+            {isModalEditPermission && (
+              <EditPermission isOpen={isModalEditPermission} onClose={handleClossModalEditPermission} emp={dataModalPermission} />
+            )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
+import EditPermission from "./EditPermission";
 
 
 const EditRol = ({ isOpen, onClose, emp }) => {
@@ -11,6 +12,8 @@ const EditRol = ({ isOpen, onClose, emp }) => {
   const [availableRoles, setAvailableRoles] = useState([]); // สิทธิ์ทั้งหมดที่มีในระบบ
   const [selectedRoles, setSelectedRoles] = useState([]); // สิทธิ์ที่ผู้ใช้เลือก
   const id = emp.id_emp;
+  
+
 
   // Fetch all available roles
   const fetchAvailableRoles = async () => {
@@ -108,7 +111,7 @@ const EditRol = ({ isOpen, onClose, emp }) => {
     >
       <div>
         <div className="mb-2">
-          <h2 className="fw-bold">สิทธิ์การใช้งาน {emp.id_emp}</h2>
+          <h2 className="fw-bold">สิทธิ์การใช้งาน {emp.id_emp} </h2>
         </div>
         <div>
           {availableRoles.length > 0 ? (
@@ -143,6 +146,7 @@ const EditRol = ({ isOpen, onClose, emp }) => {
           </button>
         </div>
       </div>
+
     </Modal>
   );
 };

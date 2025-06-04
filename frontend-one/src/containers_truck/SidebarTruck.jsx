@@ -208,7 +208,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           {activeDropdown === "driver" && (
             <ul className="list-unstyled ps-4">
               <li>
-                <Link to="/truck/driverๅ"
+                <Link to="/truck/driver"
                   className={`nav-link ${location.pathname === "/truck/driver" ? "active" : ""}`}>
                   ข้อมูลคนขับ
                 </Link>

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
+import PlanningRepair from "./PlanningRepair";
 
 const MaintenanceJob = () => {
 
@@ -51,6 +52,14 @@ const MaintenanceJob = () => {
             fetchRequestAndParts();
         }
     }, [dataRepairID]);
+
+    const [user, setUser] = useState(null);  //token
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
 
     // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
     useEffect(() => {
@@ -256,7 +265,16 @@ const MaintenanceJob = () => {
                                     </>
                                 )}
                             </button>
-                            <Link to="/truck/RepairRequestFormEdit" state={dataRepairID} className="btn btn-primary">Edit  <i class="bi bi-pencil-fill"></i></Link>
+                            {/* แสดงเห็นเฉพาะผู้สร้าง */}
+                            {formData?.request_informer_emp_id === user?.id_emp && (
+                                <Link
+                                    to="/truck/RepairRequestFormEdit"
+                                    state={dataRepairID}
+                                    className="btn btn-primary"
+                                >
+                                    Edit <i className="bi bi-pencil-fill"></i>
+                                </Link>
+                            )}
                         </div>
                     </div>
 
@@ -462,17 +480,8 @@ const MaintenanceJob = () => {
 
                     </div>
                 </div>
-                <div className="card mb-3">
-                    <div className="card-body">
-                                <div className="text-center alert alert-warning  " role="alert">
-                                   <strong>
-                                    {/* <p className="text-success fw-bolder">แจ้งซ่อม</p> */}
-                                    <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
-                                    <p className="text-success fw-bolder"></p>
-                                    </strong> 
-                                </div>
-                    </div>
-                </div>
+
+                <PlanningRepair  maintenanceJob={formData} />
 
             </div>
         </div>

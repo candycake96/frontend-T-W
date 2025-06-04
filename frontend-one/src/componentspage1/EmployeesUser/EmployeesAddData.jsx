@@ -62,22 +62,22 @@ const EmployeesAddData = () => {
 
   const [permissionCode, setPermpssionCode] = useState([]);
 
-const [salaryMaster, setSalaryMaster] = useState([{
-  base_salary: '',
-  effective_date: ''
-}]);
+  const [salaryMaster, setSalaryMaster] = useState([{
+    base_salary: '',
+    effective_date: ''
+  }]);
 
-const [socialsecurityMaster, setSocialsecurityMaster] = useState([{
-  contribution_rate: '',
-  contribution_amount: '',
-  effective_date: ''
-}]);
+  const [socialsecurityMaster, setSocialsecurityMaster] = useState([{
+    contribution_rate: '',
+    contribution_amount: '',
+    effective_date: ''
+  }]);
 
-const [providentFundsMaster, setProvidentFundsMaster] = useState([{
-  employee_rate: '',
-  employee_contribution: '',
-  effective_date: ''
-}]);
+  const [providentFundsMaster, setProvidentFundsMaster] = useState([{
+    employee_rate: '',
+    employee_contribution: '',
+    effective_date: ''
+  }]);
 
 
   const [activeForm, setActiveForm] = useState('employeeInfo');
@@ -108,25 +108,27 @@ const [providentFundsMaster, setProvidentFundsMaster] = useState([{
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form before submitting
+    // Validate the form befor
+    // .e submitting
     if (!validateForm()) return;
 
     // Filter driver licenses that have a license number
     const filteredDriverLicenses = driverLicenses.filter(
       (license) => license.license_number && license.license_number.trim() !== ""
     );
-    
+
 
     // Prepare FormData
     const formData = new FormData();
-    
+
     // Append image if present
     if (employeeInfo.image) {
       formData.append('image', employeeInfo.image);
     }
 
     console.log('Raw permissionCode:', permissionCode);
-console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
+    console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
+    
     // Append other data
     formData.append('employeeInfo', JSON.stringify(employeeInfo));
     formData.append('currentAddress', JSON.stringify(currentAddress));
@@ -138,21 +140,21 @@ console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
     formData.append('providentFundsMaster', JSON.stringify(providentFundsMaster));
     formData.append('permissionCode', JSON.stringify(permissionCode));
 
-// / วิธีดูค่าทั้งหมดใน FormData
-// for (let pair of formData.entries()) {
-//   console.log(pair[0] + ': ' + pair[1]);
-// }
+    // / วิธีดูค่าทั้งหมดใน FormData
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0] + ': ' + pair[1]);
+    // }
 
     // Log the FormData content
-  console.log("Form data being submitted:");
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
+    console.log("Form data being submitted:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     console.log("Form data being submitted:", formData);
 
     try {
-      
+
       // Post the data to the backend
       const response = await axios.post(
         `${apiUrl}/api/addemployeesdriver`,
@@ -170,49 +172,49 @@ console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
       setMessageType("success");
 
       // Reset input values after successful submission
-    setEmployeeInfo({
-      code: '',
-      date_job: '',
-      fname: '',
-      lname: '',
-      nickname: '',
-      identification_number: '',
-      email: '',
-      password: '',
-      phone: '',
-      gender: '',
-      id_position: '',
-      id_department: '',
-      id_branch: '',
-      company_id: '',
-      status: 'Active',
-      image: null,
-    });
-    setCurrentAddress({
-      country: '',
-      postal_code: '',
-      house_number: '',
-      street: '',
-      city: '',
-      province: ''
-    });
-    setPermanentAddress({
-      country: '',
-      postal_code: '',
-      house_number: '',
-      street: '',
-      city: '',
-      province: ''
-    });
-    setDriverLicenses([{
-      license_number: '',
-      issued_date: '',
-      expiry_date: '',
-      license_type: '',
-      issuing_authority: '',
-      status: 'Active'
-    }]);
-    setRoles([]);
+      setEmployeeInfo({
+        code: '',
+        date_job: '',
+        fname: '',
+        lname: '',
+        nickname: '',
+        identification_number: '',
+        email: '',
+        password: '',
+        phone: '',
+        gender: '',
+        id_position: '',
+        id_department: '',
+        id_branch: '',
+        company_id: '',
+        status: 'Active',
+        image: null,
+      });
+      setCurrentAddress({
+        country: '',
+        postal_code: '',
+        house_number: '',
+        street: '',
+        city: '',
+        province: ''
+      });
+      setPermanentAddress({
+        country: '',
+        postal_code: '',
+        house_number: '',
+        street: '',
+        city: '',
+        province: ''
+      });
+      setDriverLicenses([{
+        license_number: '',
+        issued_date: '',
+        expiry_date: '',
+        license_type: '',
+        issuing_authority: '',
+        status: 'Active'
+      }]);
+      setRoles([]);
 
 
       // Hide message after 3 seconds
@@ -328,13 +330,13 @@ console.log('Stringified permissionCode:', JSON.stringify(permissionCode));
             )}
 
             {activeForm === 'finance' && (
-              <EmployeeFinanceForm 
-              salaryMaster={salaryMaster} 
-              setSalaryMaster={setSalaryMaster} 
-              socialsecurityMaster={socialsecurityMaster} 
-              setSocialsecurityMaster={setSocialsecurityMaster} 
-              providentFundsMaster={providentFundsMaster}
-              setProvidentFundsMaster={setProvidentFundsMaster}
+              <EmployeeFinanceForm
+                salaryMaster={salaryMaster}
+                setSalaryMaster={setSalaryMaster}
+                socialsecurityMaster={socialsecurityMaster}
+                setSocialsecurityMaster={setSocialsecurityMaster}
+                providentFundsMaster={providentFundsMaster}
+                setProvidentFundsMaster={setProvidentFundsMaster}
               />
             )}
           </div>
