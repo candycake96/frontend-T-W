@@ -109,7 +109,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
             console.log("data:", planning);
 
             // ตรวจสอบว่า request_id และ planning_emp_id มีค่าหรือไม่
-            if (!planning.request_id || !planning.planning_emp_id) {
+            if (!planning.request_id || !planning.planning_emp_id || !planning.planning_vehicle_availability || !planning.planning_event_time) {
                 setErrorMessage("กรุณาระบุข้อมูลให้ครบถ้วน");
                 return;
             }
@@ -144,6 +144,8 @@ const PlanningRepair = ({ maintenanceJob }) => {
             setMessage(response.data.message);
             setMessageType("success");
             setErrorMessage("บันทึกข้อมูลเรียบร้อยแล้ว");
+            fetchShowDetailPlanning();
+            alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
 
         } catch (error) {
             console.error("❌ Error occurred:", error);
@@ -214,13 +216,39 @@ const PlanningRepair = ({ maintenanceJob }) => {
     };
 
 
+    const handleSubmitEdit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting: ", planning);
+    setIsEditing(false);
+    try {
+        const res = await axios.put(
+            `${apiUrl}/api/planning_update/${detailPlanning[0]?.planning_id ?? ''}`,
+            {
+                request_id: planning.request_id,
+                planning_emp_id: planning.planning_emp_id,
+                planning_vehicle_availability: planning.planning_vehicle_availability,
+                planning_event_date: planning.planning_event_date,
+                planning_event_time: planning.planning_event_time,
+                planning_event_remarke: planning.planning_event_remarke
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                }
+            }
+        );
+        setMessage(res.data.message); // ✅ ใช้ res แทน response
+        alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+        setMessageType("success");
+        setErrorMessage("บันทึกข้อมูลเรียบร้อยแล้ว");
+        fetchShowDetailPlanning();
+    } catch (error) {
+        console.error("❌ Error occurred:", error);
+        setErrorMessage("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    }
+};
 
-    const handleSubmitEdit = (e) => {
-        e.preventDefault();
-        // ทำการ submit (เช่น ส่ง planning ไปยัง backend)
-        console.log("Submitting: ", planning);
-        setIsEditing(false);
-    };
 
 
 
@@ -232,45 +260,43 @@ const PlanningRepair = ({ maintenanceJob }) => {
                         <>
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
 
-
                             <form action="" onSubmit={handleSubmitEdit}>
                                 <div className="mb-3">
-                                        
-                                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                                <div className="flex-grow-1 me-3" style={{ minWidth: '200px' }}>
-                                                    <div className="col-lg-3">
-                                                        <label htmlFor="reporter" className="form-label mb-1">
-                                                        ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="reporter"
-                                                        id="reporter"
-                                                        value={`${detailPlanning[0]?.fname ?? ''} ${detailPlanning[0]?.lname ?? ''}`}
-                                                        className="form-control"
-                                                        readOnly
-                                                        disabled
-                                                    />
-                                                    </div>
-                                                    
-                                                </div>
-                                                {Array.isArray(detailPlanning) &&
-                                                    detailPlanning.length > 0 &&
-                                                    detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-warning"
-                                                            onClick={() => setIsEditing(true)}
-                                                            style={{ whiteSpace: 'nowrap' }}
-                                                        >
-                                                            แก้ไข
-                                                        </button>
-                                                    )}
+                                    <div className="d-flex align-items-center justify-content-between mb-3">
+                                        <div className="flex-grow-1 me-3" style={{ minWidth: '200px' }}>
+                                            <div className="col-lg-3">
+                                                <label htmlFor="reporter" className="form-label mb-1">
+                                                    ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="reporter"
+                                                    id="reporter"
+                                                    value={`${detailPlanning[0]?.fname ?? ''} ${detailPlanning[0]?.lname ?? ''}`}
+                                                    className="form-control"
+                                                    readOnly
+                                                    disabled
+                                                />
                                             </div>
-                                        
+                                        </div>
+                                        {/* สิทธ์เข้าถึงแก้ไขผู้ตรวจสอบ */}
+                                        {Array.isArray(detailPlanning) &&
+                                            detailPlanning.length > 0 &&
+                                            detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-warning"
+                                                    onClick={() => setIsEditing(true)}
+                                                    style={{ whiteSpace: 'nowrap' }}
+                                                >
+                                                    แก้ไข
+                                                </button>
+                                            )}
+                                    </div>
+
                                     <div className="row ">
                                         <div className="col-lg-3">
-                                           
+
                                         </div>
                                         <div className="row mb-3">
                                             <div className="col-lg-3 form-check">
@@ -378,10 +404,9 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
                             </form>
                         </>
-                    ) : (
+                    ) : user?.permission_codes.includes('CHECK_REQUEST_CAR') ? (
                         <>
-                            {console.log("⚠️ ไม่มีข้อมูล detailPlanning หรือเป็น array ว่าง:", detailPlanning)}
-                            <div className="text-center alert alert-warning" role="alert">
+                            <div className="text-center alert alert-warning md-3" role="alert">
                                 <strong>
                                     <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
                                 </strong>
@@ -398,6 +423,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                     </div>
                                 )}
                             </div>
+
                             <form action="" onSubmit={handleSave}>
                                 <div className="mb-3">
                                     <div className="row ">
@@ -500,8 +526,16 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         </button>
                                     </div>
                                 </div>
-
                             </form>
+
+                        </>
+                    ) : (
+                        <>
+                            <div className="text-center alert alert-warning" role="alert">
+                                <strong>
+                                    <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
+                                </strong>
+                            </div>
                         </>
                     )}
 
