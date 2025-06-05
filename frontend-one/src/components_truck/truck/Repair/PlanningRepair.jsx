@@ -285,11 +285,11 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                             detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
                                                 <button
                                                     type="button"
-                                                    className="btn btn-warning"
+                                                    className="btn btn-primary"
                                                     onClick={() => setIsEditing(true)}
                                                     style={{ whiteSpace: 'nowrap' }}
                                                 >
-                                                    แก้ไข
+                                                   <i class="bi bi-pencil-square"></i> แก้ไข
                                                 </button>
                                             )}
                                     </div>
@@ -386,7 +386,8 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         {isEditing && (
                                             <>
                                                 <button className="btn btn-success" type="submit">
-                                                    บันทึก
+                                                        ยืนยันการจัดรถ
+
                                                 </button>
                                                 <button
                                                     type="button"
@@ -522,7 +523,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
                                     <div className="text-center">
                                         <button className="btn btn-primary" type="submit">
-                                            บันทึก
+                                                ยืนยันการจัดรถ
                                         </button>
                                     </div>
                                 </div>
@@ -543,6 +544,19 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
                 </div>
             </div>
+
+          <div className="card mb-3">
+    {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
+        <>
+            <div className="text-center alert alert-warning" role="alert">
+                <strong>
+                    <p className="text-danger fw-bolder">รอการวิเคราะจากแผนกซ่อมบำรุง</p>
+                </strong>
+            </div>
+        </>
+    ) : null}
+</div>
+
         </>
     )
 }

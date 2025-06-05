@@ -241,7 +241,7 @@ const MaintenanceJob = () => {
                 </div>
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
-                        Repair Details
+                        รายละเอียดการซ่อม (Repair Details)
                     </p>
                 </div>
                 <hr className="mb-3" />
