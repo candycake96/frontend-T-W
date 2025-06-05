@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
 const PlanningRepair = ({ maintenanceJob }) => {
 
@@ -84,23 +86,71 @@ const PlanningRepair = ({ maintenanceJob }) => {
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("success");
     const [errorMessage, setErrorMessage] = useState("");
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        const tokenData = localStorage.getItem('token');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+        if (tokenData) {
+            setToken(tokenData);
+        }
+    }, []);
+
 
     const handleSave = async (e) => {
-        e.preventDefault();    
+        e.preventDefault();
         try {
-                     if (!token) {
-            setErrorMessage("Access token is missing. Please log in again.");
-            return;
-        };
+            console.log("Token:", token);
+            console.log("User:", user);
+            console.log("data:", planning);
 
-                 if (!planning) {
-            setErrorMessage("Access token is missing. Please log in again.");
-            return;
-        };
-        } catch (error){
+            // ตรวจสอบว่า request_id และ planning_emp_id มีค่าหรือไม่
+            if (!planning.request_id || !planning.planning_emp_id) {
+                setErrorMessage("กรุณาระบุข้อมูลให้ครบถ้วน");
+                return;
+            }
 
+            // แปลง request_id ให้เป็นตัวเลข
+            const numericRequestId = Number(planning.request_id);
+
+            if (isNaN(numericRequestId)) {
+                setErrorMessage("รหัสคำขอไม่ถูกต้อง (ต้องเป็นตัวเลข)");
+                return;
+            }
+
+            // สร้าง payload ที่จะส่งไป backend
+            const response = await axios.post(
+                `${apiUrl}/api/planning_add`,
+                {
+                    request_id: planning.request_id,
+                    planning_emp_id: planning.planning_emp_id, // ตรวจชื่อฟิลด์ให้ตรง
+                    planning_vehicle_availability: planning.planning_vehicle_availability,
+                    planning_event_date: planning.planning_event_date,
+                    planning_event_time: planning.planning_event_time,
+                    planning_event_remarke: planning.planning_event_remarke
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json', // ใช้ application/json แทน multipart/form-data ถ้าไม่มีไฟล์
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    }
+                }
+            );
+            console.log("Updated successfully:", response.data);
+            setMessage(response.data.message);
+            setMessageType("success");
+            setErrorMessage("บันทึกข้อมูลเรียบร้อยแล้ว");
+
+        } catch (error) {
+            console.error("❌ Error occurred:", error);
+            setErrorMessage("เกิดข้อผิดพลาด กรุณาลองใหม่");
         }
     };
+
+
 
 
 
@@ -116,15 +166,26 @@ const PlanningRepair = ({ maintenanceJob }) => {
                             <p className="text-success fw-bolder"></p>
                         </strong>
                     </div>
-                    <div className="text-center">
-                        {/* <button className="btn btn-primary" onClick={()=>handleModalOprenPlanning()}>เพิ่มข้อมูลตรวจสอบความพร้อมของรถใช้งาน</button> */}
+                    <div className="">
+                        {errorMessage && (
+                            <div className="alert alert-danger text-center" role="alert">
+                                {errorMessage}
+                            </div>
+                        )}
+
+                        {message && (
+                            <div className={`alert alert-${messageType} text-center`} role="alert">
+                                {message}
+                            </div>
+                        )}
+
                     </div>
-                    <form action="">
+                    <form action="" onSubmit={handleSave}>
                         <div className="mb-3">
                             <div className="row ">
                                 <div className="col-lg-3 mb-3 ">
                                     <label htmlFor="reporter" className="form-label">
-                                        ผู้แจ้ง <strong style={{ color: 'red' }}>*</strong>
+                                        ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
                                     </label>
                                     <input
                                         type="text"
@@ -133,6 +194,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         value={`${user?.fname ?? ''} ${user?.lname ?? ''}`}
                                         className="form-control"
                                         readOnly
+                                        disabled
                                     />
                                 </div>
                                 <div className="row mb-3">
@@ -208,14 +270,14 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         id="planning_event_remarke"
                                         className="form-control"
                                         value={planning.planning_event_remarke}
-                                        placeholder="ระบุเพิ่มเติม เช่น สถานที่จอดรถ"
+                                        placeholder="ระบุเพิ่มเติม เช่น วิ่งงานยังไม่เสร็จสิ้น"
                                         onChange={handlePlanningInput}
                                     />
                                 </div>
                             </div>
 
                             <div className="text-center">
-                                <button className="btn btn-primary">
+                                <button className="btn btn-primary" type="submit">
                                     บันทึก
                                 </button>
                             </div>
