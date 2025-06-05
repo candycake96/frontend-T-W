@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import '../Repair/PlanningReqair.css'
 
 const PlanningRepair = ({ maintenanceJob }) => {
 
@@ -150,8 +151,76 @@ const PlanningRepair = ({ maintenanceJob }) => {
         }
     };
 
+    const [detailPlanning, setDetailPlanning] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    // แสดงข้อมูลที่มีการบันทึก
+    const fetchShowDetailPlanning = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get(`${apiUrl}/api/planning_show_id/${maintenanceJob.request_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setDetailPlanning(response.data);
+            console.log("📦 detailPlanning:", response.data);
+        } catch (error) {
+            console.error("Error fetching detailscartype:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchShowDetailPlanning();
+    }, [maintenanceJob]);
+    // เซ็ตข้อมูลจาก detailPlanning (ถ้ามี)
+    useEffect(() => {
+        if (!isEditing && Array.isArray(detailPlanning) && detailPlanning.length > 0) {
+            const plan = detailPlanning[0];
+            setPlanning({
+                request_id: plan.request_id || "",
+                planning_emp_id: plan.planning_emp_id || "",
+                planning_vehicle_availability: plan.planning_vehicle_availability || "",
+                planning_event_date: plan.planning_event_date?.slice(0, 10) || "",  // ใช้ slice(0, 10) แทน
+                planning_event_time: plan.planning_event_time ? new Date(plan.planning_event_time).toISOString().substring(11, 16) : "",
+                planning_event_remarke: plan.planning_event_remarke || ""
+            });
+            console.log("Raw time from plan:", plan.planning_event_time);
+
+        }
+    }, [detailPlanning, isEditing]);
 
 
+    const handleCancel = () => {
+        if (Array.isArray(detailPlanning) && detailPlanning.length > 0) {
+            const plan = detailPlanning[0];
+            setPlanning({
+                request_id: plan.request_id || "",
+                planning_emp_id: plan.planning_emp_id || "",
+                planning_vehicle_availability: plan.planning_vehicle_availability || "",
+                planning_event_date: plan.planning_event_date || "",
+                planning_event_time: plan.planning_event_time?.substring(0, 5) || "",
+                planning_event_remarke: plan.planning_event_remarke || ""
+            });
+        }
+        setIsEditing(false);
+    };
+
+
+
+    const handleSubmitEdit = (e) => {
+        e.preventDefault();
+        // ทำการ submit (เช่น ส่ง planning ไปยัง backend)
+        console.log("Submitting: ", planning);
+        setIsEditing(false);
+    };
 
 
 
@@ -159,131 +228,285 @@ const PlanningRepair = ({ maintenanceJob }) => {
         <>
             <div className="card mb-3">
                 <div className="card-body">
-                    <div className="text-center alert alert-warning  " role="alert">
-                        <strong>
-                            {/* <p className="text-success fw-bolder">แจ้งซ่อม</p> */}
-                            <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม </p>
-                            <p className="text-success fw-bolder"></p>
-                        </strong>
-                    </div>
-                    <div className="">
-                        {errorMessage && (
-                            <div className="alert alert-danger text-center" role="alert">
-                                {errorMessage}
-                            </div>
-                        )}
+                    {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
+                        <>
+                            {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
 
-                        {message && (
-                            <div className={`alert alert-${messageType} text-center`} role="alert">
-                                {message}
-                            </div>
-                        )}
 
-                    </div>
-                    <form action="" onSubmit={handleSave}>
-                        <div className="mb-3">
-                            <div className="row ">
-                                <div className="col-lg-3 mb-3 ">
-                                    <label htmlFor="reporter" className="form-label">
-                                        ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="reporter"
-                                        id="reporter"
-                                        value={`${user?.fname ?? ''} ${user?.lname ?? ''}`}
-                                        className="form-control"
-                                        readOnly
-                                        disabled
-                                    />
-                                </div>
-                                <div className="row mb-3">
-                                    <div className="col-lg-3 form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="availableNow"
-                                            name="planning_vehicle_availability"
-                                            value="available"
-                                            checked={planning.planning_vehicle_availability === "available"}
-                                            onChange={handlePlanningInput}
-                                        />
-                                        <label className="form-check-label" htmlFor="availableNow">
-                                            รถว่างสามารถเข้าซ่อมได้ทันที
-                                        </label>
+                            <form action="" onSubmit={handleSubmitEdit}>
+                                <div className="mb-3">
+                                        
+                                             <div className="d-flex align-items-center justify-content-between mb-3">
+                                                <div className="flex-grow-1 me-3" style={{ minWidth: '200px' }}>
+                                                    <div className="col-lg-3">
+                                                        <label htmlFor="reporter" className="form-label mb-1">
+                                                        ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="reporter"
+                                                        id="reporter"
+                                                        value={`${detailPlanning[0]?.fname ?? ''} ${detailPlanning[0]?.lname ?? ''}`}
+                                                        className="form-control"
+                                                        readOnly
+                                                        disabled
+                                                    />
+                                                    </div>
+                                                    
+                                                </div>
+                                                {Array.isArray(detailPlanning) &&
+                                                    detailPlanning.length > 0 &&
+                                                    detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-warning"
+                                                            onClick={() => setIsEditing(true)}
+                                                            style={{ whiteSpace: 'nowrap' }}
+                                                        >
+                                                            แก้ไข
+                                                        </button>
+                                                    )}
+                                            </div>
+                                        
+                                    <div className="row ">
+                                        <div className="col-lg-3">
+                                           
+                                        </div>
+                                        <div className="row mb-3">
+                                            <div className="col-lg-3 form-check">
+                                                <input
+                                                    className="form-check-input no-disable-style"
+                                                    type="radio"
+                                                    id="availableNow"
+                                                    name="planning_vehicle_availability"
+                                                    value="available"
+                                                    checked={planning.planning_vehicle_availability === "available"}
+                                                    onChange={isEditing ? handlePlanningInput : () => { }}
+                                                />
+                                                <label className="form-check-label" htmlFor="availableNow">
+                                                    รถว่างสามารถเข้าซ่อมได้ทันที
+                                                </label>
+                                            </div>
+
+                                            <div className="col-lg-3 form-check">
+                                                <input
+                                                    className="form-check-input no-disable-style"
+                                                    type="radio"
+                                                    id="notAvailable"
+                                                    name="planning_vehicle_availability"
+                                                    value="not_available"
+                                                    checked={planning.planning_vehicle_availability === "not_available"}
+                                                    onChange={isEditing ? handlePlanningInput : () => { }}
+                                                />
+                                                <label className="form-check-label" htmlFor="notAvailable">
+                                                    รถไม่ว่าง
+                                                </label>
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
-                                    <div className="col-lg-3 form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="radio"
-                                            id="notAvailable"
-                                            name="planning_vehicle_availability"
-                                            value="not_available"
-                                            checked={planning.planning_vehicle_availability === "not_available"}
-                                            onChange={handlePlanningInput}
-                                        />
-                                        <label className="form-check-label" htmlFor="notAvailable">
-                                            รถไม่ว่าง
-                                        </label>
+                                    <div className="row mb-3">
+                                        <div className="col-lg-3">
+                                            <label htmlFor="planning_event_date" className="form-label">
+                                                วันที่รถว่าง <strong style={{ color: 'red' }}>*</strong>
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="planning_event_date"
+                                                id="planning_event_date"
+                                                className="form-control"
+                                                value={planning?.planning_event_date || ""}
+                                                onChange={handlePlanningInput}
+                                                disabled={!isEditing}
+
+                                            />
+                                        </div>
+                                        <div className="col-lg-2">
+                                            <label htmlFor="planning_event_time" className="form-label">
+                                                เวลา <strong style={{ color: 'red' }}>*</strong>
+                                            </label>
+                                            <input
+                                                type="time"
+                                                name="planning_event_time"
+                                                id="planning_event_time"
+                                                className="form-control"
+                                                value={planning.planning_event_time || ""}
+                                                step="60" // เพิ่มให้เลือกเป็นนาที (ไม่ใช่วินาที
+                                                onChange={handlePlanningInput}
+                                                disabled={!isEditing}
+                                            />
+                                        </div>
+                                        <div className="col-lg-5">
+                                            <label htmlFor="planning_event_remarke" className="form-label">
+                                                หมายเหตุ (ถ้ามี)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="planning_event_remarke"
+                                                id="planning_event_remarke"
+                                                className="form-control"
+                                                value={planning.planning_event_remarke || ""}
+                                                placeholder="ระบุเพิ่มเติม เช่น วิ่งงานยังไม่เสร็จสิ้น"
+                                                onChange={handlePlanningInput}
+                                                disabled={!isEditing}
+
+                                            />
+                                        </div>
                                     </div>
 
+                                    <div className="text-center">
+                                        {isEditing && (
+                                            <>
+                                                <button className="btn btn-success" type="submit">
+                                                    บันทึก
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-secondary ms-2"
+                                                    onClick={handleCancel}
+                                                >
+                                                    ยกเลิก
+                                                </button>
+
+                                            </>
+                                        )}
+
+                                    </div>
                                 </div>
 
+                            </form>
+                        </>
+                    ) : (
+                        <>
+                            {console.log("⚠️ ไม่มีข้อมูล detailPlanning หรือเป็น array ว่าง:", detailPlanning)}
+                            <div className="text-center alert alert-warning" role="alert">
+                                <strong>
+                                    <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
+                                </strong>
                             </div>
-
-                            <div className="row mb-3">
-                                <div className="col-lg-3">
-                                    <label htmlFor="planning_event_date" className="form-label">
-                                        วันที่รถว่าง <strong style={{ color: 'red' }}>*</strong>
-                                    </label>
-                                    <input
-                                        type="date"
-                                        name="planning_event_date"
-                                        id="planning_event_date"
-                                        className="form-control"
-                                        value={planning?.planning_event_date || ""}
-                                        onChange={handlePlanningInput}
-                                    />
-                                </div>
-                                <div className="col-lg-2">
-                                    <label htmlFor="planning_event_time" className="form-label">
-                                        เวลา <strong style={{ color: 'red' }}>*</strong>
-                                    </label>
-                                    <input
-                                        type="time"
-                                        name="planning_event_time"
-                                        id="planning_event_time"
-                                        className="form-control"
-                                        value={planning.planning_event_time}
-                                        step="60" // เพิ่มให้เลือกเป็นนาที (ไม่ใช่วินาที
-                                        onChange={handlePlanningInput}
-                                    />
-                                </div>
-                                <div className="col-lg-5">
-                                    <label htmlFor="planning_event_remarke" className="form-label">
-                                        หมายเหตุ (ถ้ามี)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="planning_event_remarke"
-                                        id="planning_event_remarke"
-                                        className="form-control"
-                                        value={planning.planning_event_remarke}
-                                        placeholder="ระบุเพิ่มเติม เช่น วิ่งงานยังไม่เสร็จสิ้น"
-                                        onChange={handlePlanningInput}
-                                    />
-                                </div>
+                            <div className="">
+                                {errorMessage && (
+                                    <div className="alert alert-danger text-center" role="alert">
+                                        {errorMessage}
+                                    </div>
+                                )}
+                                {message && (
+                                    <div className={`alert alert-${messageType} text-center`} role="alert">
+                                        {message}
+                                    </div>
+                                )}
                             </div>
+                            <form action="" onSubmit={handleSave}>
+                                <div className="mb-3">
+                                    <div className="row ">
+                                        <div className="col-lg-3 mb-3 ">
+                                            <label htmlFor="reporter" className="form-label">
+                                                ผู้จัดรถ <strong style={{ color: 'red' }}>*</strong>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="reporter"
+                                                id="reporter"
+                                                value={`${user?.fname ?? ''} ${user?.lname ?? ''}`}
+                                                className="form-control"
+                                                readOnly
+                                                disabled
+                                            />
+                                        </div>
+                                        <div className="row mb-3">
+                                            <div className="col-lg-3 form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="availableNow"
+                                                    name="planning_vehicle_availability"
+                                                    value="available"
+                                                    checked={planning.planning_vehicle_availability === "available"}
+                                                    onChange={handlePlanningInput}
+                                                />
+                                                <label className="form-check-label" htmlFor="availableNow">
+                                                    รถว่างสามารถเข้าซ่อมได้ทันที
+                                                </label>
+                                            </div>
 
-                            <div className="text-center">
-                                <button className="btn btn-primary" type="submit">
-                                    บันทึก
-                                </button>
-                            </div>
-                        </div>
+                                            <div className="col-lg-3 form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    id="notAvailable"
+                                                    name="planning_vehicle_availability"
+                                                    value="not_available"
+                                                    checked={planning.planning_vehicle_availability === "not_available"}
+                                                    onChange={handlePlanningInput}
+                                                />
+                                                <label className="form-check-label" htmlFor="notAvailable">
+                                                    รถไม่ว่าง
+                                                </label>
+                                            </div>
 
-                    </form>
+                                        </div>
+
+                                    </div>
+
+                                    <div className="row mb-3">
+                                        <div className="col-lg-3">
+                                            <label htmlFor="planning_event_date" className="form-label">
+                                                วันที่รถว่าง <strong style={{ color: 'red' }}>*</strong>
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="planning_event_date"
+                                                id="planning_event_date"
+                                                className="form-control"
+                                                value={planning?.planning_event_date || ""}
+                                                onChange={handlePlanningInput}
+                                            />
+                                        </div>
+                                        <div className="col-lg-2">
+                                            <label htmlFor="planning_event_time" className="form-label">
+                                                เวลา <strong style={{ color: 'red' }}>*</strong>
+                                            </label>
+                                            <input
+                                                type="time"
+                                                name="planning_event_time"
+                                                id="planning_event_time"
+                                                className="form-control"
+                                                value={planning.planning_event_time}
+                                                step="60" // เพิ่มให้เลือกเป็นนาที (ไม่ใช่วินาที
+                                                onChange={handlePlanningInput}
+                                            />
+                                        </div>
+                                        <div className="col-lg-5">
+                                            <label htmlFor="planning_event_remarke" className="form-label">
+                                                หมายเหตุ (ถ้ามี)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="planning_event_remarke"
+                                                id="planning_event_remarke"
+                                                className="form-control"
+                                                value={planning.planning_event_remarke}
+                                                placeholder="ระบุเพิ่มเติม เช่น วิ่งงานยังไม่เสร็จสิ้น"
+                                                onChange={handlePlanningInput}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center">
+                                        <button className="btn btn-primary" type="submit">
+                                            บันทึก
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </>
+                    )}
+
+
+
                 </div>
             </div>
         </>

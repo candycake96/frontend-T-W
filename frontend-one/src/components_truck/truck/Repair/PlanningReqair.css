@@ -1,0 +1,5 @@
+.no-disable-style:disabled {
+  opacity: 1 !important;
+  background-color: white !important;
+  cursor: default;
+}
