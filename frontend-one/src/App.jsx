@@ -67,6 +67,7 @@ import MaintenanceRequest from "./components_truck/truck/Repair/MaintenanceReque
 import MaintenanceJob from "./components_truck/truck/Repair/MaintenanceJob";
 import RepairRequestFormEdit from "./components_truck/truck/Repair/RepairRequestFormEdit";
 import MaintenancPlanning from "./components_truck/truck/Repair/MaintenancePlanning";
+import MainternanceAnalysisRequestJob from "./components_truck/truck/Repair/MainternanceAnalysisRequestJob";
 
 Modal.setAppElement("#root");
 
@@ -148,6 +149,7 @@ function App() {
           <Route path="MaintenanceJob" element={<MaintenanceJob />} /> {/*  หน้า แสดงข้อมูล  ราคาอะไหล่กลาง */} 
           <Route path="RepairRequestFormEdit" element={<RepairRequestFormEdit />} /> {/*  หน้า แก้ไข */} 
           <Route path="MaintenancPlanning" element={<MaintenancPlanning />} /> {/*  หน้า แก้ไข */} 
+          <Route path="MainternanceAnalysisRequestJob" element={<MainternanceAnalysisRequestJob/>} /> {/*  หน้า วิเคราะจากแผนกซ่อมบำรุง */} 
           </Route> 
         </Routes> 
       </Router> 

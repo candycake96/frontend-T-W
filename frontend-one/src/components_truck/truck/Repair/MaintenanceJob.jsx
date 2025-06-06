@@ -241,7 +241,7 @@ const MaintenanceJob = () => {
                 </div>
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
-                        รายละเอียดการซ่อม (Repair Details)
+                        รายละเอียดการซ่อม 
                     </p>
                 </div>
                 <hr className="mb-3" />
@@ -482,6 +482,25 @@ const MaintenanceJob = () => {
                 </div>
 
                 <PlanningRepair  maintenanceJob={formData} />
+                
+                { formData.status === "แจ้งซ่อม" ? (
+                            <>
+            <div className="text-center alert alert-warning" role="alert">
+                <strong>
+                    <p className="text-danger fw-bolder">อยู่ระหว่างการตรวจสอบความพร้อม</p>
+                </strong>
+            </div>
+        </>
+                ) : (
+                            <>
+            <div className="text-center alert alert-warning md-3" role="alert">
+                <strong>
+                    <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
+                </strong>
+            </div>
+        </>
+                )}
+
 
             </div>
         </div>

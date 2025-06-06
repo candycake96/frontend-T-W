@@ -217,47 +217,48 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
 
     const handleSubmitEdit = async (e) => {
-    e.preventDefault();
-    console.log("Submitting: ", planning);
-    setIsEditing(false);
-    try {
-        const res = await axios.put(
-            `${apiUrl}/api/planning_update/${detailPlanning[0]?.planning_id ?? ''}`,
-            {
-                request_id: planning.request_id,
-                planning_emp_id: planning.planning_emp_id,
-                planning_vehicle_availability: planning.planning_vehicle_availability,
-                planning_event_date: planning.planning_event_date,
-                planning_event_time: planning.planning_event_time,
-                planning_event_remarke: planning.planning_event_remarke
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        e.preventDefault();
+        console.log("Submitting: ", planning);
+        setIsEditing(false);
+        try {
+            const res = await axios.put(
+                `${apiUrl}/api/planning_update/${detailPlanning[0]?.planning_id ?? ''}`,
+                {
+                    request_id: planning.request_id,
+                    planning_emp_id: planning.planning_emp_id,
+                    planning_vehicle_availability: planning.planning_vehicle_availability,
+                    planning_event_date: planning.planning_event_date,
+                    planning_event_time: planning.planning_event_time,
+                    planning_event_remarke: planning.planning_event_remarke
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    }
                 }
-            }
-        );
-        setMessage(res.data.message); // ✅ ใช้ res แทน response
-        alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
-        setMessageType("success");
-        setErrorMessage("บันทึกข้อมูลเรียบร้อยแล้ว");
-        fetchShowDetailPlanning();
-    } catch (error) {
-        console.error("❌ Error occurred:", error);
-        setErrorMessage("เกิดข้อผิดพลาด กรุณาลองใหม่");
-    }
-};
+            );
+            setMessage(res.data.message); // ✅ ใช้ res แทน response
+            alert("✅ บันทึกข้อมูลเรียบร้อยแล้ว");
+            setMessageType("success");
+            setErrorMessage("บันทึกข้อมูลเรียบร้อยแล้ว");
+            fetchShowDetailPlanning();
+        } catch (error) {
+            console.error("❌ Error occurred:", error);
+            setErrorMessage("เกิดข้อผิดพลาด กรุณาลองใหม่");
+        }
+    };
 
 
 
 
     return (
         <>
-            <div className="card mb-3">
-                <div className="card-body">
-                    {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
-                        <>
+
+            {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
+                <>
+                    <div className="card mb-3">
+                        <div className="card-body">
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
 
                             <form action="" onSubmit={handleSubmitEdit}>
@@ -289,7 +290,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                                     onClick={() => setIsEditing(true)}
                                                     style={{ whiteSpace: 'nowrap' }}
                                                 >
-                                                   <i class="bi bi-pencil-square"></i> แก้ไข
+                                                    <i class="bi bi-pencil-square"></i> แก้ไข
                                                 </button>
                                             )}
                                     </div>
@@ -386,7 +387,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         {isEditing && (
                                             <>
                                                 <button className="btn btn-success" type="submit">
-                                                        ยืนยันการจัดรถ
+                                                    ยืนยันการจัดรถ
 
                                                 </button>
                                                 <button
@@ -404,14 +405,13 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                 </div>
 
                             </form>
-                        </>
-                    ) : user?.permission_codes.includes('CHECK_REQUEST_CAR') ? (
-                        <>
-                            <div className="text-center alert alert-warning md-3" role="alert">
-                                <strong>
-                                    <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
-                                </strong>
-                            </div>
+                        </div>
+                    </div>
+                </>
+            ) : user?.permission_codes.includes('CHECK_REQUEST_CAR') ? (
+                <>
+                    <div className="card mb-3">
+                        <div className="card-body">
                             <div className="">
                                 {errorMessage && (
                                     <div className="alert alert-danger text-center" role="alert">
@@ -523,39 +523,21 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
                                     <div className="text-center">
                                         <button className="btn btn-primary" type="submit">
-                                                ยืนยันการจัดรถ
+                                            ยืนยันการจัดรถ
                                         </button>
                                     </div>
                                 </div>
                             </form>
-
-                        </>
-                    ) : (
-                        <>
-                            <div className="text-center alert alert-warning" role="alert">
-                                <strong>
-                                    <p className="text-danger fw-bolder">รอการตรวจสอบความพร้อม</p>
-                                </strong>
-                            </div>
-                        </>
-                    )}
+                        </div>
+                    </div>
+                </>
+            ) : (
+                null
+            )}
 
 
 
-                </div>
-            </div>
 
-          <div className="card mb-3">
-    {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
-        <>
-            <div className="text-center alert alert-warning" role="alert">
-                <strong>
-                    <p className="text-danger fw-bolder">รอการวิเคราะจากแผนกซ่อมบำรุง</p>
-                </strong>
-            </div>
-        </>
-    ) : null}
-</div>
 
         </>
     )
