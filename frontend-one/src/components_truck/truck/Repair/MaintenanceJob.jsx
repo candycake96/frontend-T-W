@@ -482,8 +482,8 @@ const MaintenanceJob = () => {
                         </div>
                     </>
                 )}
-
-                <MainternanceAnanlysis_ShowDetails />
+                
+                <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
 
             </div>
         </div>
