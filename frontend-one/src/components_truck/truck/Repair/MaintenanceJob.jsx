@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
 import PlanningRepair from "./PlanningRepair";
+import NavMainternanceJob from "./navMainternanceJob";
+import MainternanceAnanlysis_ShowDetails from "./MainternanceAnalysis_ShowDetails";
 
 const MaintenanceJob = () => {
 
@@ -22,6 +24,7 @@ const MaintenanceJob = () => {
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
+    const [fromPage] = useState(location.state?.fromPage || "");
     console.log(dataRepairID); // ✅ ตรวจสอบข้อมูลที่ถูกส่งมา
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -215,33 +218,12 @@ const MaintenanceJob = () => {
         <div className="p-1">
             <div className="container">
                 <div className="mb-3 ">
-                    <nav aria-label="breadcrumb" style={{ color: '#0000FF' }}>
-                        <div className="d-flex justify-content-between align-items-center small">
-                            <ol className="breadcrumb mb-0 d-flex align-items-center" style={{ gap: '0.5rem' }}>
-                                <li className="breadcrumb-item">
-                                    <Link to="/truck/MaintenanceRequest">
-                                        <i className="bi bi-arrow-left"></i>
-                                    </Link>
-                                </li>
-                                <i className="bi bi-chevron-right"></i>
-
-                                <li>
-                                    <Link to="/truck/MaintenanceRequest"> รายการแจ้งซ่อมเกี่ยวกับบำรุงรักษา </Link>
-                                </li>
-                                <i className="bi bi-chevron-right"></i>
-
-                                <li className="breadcrumb-item active" aria-current="page">
-                                    รายละเอียดการซ่อม
-                                </li>
-
-                            </ol>
-                        </div>
-                    </nav>
-
+                   <NavMainternanceJob fromPage={fromPage} />
                 </div>
+
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
-                        รายละเอียดการซ่อม 
+                        รายละเอียดการซ่อม
                     </p>
                 </div>
                 <hr className="mb-3" />
@@ -481,26 +463,27 @@ const MaintenanceJob = () => {
                     </div>
                 </div>
 
-                <PlanningRepair  maintenanceJob={formData} />
-                
-                { formData.status === "แจ้งซ่อม" ? (
-                            <>
-            <div className="text-center alert alert-warning" role="alert">
-                <strong>
-                    <p className="text-danger fw-bolder">อยู่ระหว่างการตรวจสอบความพร้อม</p>
-                </strong>
-            </div>
-        </>
+                <PlanningRepair maintenanceJob={formData} />
+
+                {formData.status === "แจ้งซ่อม" ? (
+                    <>
+                        <div className="text-center alert alert-warning" role="alert">
+                            <strong>
+                                <p className="text-danger fw-bolder">อยู่ระหว่างการตรวจสอบความพร้อม</p>
+                            </strong>
+                        </div>
+                    </>
                 ) : (
-                            <>
-            <div className="text-center alert alert-warning md-3" role="alert">
-                <strong>
-                    <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
-                </strong>
-            </div>
-        </>
+                    <>
+                        <div className="text-center alert alert-warning md-3" role="alert">
+                            <strong>
+                                <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
+                            </strong>
+                        </div>
+                    </>
                 )}
 
+                <MainternanceAnanlysis_ShowDetails />
 
             </div>
         </div>

@@ -260,7 +260,10 @@ const PlanningRepair = ({ maintenanceJob }) => {
                     <div className="card mb-3">
                         <div className="card-body">
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
-
+                            <div className="fw-bolder mb-3">
+                                <p>ความเห็นของแผนกจัดรถ</p>
+                            </div>
+                                
                             <form action="" onSubmit={handleSubmitEdit}>
                                 <div className="mb-3">
                                     <div className="d-flex align-items-center justify-content-between mb-3">

@@ -80,7 +80,7 @@ const MaintenancPlanning = () => {
                                     <td>{row.request_date}</td>
                                     <td>{row.status}</td>
                                     <td>{`${row.fname} ${row.lname}`}</td>
-                                    <td><Link to="/truck/MaintenanceJob" state={row} className="btn btn-sm btn-outline-primary rounded-circle me-1"><i class="bi bi-grip-vertical"></i></Link></td>
+                                    <td><Link to="/truck/MaintenanceJob" state={{...row, fromPage: "MaintenancPlanning"}} className="btn btn-sm btn-outline-primary rounded-circle me-1"><i class="bi bi-grip-vertical"></i></Link></td>
                                     
                                 </tr>
                                 ))}
