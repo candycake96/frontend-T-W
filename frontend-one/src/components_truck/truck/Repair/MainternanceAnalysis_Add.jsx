@@ -98,35 +98,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setQuotations(updatedQuotations);
     };
 
-    // useEffect(() => {
-    //   const updatedQuotations = quotations.map((quotation) => {
-    //     let total = 0;
-    //     let vatAmount = 0;
-
-    //     quotation.parts.forEach((part) => {
-    //       const price = parseFloat(part.price) || 0;
-    //       const qty = parseFloat(part.qty) || 0;
-    //       const vat = parseFloat(part.vat) || 0;
-
-    //       const subtotal = price * qty;
-    //       const vatVal = subtotal * vat / 100;
-
-    //       total += subtotal;
-    //       vatAmount += vatVal;
-    //     });
-
-    //     return {
-    //       ...quotation,
-    //       summary: {
-    //         total: total.toFixed(2),
-    //         vat: vatAmount.toFixed(2),
-    //         grandTotal: (total + vatAmount).toFixed(2),
-    //       }
-    //     };
-    //   });
-
-    //   setQuotations(updatedQuotations);
-    // }, [quotations]);
 
     const calculateSummary = (parts) => {
         let total = 0;
@@ -512,16 +483,16 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
                                                 <div className="space-y-1 text-right">
 
-                                                  <div className="col-lg d-flex align-items-center">
-    <label className="form-label text-sm mb-0 me-2">VAT</label>
-    <input
-        type="text"
-        className="form-control form-control-sm"
-        style={{ width: "100px" }}
-        value={q.vat_mode || ""}
-        onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
-    />
-</div>
+                                                    <div className="col-lg d-flex align-items-center">
+                                                        <label className="form-label text-sm mb-0 me-2">VAT</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control form-control-sm"
+                                                            style={{ width: "100px" }}
+                                                            value={q.vat_mode || ""}
+                                                            onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
+                                                        />
+                                                    </div>
                                                     <p className="text-gray-700 text-sm">
                                                         ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
                                                     </p>
