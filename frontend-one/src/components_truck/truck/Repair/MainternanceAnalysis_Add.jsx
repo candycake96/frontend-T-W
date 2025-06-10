@@ -20,9 +20,10 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             quotation_file: null,
             note: "",
             is_selected: false,
+            vat_mode: "",
             parts: [
                 { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
-            ]
+            ],
         }
     ]);
 
@@ -68,12 +69,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         }
     }, [maintenanceJob]);
 
-    const [summary, setSummary] = useState({
-        total: 0,
-        vat: 0,
-        grandTotal: 0,
-    });
-
     // ฟังก์ชันลบข้อมูลอะไหล่
     const handleRemovePart = (quotationIndex, partIndex) => {
         const updated = [...quotations];
@@ -86,48 +81,76 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         const updatedQuotations = [...quotations];
         const part = updatedQuotations[quotationIndex].parts[partIndex];
 
-        // อัปเดตฟิลด์ที่เปลี่ยน
         part[field] = value;
 
-        // แปลงเป็นตัวเลขเพื่อคำนวณ
+        // คำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง
         const price = parseFloat(part.price) || 0;
         const qty = parseFloat(part.qty) || 0;
         const vat = parseFloat(part.vat) || 0;
         const discount = parseFloat(part.discount) || 0;
 
         const subtotal = price * qty;
-        const total = subtotal + (subtotal * vat / 100); // รวม VAT
+        const vatVal = subtotal * vat / 100;
+        const total = subtotal + vatVal - discount;
+
         part.total = total.toFixed(2);
 
         setQuotations(updatedQuotations);
     };
 
-    useEffect(() => {
+    // useEffect(() => {
+    //   const updatedQuotations = quotations.map((quotation) => {
+    //     let total = 0;
+    //     let vatAmount = 0;
+
+    //     quotation.parts.forEach((part) => {
+    //       const price = parseFloat(part.price) || 0;
+    //       const qty = parseFloat(part.qty) || 0;
+    //       const vat = parseFloat(part.vat) || 0;
+
+    //       const subtotal = price * qty;
+    //       const vatVal = subtotal * vat / 100;
+
+    //       total += subtotal;
+    //       vatAmount += vatVal;
+    //     });
+
+    //     return {
+    //       ...quotation,
+    //       summary: {
+    //         total: total.toFixed(2),
+    //         vat: vatAmount.toFixed(2),
+    //         grandTotal: (total + vatAmount).toFixed(2),
+    //       }
+    //     };
+    //   });
+
+    //   setQuotations(updatedQuotations);
+    // }, [quotations]);
+
+    const calculateSummary = (parts) => {
         let total = 0;
         let vatAmount = 0;
 
-        quotations.forEach((quotation) => {
-            if (quotation.parts && Array.isArray(quotation.parts)) {
-                quotation.parts.forEach((part) => {
-                    const price = parseFloat(part.price) || 0;
-                    const qty = parseFloat(part.qty) || 0;
-                    const vat = parseFloat(part.vat) || 0;
+        parts.forEach((part) => {
+            const price = parseFloat(part.price) || 0;
+            const qty = parseFloat(part.qty) || 0;
+            const vat = parseFloat(part.vat) || 0;
 
-                    const subtotal = price * qty;
-                    const vatVal = subtotal * vat / 100;
+            const subtotal = price * qty;
+            const vatVal = subtotal * vat / 100;
 
-                    total += subtotal;
-                    vatAmount += vatVal;
-                });
-            }
+            total += subtotal;
+            vatAmount += vatVal;
         });
 
-        setSummary({
+        return {
             total: total.toFixed(2),
             vat: vatAmount.toFixed(2),
             grandTotal: (total + vatAmount).toFixed(2),
-        });
-    }, [quotations]);
+        };
+    };
+
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
@@ -290,37 +313,46 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                         {/* แสดงใบเสนอราคาทั้งหมด */}
                         {quotations.map((q, idx) => (
                             <div key={idx} className="mb-4 border rounded p-3">
-                                <div className="row">
-                                    <div className="col-lg-2">
+                                <div className="row mb-2">
+                                    <div className="col-lg-5">
                                         <p className="fw-bolder">ใบเสนอราคาที่ {idx + 1}
                                             <strong className="ms-2">
 
                                                 <button
                                                     type="button"
-                                                    className="btn btn-sm btn-danger"
+                                                    className="btn btn-sm btn-danger ms-2"
                                                     onClick={() => handleRemoveQuotation(idx)}
                                                 >
                                                     <i className="bi bi-trash3-fill"></i>
-                                                    {/* ลบใบเสนอราคา */}
+                                                    ลบใบเสนอราคาที่ {idx + 1}
                                                 </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-primary ms-2"
+                                                    onClick={() => handleRemoveQuotation(idx)}
+                                                >
+                                                    <i class="bi bi-arrow-down-square-fill"></i>
+                                                    ดึงข้อมูลอะไหล่
+                                                </button>
+
 
                                             </strong>
                                         </p>
                                     </div>
-                                    <div className="col-lg-2">
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id={`is_selected_${idx}`}
-                                                name={`is_selected_${idx}`}
-                                                checked={q.is_selected}
-                                                onChange={() => handleToggleQuotation(idx)}
-                                            />
-                                            <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
-                                                เลือกใช้งาน
-                                            </label>
-                                        </div>
+                                </div>
+                                <div className="col-lg-2 mb-2">
+                                    <div className="form-check">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id={`is_selected_${idx}`}
+                                            name={`is_selected_${idx}`}
+                                            checked={q.is_selected}
+                                            onChange={() => handleToggleQuotation(idx)}
+                                        />
+                                        <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
+                                            เลือกใช้งาน
+                                        </label>
                                     </div>
                                 </div>
                                 <div className="row">
@@ -433,7 +465,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 />
                                             </div>
                                             <div className="col-lg-1">
-                                                <label className="form-label text-sm">VAT <span style={{ color: "red" }}>*</span></label>
+                                                <label className="form-label text-sm">VAT %</label>
                                                 <input
                                                     type="number"
                                                     className="form-control form-control-sm"
@@ -472,32 +504,54 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                     </div>
                                 </div>
 
-                                <div className="text-center mb-2">
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-success"
-                                        onClick={handleAddQuotation}
-                                    >
-                                        เพิ่มใบเสนอราคา <i className="bi bi-plus-square-fill"></i>
-                                    </button>
+
+                                <div className="text-end">
+                                    {(() => {
+                                        const summary = calculateSummary(q.parts);
+                                        return (
+                                            <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
+                                                <div className="space-y-1 text-right">
+
+                                                  <div className="col-lg d-flex align-items-center">
+    <label className="form-label text-sm mb-0 me-2">VAT</label>
+    <input
+        type="text"
+        className="form-control form-control-sm"
+        style={{ width: "100px" }}
+        value={q.vat_mode || ""}
+        onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
+    />
+</div>
+                                                    <p className="text-gray-700 text-sm">
+                                                        ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
+                                                    </p>
+                                                    <p className="text-gray-700 text-sm">
+                                                        ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
+                                                    </p>
+                                                    <p className="text-gray-900 text-sm font-semibold border-t pt-1">
+                                                        ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
                                 </div>
-                                <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
-                                    <div className="space-y-1 text-right">
-                                        <p className="text-gray-700 text-sm">
-                                            ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
-                                        </p>
-                                        <p className="text-gray-700 text-sm">
-                                            ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
-                                        </p>
-                                        <p className="text-gray-900 text-sm font-semibold border-t pt-1">
-                                            ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
-                                        </p>
-                                    </div>
-                                </div>
+
+
                                 <hr className="mb-3" />
                             </div>
                         ))}
                     </div>
+                    <div className="text-center mb-2">
+                        <button
+                            type="button"
+                            className="btn btn-outline-success"
+                            onClick={handleAddQuotation}
+                        >
+                            เพิ่มใบเสนอราคา <i className="bi bi-plus-square-fill"></i>
+                        </button>
+                    </div>
+
                     <div className="text-center">
                         <button type="submit" className="btn btn-primary me-2">
                             บันทึก
