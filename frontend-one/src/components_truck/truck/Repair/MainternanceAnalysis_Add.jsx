@@ -9,7 +9,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         inhouseRepair: false,
         sendToGarage: false,
         planDate: "",
-        remark: ""
+        remark: "",
     });
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
@@ -102,32 +102,32 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setQuotations(updatedQuotations);
     };
 
-   useEffect(() => {
-    let total = 0;
-    let vatAmount = 0;
+    useEffect(() => {
+        let total = 0;
+        let vatAmount = 0;
 
-    quotations.forEach((quotation) => {
-        if (quotation.parts && Array.isArray(quotation.parts)) {
-            quotation.parts.forEach((part) => {
-                const price = parseFloat(part.price) || 0;
-                const qty = parseFloat(part.qty) || 0;
-                const vat = parseFloat(part.vat) || 0;
+        quotations.forEach((quotation) => {
+            if (quotation.parts && Array.isArray(quotation.parts)) {
+                quotation.parts.forEach((part) => {
+                    const price = parseFloat(part.price) || 0;
+                    const qty = parseFloat(part.qty) || 0;
+                    const vat = parseFloat(part.vat) || 0;
 
-                const subtotal = price * qty;
-                const vatVal = subtotal * vat / 100;
+                    const subtotal = price * qty;
+                    const vatVal = subtotal * vat / 100;
 
-                total += subtotal;
-                vatAmount += vatVal;
-            });
-        }
-    });
+                    total += subtotal;
+                    vatAmount += vatVal;
+                });
+            }
+        });
 
-    setSummary({
-        total: total.toFixed(2),
-        vat: vatAmount.toFixed(2),
-        grandTotal: (total + vatAmount).toFixed(2),
-    });
-}, [quotations]);
+        setSummary({
+            total: total.toFixed(2),
+            vat: vatAmount.toFixed(2),
+            grandTotal: (total + vatAmount).toFixed(2),
+        });
+    }, [quotations]);
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
@@ -138,12 +138,12 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     };
 
     // ฟังก์ชันเลือกใบเสนอราคาที่ใช้งาน
-    const handleSelectQuotation = (index) => {
-        setQuotations(quotations.map((q, i) => ({
-            ...q,
-            is_selected: i === index
-        })));
+    const handleToggleQuotation = (index) => {
+        const updated = [...quotations];
+        updated[index].is_selected = !updated[index].is_selected;
+        setQuotations(updated);
     };
+
 
     return (
         <div className="card mb-4 shadow-sm border-0">
@@ -155,9 +155,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     {/* ...ฟอร์มส่วนบน... */}
                     <div className="mb-3">
                         <div className="">
-
-
-
 
                             <div className="row mb-3" >
                                 <div className="col-lg-4 mb-3">
@@ -314,11 +311,11 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input"
-                                                type="radio"
+                                                type="checkbox"
                                                 id={`is_selected_${idx}`}
-                                                name="is_selected"
+                                                name={`is_selected_${idx}`}
                                                 checked={q.is_selected}
-                                                onChange={() => handleSelectQuotation(idx)}
+                                                onChange={() => handleToggleQuotation(idx)}
                                             />
                                             <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
                                                 เลือกใช้งาน
