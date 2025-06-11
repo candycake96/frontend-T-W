@@ -257,8 +257,8 @@ const PlanningRepair = ({ maintenanceJob }) => {
 
             {Array.isArray(detailPlanning) && detailPlanning.length > 0 ? (
                 <>
-                    <div className="card mb-3">
-                        <div className="card-body">
+                    <div className=" mb-3">
+                        <div className="">
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
                             <div className="fw-bolder mb-3">
                                 <p>ความเห็นของแผนกจัดรถ</p>
@@ -413,8 +413,8 @@ const PlanningRepair = ({ maintenanceJob }) => {
                 </>
             ) : user?.permission_codes.includes('CHECK_REQUEST_CAR') ? (
                 <>
-                    <div className="card mb-3">
-                        <div className="card-body">
+                    <div className=" mb-3">
+                        <div className="">
                             <div className="">
                                 {errorMessage && (
                                     <div className="alert alert-danger text-center" role="alert">

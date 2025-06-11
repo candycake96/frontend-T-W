@@ -6,6 +6,7 @@ import PlanningRepair from "./PlanningRepair";
 import NavMainternanceJob from "./navMainternanceJob";
 import MainternanceAnanlysis_ShowDetails from "./MainternanceAnalysis_ShowDetails";
 import MainternanceRepairRequestDetails from "./MainternanceRepairRequestDetails";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const MaintenanceJob = () => {
 
@@ -219,85 +220,138 @@ const MaintenanceJob = () => {
     return (
         <div className="p-1">
             <div className="container">
-                <div className="mb-3 ">
+                <div className="mb-3">
                     <NavMainternanceJob fromPage={fromPage} />
                 </div>
 
                 <div className="mb-1">
                     <p className="fw-bolder fs-4">
+                        <i className="bi bi-tools me-2 text-primary"></i>
                         รายละเอียดการซ่อม
                     </p>
                 </div>
                 <hr className="mb-3" />
                 <div className="mb-2">
                     <div className="mb-2">
-                        <div className="d-flex justify-content-end">
-                            <button className="btn btn-primary me-1">Cancelled <strong className="" > <i class="bi bi-x-octagon-fill"></i></strong> </button>
+                        <div className="d-flex justify-content-end gap-2">
+                            <button className="btn btn-outline-danger">
+                                <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
+                            </button>
                             <button
-                                className="btn btn-primary me-1"
+                                className="btn btn-outline-primary"
                                 onClick={generateReport}
                                 disabled={loading}
                             >
                                 {loading ? (
                                     <>
                                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Report
+                                        กำลังสร้างรายงาน...
                                     </>
                                 ) : (
                                     <>
-                                        Report <i className="bi bi-printer-fill"></i>
+                                        <i className="bi bi-printer-fill me-1"></i> พิมพ์รายงาน
                                     </>
                                 )}
                             </button>
-                            {/* แสดงเห็นเฉพาะผู้สร้าง */}
                             {formData?.request_informer_emp_id === user?.id_emp && (
                                 <Link
                                     to="/truck/RepairRequestFormEdit"
                                     state={dataRepairID}
-                                    className="btn btn-primary"
+                                    className="btn btn-outline-success"
                                 >
-                                    Edit <i className="bi bi-pencil-fill"></i>
+                                    <i className="bi bi-pencil-fill me-1"></i> แก้ไข
                                 </Link>
                             )}
                         </div>
                     </div>
                 </div>
 
-                <ul className="nav nav-tabs">
+                <ul
+                    className="nav nav-tabs  rounded shadow-sm"
+                    style={{
+                        fontSize: "1.1rem",
+                        fontWeight: 500,
+                        background: "#f8f9fa",
+                        border: "1px solid #dee2e6"
+                    }}
+                >
                     <li className="nav-item">
                         <button
                             type="button"
-                            className={activeForm === 'RequestForm' ? 'nav-link active' : 'nav-link'}
+                            className={`nav-link d-flex align-items-center ${activeForm === 'RequestForm' ? 'active text-primary fw-bold' : ''}`}
                             onClick={() => setActiveForm('RequestForm')}
+                            style={{ border: "none" }}
                         >
+                            <i className="bi bi-file-earmark-text me-2"></i>
                             แจ้งซ่อม
                         </button>
                     </li>
                     <li className="nav-item">
                         <button
                             type="button"
-                            className={activeForm === 'PlanningForm' ? 'nav-link active' : 'nav-link'}
+                            className={`nav-link d-flex align-items-center ${activeForm === 'PlanningForm' ? 'active text-primary fw-bold' : ''}`}
                             onClick={() => setActiveForm('PlanningForm')}
+                            style={{ border: "none" }}
                         >
+                            <i className="bi bi-truck me-2"></i>
                             จัดรถ
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className={`nav-link d-flex align-items-center ${activeForm === 'AnanlysisForm' ? 'active text-primary fw-bold' : ''}`}
+                            onClick={() => setActiveForm('AnanlysisForm')}
+                            style={{ border: "none" }}
+                        >
+                            <i className="bi bi-clipboard-check me-2"></i>
+                            ตรวจเช็ครถ
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className={`nav-link d-flex align-items-center ${activeForm === 'ApproveAnanlysisForm' ? 'active text-primary fw-bold' : ''}`}
+                            onClick={() => setActiveForm('ApproveAnanlysisForm')}
+                            style={{ border: "none" }}
+                        >
+                            <i className="bi bi-check2-square me-2 "></i>
+                            อนุมัติผลตรวจ
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className={`nav-link d-flex align-items-center ${activeForm === 'ApproveMainternanceForm' ? 'active text-primary fw-bold' : ''}`}
+                            onClick={() => setActiveForm('ApproveMainternanceForm')}
+                            style={{ border: "none" }}
+                        >
+                            <i className="bi bi-check2-square me-2 "></i>
+                            ผู้จัดการอนุมัติ
                         </button>
                     </li>
                 </ul>
 
-                {/*  แสดงรายละเอียดการซ่อมบำรุงรักษา */}
-                {activeForm === 'RequestForm' && (
-                    <MainternanceRepairRequestDetails summary={summary} parts={parts} handleChange={handleChange} formData={formData} />
-                )}
+                <div className="card shadow-sm border-0">
+                    <div className="card-body">
+                        {activeForm === 'RequestForm' && (
+                            <MainternanceRepairRequestDetails
+                                summary={summary}
+                                parts={parts}
+                                handleChange={handleChange}
+                                formData={formData}
+                            />
+                        )}
 
-                {/*  แสดงแบบฟอร์มการวางแผนซ่อมบำรุงรักษา */}
-                {activeForm === 'PlanningForm' && (
-                    <PlanningRepair maintenanceJob={formData} />
-                )}
+                        {activeForm === 'PlanningForm' && (
+                            <PlanningRepair maintenanceJob={formData} />
+                        )}
 
-
-
-                <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
-
+                        {activeForm === 'AnanlysisForm' && (
+                            <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

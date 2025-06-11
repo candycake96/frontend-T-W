@@ -270,12 +270,12 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     }
 
     return (
-        <div className="card mb-4 shadow-sm border-0">
+        <div className=" mb-4 ">
             <form>
-                <div className="card-header fw-bold fs-5">
+                {/* <div className="card-header fw-bold fs-5">
                     ความเห็นของแผนกซ่อมบำรุง {maintenanceJob ? maintenanceJob.request_no : "ไม่ระบุ"}
-                </div>
-                <div className="card-body">
+                </div> */}
+                <div className="">
                     {/* ...ฟอร์มส่วนบน... */}
                     <div className="mb-3">
                         <div className="">
@@ -660,12 +660,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     <p className="text-gray-900 text-sm font-semibold border-t pt-1">
                                                         ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
                                                     </p>
+                                                    <p className="text-gray-900 text-sm font-semibold border-t pt-1"></p>
                                                 </div>
                                             </div>
                                         );
                                     })()}
                                 </div>
-                                <hr className="mb-3" />
+                                {/* <hr className="mb-3" /> */}
                             </div>
                         ))}
                     </div>

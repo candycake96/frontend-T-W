@@ -13,8 +13,8 @@ const MainternanceRepairRequestDetails = ({ parts, summary, formData }) => {
 
     return (
         <>
-            <div className="card mb-3">
-                <div className="card-body">
+            <div className=" mb-3">
+                <div className="">
                     <form>
                         <div className="row">
                             <div className="col-lg-3 mb-3">
