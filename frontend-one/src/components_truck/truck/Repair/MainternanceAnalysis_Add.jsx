@@ -1,4 +1,9 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
+import { apiUrl } from "../../../config/apiConfig";
+import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
+
 
 const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     const [analysisData, setAnalysisData] = React.useState({
@@ -136,6 +141,110 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         const updated = [...quotations];
         updated[index].is_selected = !updated[index].is_selected;
         setQuotations(updated);
+    };
+
+
+    // ดึงข้อมูลผู้ใช้จาก localStorage
+    const [user, setUser] = useState(null);  //token
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+    // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
+    const [requestParts, setRequestParts] = useState([]);
+    useEffect(() => {
+        const fetchRequestAndParts = async () => {
+            try {
+                const response = await axios.get(
+                    `${apiUrl}/api/repair_requests_and_part_detail/${maintenanceJob?.request_id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        },
+                    }
+                );
+                setRequestParts(response.data);
+            } catch (error) {
+                console.error("Error fetching parts:", error);
+            }
+        };
+
+        if (maintenanceJob?.request_id) {
+            fetchRequestAndParts();
+        }
+    }, [maintenanceJob]);
+
+    // ฟังก์ชันดึงข้อมูลอะไหล่จาก requestParts และอัปเดตใบเสนอราคา 
+    const handleInputChangeImportParts = (quotationIndex) => {
+        if (requestParts?.request_id && Array.isArray(requestParts.parts_used)) {
+            const mappedParts = requestParts.parts_used.map((item) => {
+                const price = parseFloat(item.repair_part_price) || 0;
+                const qty = parseFloat(item.repair_part_qty) || 0;
+                const vat = parseFloat(item.repair_part_vat) || 0;
+                const subtotal = price * qty;
+                const total = subtotal + (subtotal * vat / 100);
+                return {
+                    part_id: item.part_id || "",
+                    system_name: item.system_name || "",
+                    part_name: item.repair_part_name || "",
+                    price: price.toString(),
+                    unit: item.repair_part_unit || "",
+                    maintenance_type: item.maintenance_type || "",
+                    qty: qty.toString(),
+                    discount: "",
+                    vat: vat.toString(),
+                    total: total.toFixed(2),
+                };
+            });
+
+            setQuotations((prev) => {
+                const updated = [...prev];
+                if (updated[quotationIndex]) {
+                    updated[quotationIndex].parts = mappedParts;
+                }
+                return updated;
+            });
+        }
+    };
+
+
+    // Modal
+    const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
+    const [selectedQuotationIndex, setSelectedQuotationIndex] = useState(null);
+    const [selectedPartIndex, setSelectedPartIndex] = useState(null);
+
+    // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
+    // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
+const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
+    setQuotations(prev => {
+        const updated = [...prev];
+        if (
+            quotationIndex !== null &&
+            quotationIndex !== undefined &&
+            partIndex !== null &&
+            partIndex !== undefined
+        ) {
+            updated[quotationIndex].parts[partIndex] = {
+                ...updated[quotationIndex].parts[partIndex],
+                ...data
+            };
+        }
+        return updated;
+    });
+    setOpenModalVehicleParteDtails(false);
+};
+
+
+    const handleOpenModalVehicleParteDtails = (quotationIndex, partIndex) => {
+    setSelectedQuotationIndex(quotationIndex);
+    setSelectedPartIndex(partIndex);
+    setOpenModalVehicleParteDtails(true);
+};
+    const handleClossModalVehicleParteDtails = () => {
+        setOpenModalVehicleParteDtails(false);
     };
 
 
@@ -278,7 +387,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                 </div>
                             </div>
 
-
                         </div>
                         <hr className="mb-3" />
                         {/* แสดงใบเสนอราคาทั้งหมด */}
@@ -300,32 +408,32 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 <button
                                                     type="button"
                                                     className="btn btn-sm btn-primary ms-2"
-                                                    onClick={() => handleRemoveQuotation(idx)}
+                                                    onClick={() => handleInputChangeImportParts(idx)}
                                                 >
                                                     <i class="bi bi-arrow-down-square-fill"></i>
                                                     ดึงข้อมูลอะไหล่
                                                 </button>
 
-
                                             </strong>
                                         </p>
                                     </div>
-                                </div>
-                                <div className="col-lg-2 mb-2">
-                                    <div className="form-check">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            id={`is_selected_${idx}`}
-                                            name={`is_selected_${idx}`}
-                                            checked={q.is_selected}
-                                            onChange={() => handleToggleQuotation(idx)}
-                                        />
-                                        <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
-                                            เลือกใช้งาน
-                                        </label>
+                                    <div className="col-lg-2 mb-2">
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id={`is_selected_${idx}`}
+                                                name={`is_selected_${idx}`}
+                                                checked={q.is_selected}
+                                                onChange={() => handleToggleQuotation(idx)}
+                                            />
+                                            <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
+                                                เลือกใช้งาน
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
+
                                 <div className="row">
                                     <div className="col-lg-3 mb-3">
                                         <label className="form-label">ชื่ออู่/ร้านค้า</label>
@@ -391,9 +499,11 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     <button
                                                         className="btn btn-outline-secondary btn-sm"
                                                         type="button"
+                                                        onClick={() => handleOpenModalVehicleParteDtails(idx,partIdx)}
                                                     >
                                                         <i className="bi bi-search"></i>
                                                     </button>
+
                                                 </div>
                                             </div>
                                             <div className="col-lg-1">
@@ -475,7 +585,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                     </div>
                                 </div>
 
-
                                 <div className="text-end">
                                     {(() => {
                                         const summary = calculateSummary(q.parts);
@@ -483,8 +592,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
                                                 <div className="space-y-1 text-right">
 
-                                                    <div className="col-lg d-flex align-items-center">
-                                                        <label className="form-label text-sm mb-0 me-2">VAT</label>
+                                                    <div className="col-lg d-flex align-items-center justify-content-end">
+                                                        <label className="form-label text-sm mb-0 me-2">VAT %</label>
                                                         <input
                                                             type="text"
                                                             className="form-control form-control-sm"
@@ -507,7 +616,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         );
                                     })()}
                                 </div>
-
 
                                 <hr className="mb-3" />
                             </div>
@@ -533,6 +641,17 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     </div>
                 </div>
             </form>
+
+
+            {isOpenModalVehicleParteDtails && (
+    <Modal_vehicle_parts_details
+        isOpen={isOpenModalVehicleParteDtails}
+        onClose={handleClossModalVehicleParteDtails}
+        onSubmit={(data) =>
+            handleDataFromAddModal(selectedQuotationIndex, selectedPartIndex, data)
+        }
+    />
+)}
         </div>
     );
 };
