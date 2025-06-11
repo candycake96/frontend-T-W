@@ -89,15 +89,15 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
         part[field] = value;
 
-        // คำนวณใหม่ทุกครั้งที่มีการเปลี่ยนแปลง
         const price = parseFloat(part.price) || 0;
         const qty = parseFloat(part.qty) || 0;
         const vat = parseFloat(part.vat) || 0;
         const discount = parseFloat(part.discount) || 0;
 
-        const subtotal = price * qty;
+        // หักส่วนลดก่อนคิด VAT
+        const subtotal = price * qty - discount;
         const vatVal = subtotal * vat / 100;
-        const total = subtotal + vatVal - discount;
+        const total = subtotal + vatVal;
 
         part.total = total.toFixed(2);
 
@@ -106,33 +106,35 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
 
     // ฟังก์ชันคำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
-const calculateSummary = (parts, vat_mode) => {
-    let total = 0;
-    let vatAmountPerItem = 0;
+    const calculateSummary = (parts, vat_mode) => {
+        let total = 0;
+        let vatAmountPerItem = 0;
 
-    parts.forEach((part) => {
-        const price = parseFloat(part.price) || 0;
-        const qty = parseFloat(part.qty) || 0;
-        const vat = parseFloat(part.vat) || 0;
+        parts.forEach((part) => {
+            const price = parseFloat(part.price) || 0;
+            const qty = parseFloat(part.qty) || 0;
+            const vat = parseFloat(part.vat) || 0;
+            const discount = parseFloat(part.discount) || 0;
 
-        const subtotal = price * qty;
-        const vatVal = subtotal * vat / 100;
+            // หักส่วนลดออกจาก subtotal
+            const subtotal = price * qty - discount;
+            const vatVal = subtotal * vat / 100;
 
-        total += subtotal;
-        vatAmountPerItem += vatVal;
-    });
+            total += subtotal;
+            vatAmountPerItem += vatVal;
+        });
 
-    const vatRate = parseFloat(vat_mode) || 0;
-    const extraVat = total * vatRate / 100;
+        const vatRate = parseFloat(vat_mode) || 0;
+        const extraVat = total * vatRate / 100;
 
-    const vatAmount = vatAmountPerItem + extraVat;
+        const vatAmount = vatAmountPerItem + extraVat;
 
-    return {
-        total: total.toFixed(2),
-        vat: vatAmount.toFixed(2),
-        grandTotal: (total + vatAmount).toFixed(2),
+        return {
+            total: total.toFixed(2),
+            vat: vatAmount.toFixed(2),
+            grandTotal: (total + vatAmount).toFixed(2),
+        };
     };
-};
 
 
 
@@ -227,31 +229,31 @@ const calculateSummary = (parts, vat_mode) => {
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
-const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
-    setQuotations(prev => {
-        const updated = [...prev];
-        if (
-            quotationIndex !== null &&
-            quotationIndex !== undefined &&
-            partIndex !== null &&
-            partIndex !== undefined
-        ) {
-            updated[quotationIndex].parts[partIndex] = {
-                ...updated[quotationIndex].parts[partIndex],
-                ...data
-            };
-        }
-        return updated;
-    });
-    setOpenModalVehicleParteDtails(false);
-};
+    const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
+        setQuotations(prev => {
+            const updated = [...prev];
+            if (
+                quotationIndex !== null &&
+                quotationIndex !== undefined &&
+                partIndex !== null &&
+                partIndex !== undefined
+            ) {
+                updated[quotationIndex].parts[partIndex] = {
+                    ...updated[quotationIndex].parts[partIndex],
+                    ...data
+                };
+            }
+            return updated;
+        });
+        setOpenModalVehicleParteDtails(false);
+    };
 
 
     const handleOpenModalVehicleParteDtails = (quotationIndex, partIndex) => {
-    setSelectedQuotationIndex(quotationIndex);
-    setSelectedPartIndex(partIndex);
-    setOpenModalVehicleParteDtails(true);
-};
+        setSelectedQuotationIndex(quotationIndex);
+        setSelectedPartIndex(partIndex);
+        setOpenModalVehicleParteDtails(true);
+    };
     const handleClossModalVehicleParteDtails = () => {
         setOpenModalVehicleParteDtails(false);
     };
@@ -280,7 +282,7 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                         className="form-control"
                                         readOnly
                                         disabled
-                                        value=""
+                                        value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
                                 <div className="col-lg-8 mb-3">
@@ -446,12 +448,18 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                 <div className="row">
                                     <div className="col-lg-3 mb-3">
                                         <label className="form-label">ชื่ออู่/ร้านค้า</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={q.garage_id}
-                                            onChange={e => handleQuotationChange(idx, "garage_id", e.target.value)}
-                                        />
+                                        <div className="input-group input-group-sm"     >
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={q.garage_id}
+                                                onChange={e => handleQuotationChange(idx, "garage_id", e.target.value)}
+                                            />
+                                            <button className="btn btn-outline-secondary" type="button">
+                                                <i className="bi bi-search"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
                                     <div className="col-lg-3 mb-3">
                                         <label className="form-label">วันที่สร้างใบเสนอราคา</label>
@@ -508,7 +516,7 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                     <button
                                                         className="btn btn-outline-secondary btn-sm"
                                                         type="button"
-                                                        onClick={() => handleOpenModalVehicleParteDtails(idx,partIdx)}
+                                                        onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
                                                     >
                                                         <i className="bi bi-search"></i>
                                                     </button>
@@ -555,7 +563,16 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                 />
                                             </div>
                                             <div className="col-lg-1">
-                                                <label className="form-label text-sm">VAT %</label>
+                                                <label className="form-label text-sm">ส่วนลด</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm"
+                                                    value={part.discount || ""}
+                                                    onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="col" style={{ flex: "0 0 7.5%", maxWidth: "7.5%" }}>
+                                                <label className="form-label text-sm">VAT%</label>
                                                 <input
                                                     type="number"
                                                     className="form-control form-control-sm"
@@ -563,7 +580,7 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                     onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
                                                 />
                                             </div>
-                                            <div className="col-lg-2">
+                                            <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "12.5%" }}>
                                                 <label className="form-label text-sm">ราคารวม</label>
                                                 <input
                                                     type="number"
@@ -572,7 +589,7 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                     disabled
                                                 />
                                             </div>
-                                            <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
+                                            <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3" style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
                                                 <button
                                                     className="btn btn-sm btn-danger"
                                                     type="button"
@@ -598,8 +615,8 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                     {(() => {
                                         // คำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
                                         const summary = calculateSummary(q.parts, q.vat_mode);
-                                        
-                                        
+
+
 
                                         return (
                                             <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
@@ -609,9 +626,13 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                     </p>
 
                                                     <p className="text-gray-700 text-sm">
+                                                        ส่วนลด <span className="font-medium text-black">0.00</span> บาท
+                                                    </p>
+
+                                                    <p className="text-gray-700 text-sm">
                                                         ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
                                                     </p>
-                                                    
+
                                                     <div className="col-lg d-flex align-items-center justify-content-end">
                                                         <label className="form-label text-sm mb-0 me-2">VAT จากยอดรวม </label>
                                                         <input
@@ -621,10 +642,10 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                                             style={{ width: "100px" }}
                                                             value={q.vat_mode || ""}
                                                             onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
+                                                            placeholder="0"
                                                         />
                                                         <p className="fw-bolder me-2">(%)</p>
                                                     </div>
-
 
                                                     <p className="text-gray-900 text-sm font-semibold border-t pt-1">
                                                         ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
@@ -634,7 +655,6 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
                                         );
                                     })()}
                                 </div>
-
                                 <hr className="mb-3" />
                             </div>
                         ))}
@@ -662,14 +682,14 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
 
 
             {isOpenModalVehicleParteDtails && (
-    <Modal_vehicle_parts_details
-        isOpen={isOpenModalVehicleParteDtails}
-        onClose={handleClossModalVehicleParteDtails}
-        onSubmit={(data) =>
-            handleDataFromAddModal(selectedQuotationIndex, selectedPartIndex, data)
-        }
-    />
-)}
+                <Modal_vehicle_parts_details
+                    isOpen={isOpenModalVehicleParteDtails}
+                    onClose={handleClossModalVehicleParteDtails}
+                    onSubmit={(data) =>
+                        handleDataFromAddModal(selectedQuotationIndex, selectedPartIndex, data)
+                    }
+                />
+            )}
         </div>
     );
 };
