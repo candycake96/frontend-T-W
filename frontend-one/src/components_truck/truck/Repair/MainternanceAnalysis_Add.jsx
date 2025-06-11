@@ -49,6 +49,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         ]);
     };
 
+    // ฟังก์ชันลบใบเสนอราคา
     const handleRemoveQuotation = (quotationIndex) => {
         const updatedQuotations = quotations.filter((_, index) => index !== quotationIndex);
         setQuotations(updatedQuotations);
@@ -104,28 +105,36 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     };
 
 
-    const calculateSummary = (parts) => {
-        let total = 0;
-        let vatAmount = 0;
+    // ฟังก์ชันคำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
+const calculateSummary = (parts, vat_mode) => {
+    let total = 0;
+    let vatAmountPerItem = 0;
 
-        parts.forEach((part) => {
-            const price = parseFloat(part.price) || 0;
-            const qty = parseFloat(part.qty) || 0;
-            const vat = parseFloat(part.vat) || 0;
+    parts.forEach((part) => {
+        const price = parseFloat(part.price) || 0;
+        const qty = parseFloat(part.qty) || 0;
+        const vat = parseFloat(part.vat) || 0;
 
-            const subtotal = price * qty;
-            const vatVal = subtotal * vat / 100;
+        const subtotal = price * qty;
+        const vatVal = subtotal * vat / 100;
 
-            total += subtotal;
-            vatAmount += vatVal;
-        });
+        total += subtotal;
+        vatAmountPerItem += vatVal;
+    });
 
-        return {
-            total: total.toFixed(2),
-            vat: vatAmount.toFixed(2),
-            grandTotal: (total + vatAmount).toFixed(2),
-        };
+    const vatRate = parseFloat(vat_mode) || 0;
+    const extraVat = total * vatRate / 100;
+
+    const vatAmount = vatAmountPerItem + extraVat;
+
+    return {
+        total: total.toFixed(2),
+        vat: vatAmount.toFixed(2),
+        grandTotal: (total + vatAmount).toFixed(2),
     };
+};
+
+
 
 
 
@@ -199,7 +208,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     total: total.toFixed(2),
                 };
             });
-
+            // อัปเดตใบเสนอราคาที่เลือก
             setQuotations((prev) => {
                 const updated = [...prev];
                 if (updated[quotationIndex]) {
@@ -587,27 +596,36 @@ const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
 
                                 <div className="text-end">
                                     {(() => {
-                                        const summary = calculateSummary(q.parts);
+                                        // คำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
+                                        const summary = calculateSummary(q.parts, q.vat_mode);
+                                        
+                                        
+
                                         return (
                                             <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
                                                 <div className="space-y-1 text-right">
+                                                    <p className="text-gray-700 text-sm">
+                                                        ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
+                                                    </p>
 
+                                                    <p className="text-gray-700 text-sm">
+                                                        ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
+                                                    </p>
+                                                    
                                                     <div className="col-lg d-flex align-items-center justify-content-end">
-                                                        <label className="form-label text-sm mb-0 me-2">VAT %</label>
+                                                        <label className="form-label text-sm mb-0 me-2">VAT จากยอดรวม </label>
                                                         <input
-                                                            type="text"
-                                                            className="form-control form-control-sm"
+                                                            type="number"
+                                                            name="vat_mode"
+                                                            className="form-control form-control-sm me-2"
                                                             style={{ width: "100px" }}
                                                             value={q.vat_mode || ""}
                                                             onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
                                                         />
+                                                        <p className="fw-bolder me-2">(%)</p>
                                                     </div>
-                                                    <p className="text-gray-700 text-sm">
-                                                        ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
-                                                    </p>
-                                                    <p className="text-gray-700 text-sm">
-                                                        ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
-                                                    </p>
+
+
                                                     <p className="text-gray-900 text-sm font-semibold border-t pt-1">
                                                         ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
                                                     </p>
