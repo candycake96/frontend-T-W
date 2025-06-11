@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข้อมูลที่ถูกส่งมาจากหน้าอื่นผ่าน <Link to="..." state={...} />
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
+import Modal_vandor_show_search from "../Vandor/modal/Modal_vandor_show_search";
 
 
 const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
@@ -248,7 +249,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setOpenModalVehicleParteDtails(false);
     };
 
-
+    // ฟังก์ชันเปิด Modal สำหรับแสดงรายละเอียดของอะไหล่
     const handleOpenModalVehicleParteDtails = (quotationIndex, partIndex) => {
         setSelectedQuotationIndex(quotationIndex);
         setSelectedPartIndex(partIndex);
@@ -258,6 +259,15 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setOpenModalVehicleParteDtails(false);
     };
 
+
+    // ฟังก์ชันเปิด Modal สำหรับแสดงรายละเอียดของผู้จำหน่าย
+    const [isOpenModalVendorDetails, setIsOpenModalVendorDetails] = useState(false);
+    const handleOpenModalVendorDetails = (quotationIndex) => {
+        setIsOpenModalVendorDetails(true);
+    }
+    const handleCloseModalVendorDetails = () => {
+        setIsOpenModalVendorDetails(false);
+    }
 
     return (
         <div className="card mb-4 shadow-sm border-0">
@@ -455,7 +465,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 value={q.garage_id}
                                                 onChange={e => handleQuotationChange(idx, "garage_id", e.target.value)}
                                             />
-                                            <button className="btn btn-outline-secondary" type="button">
+                                            <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails()}>
                                                 <i className="bi bi-search"></i>
                                             </button>
                                         </div>
@@ -688,6 +698,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     onSubmit={(data) =>
                         handleDataFromAddModal(selectedQuotationIndex, selectedPartIndex, data)
                     }
+                />
+            )}
+
+            {isOpenModalVendorDetails && (
+                <Modal_vandor_show_search
+                    isOpen={isOpenModalVendorDetails}
+                    onClose={handleCloseModalVendorDetails}
                 />
             )}
         </div>
