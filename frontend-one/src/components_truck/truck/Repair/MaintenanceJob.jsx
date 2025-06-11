@@ -5,6 +5,7 @@ import { apiUrl } from "../../../config/apiConfig";
 import PlanningRepair from "./PlanningRepair";
 import NavMainternanceJob from "./navMainternanceJob";
 import MainternanceAnanlysis_ShowDetails from "./MainternanceAnalysis_ShowDetails";
+import MainternanceRepairRequestDetails from "./MainternanceRepairRequestDetails";
 
 const MaintenanceJob = () => {
 
@@ -212,13 +213,14 @@ const MaintenanceJob = () => {
     };
 
 
+    const [activeForm, setActiveForm] = useState("RequestForm");
 
 
     return (
         <div className="p-1">
             <div className="container">
                 <div className="mb-3 ">
-                   <NavMainternanceJob fromPage={fromPage} />
+                    <NavMainternanceJob fromPage={fromPage} />
                 </div>
 
                 <div className="mb-1">
@@ -259,230 +261,41 @@ const MaintenanceJob = () => {
                             )}
                         </div>
                     </div>
-
-                </div>
-                <div className="card mb-3">
-                    <div className="card-body">
-
-                        <form action="">
-                            <div className="row">
-                                <div className="col-lg-3 mb-3">
-                                    <label className="form-label">เลขที่ใบแจ้งซ่อม</label>
-                                    <input type="text" className="form-control" value={(formData?.request_no || "")} disabled />
-                                </div>
-                                <div className="col-lg-3 mb-3">
-                                    <label className="form-label">วันที่แจ้ง</label>
-                                    <input type="date" className="form-control" value={formatDate(formData?.request_date || "")} disabled />
-                                </div>
-                                <div className="col-lg-3 mb-3">
-                                    <label className="form-label">ผู้แจ้ง</label>
-                                    <input type="text" className="form-control" value={(formData?.fname || "") + " " + (formData?.lname || "")} disabled
-                                    />
-                                </div>
-
-                            </div>
-                            <div className="row">
-                                <div className="col-lg-3 mb-3">
-                                    <label className="form-label">ทะเบียนรถ <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="reg_number"
-                                        value={formData?.reg_number}
-                                        // onChange={handleChangeRequestjob}
-                                        disabled
-                                    />
-                                </div>
-                                <div className="col-lg-3">
-                                    <label className="form-label">เลขไมล์ปัจจุบัน <span className="" style={{ color: "red" }}>*</span></label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="odometer"
-                                        value={formData?.car_mileage}
-                                        // onChange={handleChangeRequestjob}
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-
-                            <hr />
-                            {/* <p className="">รายการอะไหล่</p> */}
-                            <div className=""
-                                style={{ overflowX: "auto" }}
-                            >
-
-
-                                {parts.map((part, index) => (
-
-                                    <div className="row  mb-3" key={index}>
-                                        <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
-                                        <div className="col-lg-2">
-                                            <label className="form-label text-sm">ระบบ</label>
-                                            <input
-                                                type="text"
-                                                className="form-control form-control-sm"
-                                                value={part.system_name}
-                                                onChange={(e) => handleChange(index, "system_name", e.target.value)} disabled
-                                            />
-                                        </div>
-                                        <div className="col-lg-2">
-                                            <label htmlFor={`partSearch-${index}`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
-                                            <div className="input-group input-group-sm">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    id={`partSearch-${index}`}
-                                                    value={part.part_name}
-                                                    onChange={(e) => handleChange(index, "part_name", e.target.value)}
-                                                    placeholder="ค้นหาอะไหล่..."
-                                                    disabled
-                                                />
-                                                <button
-                                                    className="btn btn-outline-secondary btn-sm"
-                                                    type="button"
-                                                    onClick={() => handleOpenModalVehicleParteDtails(index)}
-                                                >
-                                                    <i className="bi bi-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-1">
-                                            <label className="form-label text-sm">ประเภท <span className="" style={{ color: "red" }}>*</span></label>
-                                            <select
-                                                className="form-select  mb-3  form-select-sm"
-                                                aria-label="Large select example"
-                                                value={part.maintenance_type}
-                                                onChange={(e) => handleChange(index, "maintenance_type", e.target.value)}
-                                                disabled
-                                            >
-                                                <option value=""></option>
-                                                <option value="CM">CM</option>
-                                                <option value="PM">PM</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="col-lg-1">
-                                            <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control form-control-sm"
-                                                value={part.price}
-                                                onChange={(e) => handleChange(index, "price", e.target.value)}
-                                                disabled
-                                            />
-                                        </div>
-                                        <div className="col-lg-1">
-                                            <label className="form-label text-sm">หน่วย <span className="" style={{ color: "red" }}>*</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control form-control-sm"
-                                                value={part.unit}
-                                                onChange={(e) => handleChange(index, "unit", e.target.value)}
-                                                disabled
-                                            />
-                                        </div>
-                                        <div className="col-lg-1">
-                                            <label className="form-label text-sm">จำนวน <span className="" style={{ color: "red" }}>*</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control form-control-sm"
-                                                value={part.qty}
-                                                onChange={(e) => handleChange(index, "qty", e.target.value)}
-                                                disabled
-                                            />
-                                        </div>
-                                        <div className="col-lg-1">
-                                            <label className="form-label text-sm" >VAT <span className="" style={{ color: "red" }}>*</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control form-control-sm"
-                                                value={part.vat}
-                                                onChange={(e) => handleChange(index, "vat", e.target.value)}
-                                                disabled
-                                            />
-                                        </div>
-                                        <div className="col-lg-2">
-                                            <label className="form-label text-sm">ราคารวม</label>
-                                            <input
-                                                type="number"
-                                                className="form-control form-control-sm"
-                                                value={part.total || ""}
-                                                onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
-                                                disabled
-                                            />
-
-                                        </div>
-                                        {/* <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
-                    <button
-                        className="btn btn-sm btn-danger"
-                        type="button"
-                        onClick={() => handleRemovePart(index)}
-                    >
-                        <i className="bi bi-trash3-fill"></i>
-                    </button>
-                </div> */}
-
-                                    </div>
-
-                                ))}
-
-
-
-
-
-                            </div>
-                            {/* 
-                            <div className="d-flex justify-content-end mb-3">
-                                <button className="btn btn-outline-primary" type="button" onClick={handleAddPart}>
-                                    เพิ่มรายการอะไหล่
-                                </button>
-                            </div> */}
-
-                            <hr className="mb-3" />
-
-                            <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
-                                <div className="space-y-1 text-right">
-                                    <p className="text-gray-700 text-sm">
-                                        ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
-                                    </p>
-                                    <p className="text-gray-700 text-sm">
-                                        ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
-                                    </p>
-                                    <p className="text-gray-900 text-sm font-semibold border-t pt-1">
-                                        ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* <div className="text-center">
-                                <button type="submit" className="btn btn-primary">บันทึก</button>
-                            </div> */}
-                        </form>
-
-                    </div>
                 </div>
 
-                <PlanningRepair maintenanceJob={formData} />
+                <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className={activeForm === 'RequestForm' ? 'nav-link active' : 'nav-link'}
+                            onClick={() => setActiveForm('RequestForm')}
+                        >
+                            แจ้งซ่อม
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className={activeForm === 'PlanningForm' ? 'nav-link active' : 'nav-link'}
+                            onClick={() => setActiveForm('PlanningForm')}
+                        >
+                            จัดรถ
+                        </button>
+                    </li>
+                </ul>
 
-                {formData.status === "แจ้งซ่อม" ? (
-                    <>
-                        <div className="text-center alert alert-warning" role="alert">
-                            <strong>
-                                <p className="text-danger fw-bolder">อยู่ระหว่างการตรวจสอบความพร้อม</p>
-                            </strong>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div className="text-center alert alert-warning md-3" role="alert">
-                            <strong>
-                                <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
-                            </strong>
-                        </div>
-                    </>
+                {/*  แสดงรายละเอียดการซ่อมบำรุงรักษา */}
+                {activeForm === 'RequestForm' && (
+                    <MainternanceRepairRequestDetails summary={summary} parts={parts} handleChange={handleChange} formData={formData} />
                 )}
-                
+
+                {/*  แสดงแบบฟอร์มการวางแผนซ่อมบำรุงรักษา */}
+                {activeForm === 'PlanningForm' && (
+                    <PlanningRepair maintenanceJob={formData} />
+                )}
+
+
+
                 <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
 
             </div>

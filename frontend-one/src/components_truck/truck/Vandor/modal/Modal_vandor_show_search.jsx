@@ -6,9 +6,14 @@ import { apiUrl } from "../../../../config/apiConfig";
 import Modal_vandor_details from "./Modal_vandor_details";
 
 const Modal_vandor_show_search = ({ isOpen, onClose }) => {
-
-
     const [isShowDataVendor, setShowDataVender] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    // เพิ่ม state สำหรับค้นหา
+    const [searchText, setSearchText] = useState("");
+    const [searchValue, setSearchValue] = useState(""); // สำหรับ input
+
     // API URL
     const fetchVendorShowData = async () => {
         try {
@@ -26,23 +31,44 @@ const Modal_vandor_show_search = ({ isOpen, onClose }) => {
     useEffect(() => {
         fetchVendorShowData();
     }, []);
-    
+
     // ข้อมูล
     const [isOpenModalVendorDetails, setOpenModalVendorDetails] = useState(false);
     const [isVendorID, setVendorID] = useState(null);
 
     // ข้อมูล 
     const handleOpenModalVandorDetails = (data) => {
-        setVendorID(data);        
+        setVendorID(data);
         setOpenModalVendorDetails(true);
     };
     const handleCloseModalVandorDetails = () => {
         setOpenModalVendorDetails(false);
     };
 
-  return (
-    <ReactModal
-     isOpen={isOpen}
+    // ฟิลเตอร์ข้อมูลตามชื่อ vendor_name
+    const filteredVendors = isShowDataVendor.filter(v =>
+        v.vendor_name?.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    // Pagination
+    const pageCount = Math.ceil(filteredVendors.length / itemsPerPage);
+    const paginatedData = filteredVendors.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    // Reset page เมื่อค้นหาใหม่
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchText]);
+
+    return (
+        <ReactModal
+            isOpen={isOpen}
             onRequestClose={onClose}
             ariaHideApp={false}
             contentLabel="Vendor Details"
@@ -92,12 +118,34 @@ const Modal_vandor_show_search = ({ isOpen, onClose }) => {
                     ×
                 </button>
                 <h5 className="modal-title text-center fw-bolder">
-                    ข้อมูลผู้จำหน่าย (อู่ซ่อม) 
+                    ข้อมูลผู้จำหน่าย (อู่ซ่อม)
                 </h5>
             </div>
-        
+
             <div className="modal-body" style={{ padding: "1rem" }}>
- <table className="table table-striped">
+                {/* ช่องค้นหา */}
+                <div className="mb-3">
+                    <div className="input-group">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="ค้นหาชื่ออู่/ร้าน/บริษัท"
+                            value={searchValue}
+                            onChange={e => setSearchValue(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === "Enter") setSearchText(searchValue);
+                            }}
+                        />
+                        <button
+                            className="btn btn-primary"
+                            type="button"
+                            onClick={() => setSearchText(searchValue)}
+                        >
+                            <i className="bi bi-search"></i> ค้นหา
+                        </button>
+                    </div>
+                </div>
+                <table className="table table-striped">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
@@ -109,39 +157,71 @@ const Modal_vandor_show_search = ({ isOpen, onClose }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {isShowDataVendor.map((row, index) => (
+                        {paginatedData.map((row, index) => (
                             <tr key={index}>
-                                <td>{index + 1}</td>
+                                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                 <td>{row.vendor_name}</td>
                                 <td>{row.phone}</td>
                                 <td>{row.credit_terms} วัน</td>
                                 <td>{row.organization_type_name}</td>
                                 <td>
-                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={()=>handleOpenModalVandorDetails(row)}>
+                                    <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={() => handleOpenModalVandorDetails(row)}>
                                         <i className="bi bi-file-text-fill"></i>
                                     </button>
                                     <Link to='/truck/VendorInfo' className="btn btn-sm btn-outline-primary rounded-circle me-1" >
-                                    <i class="bi bi-arrow-down"></i>
+                                        <i className="bi bi-arrow-down"></i>
                                     </Link>
-
                                 </td>
                             </tr>
-                        ))} 
+                        ))}
                     </tbody>
                 </table>
-
+                {/* Pagination */}
+                {pageCount > 1 && (
+                    <nav>
+                        <ul className="pagination justify-content-center">
+                            {Array.from({ length: pageCount }, (_, i) => (
+                                <li
+                                    key={i}
+                                    className={`page-item${currentPage === i + 1 ? " active" : ""}`}
+                                >
+                                    <button
+                                        className="page-link"
+                                        onClick={() => handlePageChange(i + 1)}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                )}
+                {/* แสดงจำนวนทั้งหมด ค้างด้านล่าง */}
+                <div
+                    style={{
+                        position: "sticky",
+                        bottom: 0,
+                        textAlign: "right",
+                        padding: "0.5rem",
+                        background: "white",
+                        fontSize: "0.875rem",
+                        color: "#666",
+                        zIndex: 1,
+                    }}
+                >
+                    จำนวนทั้งหมด {filteredVendors.length} รายการ
+                </div>
             </div>
 
-             {isOpenModalVendorDetails && (
+            {isOpenModalVendorDetails && (
                 <Modal_vandor_details
                     isOpen={isOpenModalVendorDetails}
                     onClose={handleCloseModalVandorDetails}
                     vendorID={isVendorID}
                 />
             )}
-
-    </ReactModal>
-  );
+        </ReactModal>
+    );
 }
 
 export default Modal_vandor_show_search;
