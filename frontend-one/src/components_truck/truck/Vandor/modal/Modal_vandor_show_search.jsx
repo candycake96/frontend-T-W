@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { apiUrl } from "../../../../config/apiConfig";
 import Modal_vandor_details from "./Modal_vandor_details";
 
-const Modal_vandor_show_search = ({ isOpen, onClose }) => {
+const Modal_vandor_show_search = ({ isOpen, onClose, onSubmit }) => {
     const [isShowDataVendor, setShowDataVender] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -65,6 +65,12 @@ const Modal_vandor_show_search = ({ isOpen, onClose }) => {
     useEffect(() => {
         setCurrentPage(1);
     }, [searchText]);
+
+    // ฟังก์ชันสำหรับการเลือก item ส่งข้อมูลไปยัง onSubmit
+     const handleSelectItem = (item) => {
+        onSubmit(item);
+        onClose(); // ปิด Modal
+    }
 
     return (
         <ReactModal
@@ -168,9 +174,12 @@ const Modal_vandor_show_search = ({ isOpen, onClose }) => {
                                     <button className="btn btn-sm btn-outline-primary rounded-circle me-1" onClick={() => handleOpenModalVandorDetails(row)}>
                                         <i className="bi bi-file-text-fill"></i>
                                     </button>
-                                    <Link to='/truck/VendorInfo' className="btn btn-sm btn-outline-primary rounded-circle me-1" >
+                                    <button
+                                        className="btn btn-sm btn-outline-primary rounded-circle me-1"
+                                        onClick={() => handleSelectItem(row)} // เรียกใช้ฟังก์ชันเมื่อคลิก
+                                    >
                                         <i className="bi bi-arrow-down"></i>
-                                    </Link>
+                                    </button>
                                 </td>
                             </tr>
                         ))}

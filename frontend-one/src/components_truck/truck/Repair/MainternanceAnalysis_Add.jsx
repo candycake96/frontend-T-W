@@ -4,31 +4,76 @@ import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข�
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
 import Modal_vandor_show_search from "../Vandor/modal/Modal_vandor_show_search";
+import { use } from "react";
+import { data } from "autoprefixer";
 
 
 const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
+
+    // ดึงข้อมูลผู้ใช้จาก localStorage
+    const [user, setUser] = useState(null);  //token
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+
     const [analysisData, setAnalysisData] = React.useState({
-        reporter: "",
-        request_id: "",
-        planning_vehicle_availability: "",
-        urgentRepair: false,
-        inhouseRepair: false,
-        sendToGarage: false,
-        planDate: "",
-        remark: "",
-        is_pm : "",
-        is_cm: "",
+        request_id: "", // รหัสคำขอซ่อม FK
+        analysis_emp_id: "", // รหัสพนักงานที่วิเคราะห์ FK
+
+        is_quotation_required: false, // ต้องการใบเสนอราคา
+        urgent_repair: false,   // ซ่อมด่วน
+        inhouse_repair: false, // ซ่อมในแผนก
+        send_to_garage: false, // ส่งอู่
+        plan_date: "",   // วันที่วางแผน
+        plan_time: "", // เวลาที่วางแผน 
+        remark: "",    // หมายเหตุ
+        is_pm: false,   // ซ่อมก่อนเสีย
+        is_cm: false,   // ซ่อมหลังเสีย
     });
+
+    // คอนฟิกข้อมูลที่จะส่งไปยัง API
+    const dataToSend = {
+        // รวมข้อมูลจาก analysisData เพื่อส่งไปยัง API
+        ...analysisData,
+        request_id: analysisData.request_id || "",
+        analysis_emp_id: analysisData.analysis_emp_id || (user ? user.id_emp : ""),
+        plan_date: analysisData.plan_date || "",
+        plan_time: analysisData.plan_time || "",
+        remark: analysisData.remark || "",
+
+        // แปลง boolean เป็น 0/1 สำหรับ MSSQL BIT
+        is_pm: analysisData.is_pm ? 1 : 0,
+        is_cm: analysisData.is_cm ? 1 : 0,
+        is_quotation_required: analysisData.is_quotation_required ? 1 : 0,
+        urgent_repair: analysisData.urgent_repair ? 1 : 0,
+        inhouse_repair: analysisData.inhouse_repair ? 1 : 0,
+        send_to_garage: analysisData.send_to_garage ? 1 : 0,
+    };
+
+
+    useEffect(() => {
+        if (maintenanceJob) {
+            setAnalysisData({
+                request_id: maintenanceJob.request_id || "",
+                analysis_emp_id: user ? user.id_emp : "", // ใช้รหัสพนักงานจากข้อมูลผู้ใช้
+            });
+        }
+    }, [maintenanceJob, user]);
+
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
         {
             garage_id: "",
+            garage_name: "",
             quotation_date: "",
             quotation_file: null,
             note: "",
             is_selected: false,
-            vat_mode: "",
             parts: [
                 { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
@@ -41,6 +86,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             ...quotations,
             {
                 garage_id: "",
+                garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
                 note: "",
@@ -169,15 +215,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     };
 
 
-    // ดึงข้อมูลผู้ใช้จาก localStorage
-    const [user, setUser] = useState(null);  //token
-    useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-    }, []);
-
     // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
     const [requestParts, setRequestParts] = useState([]);
     useEffect(() => {
@@ -242,7 +279,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     const [selectedPartIndex, setSelectedPartIndex] = useState(null);
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
-    // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add สำหรับหลายใบเสนอราคา
     const handleDataFromAddModal = (quotationIndex, partIndex, data) => {
         setQuotations(prev => {
             const updated = [...prev];
@@ -275,12 +311,30 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
     // ฟังก์ชันเปิด Modal สำหรับแสดงรายละเอียดของผู้จำหน่าย
     const [isOpenModalVendorDetails, setIsOpenModalVendorDetails] = useState(false);
+    // เปิด Modal พร้อมระบุใบเสนอราคาที่ต้องการแก้ไข
     const handleOpenModalVendorDetails = (quotationIndex) => {
-        setIsOpenModalVendorDetails(true);
-    }
+        // รักษา index ของใบเสนอราคาเพื่อใช้ใน Modal เพื่ออัปเดตชื่ออู่/ร้านค้า
+        setSelectedQuotationIndex(quotationIndex); // เก็บ index ของใบเสนอราคา
+        setIsOpenModalVendorDetails(true); // เปิด Modal 
+    };
     const handleCloseModalVendorDetails = () => {
         setIsOpenModalVendorDetails(false);
     }
+
+    // ฟังก์ชันรับข้อมูลจาก Modal_vender_show_search สำหรับการอัปเดตอะไหล่
+    // ฟังก์ชันรับข้อมูลจาก Modal_vandor_show_search สำหรับการอัปเดตชื่ออู่/ร้านค้าในใบเสนอราคา
+    const handleDataFromModalVehicleShowSearch = (vendorData) => {
+        if (!vendorData || selectedQuotationIndex === null) return;
+        setQuotations(prev => {
+            const updated = [...prev];
+            // เก็บชื่ออู่/ร้านค้า
+            updated[selectedQuotationIndex].garage_name = vendorData.vendor_name || "";
+            // ถ้าต้องการเก็บ id จริงๆ ให้ใช้ vendorData.vendor_id ด้วย
+            updated[selectedQuotationIndex].garage_id = vendorData.vendor_id || "";
+            return updated;
+        });
+        setIsOpenModalVendorDetails(false);
+    };
 
     // ฟังก์ชันจัดการการส่งฟอร์ม
     // const handleSubmit = async (e) => {
@@ -333,11 +387,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     // };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         try {
             console.log("ข้อมูลที่ส่ง:", {
-                analysisData,
+                dataToSend,
             });
+            console.log("ข้อมูลใบเสนอราคา:", quotations);
+
             const formData = new FormData();
             // แนบข้อมูล analysisData
         } catch (error) {
@@ -371,37 +427,37 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
-<div className="col-lg-8 mb-3">
-    <label className="form-label mb-2">ประเภทการซ่อม</label>
-    <div className="d-flex gap-4">
-        <div className="form-check">
-            <input
-                className="form-check-input"
-                type="checkbox"
-                id="pm"
-                name="is_pm"
-                checked={!!analysisData.is_pm}
-                onChange={handleAnalysisInputChange}
-            />
-            <label className="form-check-label" htmlFor="pm">
-                PM (ซ่อมก่อนเสีย)
-            </label>
-        </div>
-        <div className="form-check">
-            <input
-                className="form-check-input"
-                type="checkbox"
-                id="cm"
-                name="is_cm"
-                checked={!!analysisData.is_cm}
-                onChange={handleAnalysisInputChange}
-            />
-            <label className="form-check-label" htmlFor="cm">
-                CM (เสียก่อนซ่อม)
-            </label>
-        </div>
-    </div>
-</div>
+                                <div className="col-lg-8 mb-3">
+                                    <label className="form-label mb-2">ประเภทการซ่อม</label>
+                                    <div className="d-flex gap-4">
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="pm"
+                                                name="is_pm"
+                                                checked={!!analysisData.is_pm}
+                                                onChange={handleAnalysisInputChange}
+                                            />
+                                            <label className="form-check-label" htmlFor="pm">
+                                                PM (ซ่อมก่อนเสีย)
+                                            </label>
+                                        </div>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="cm"
+                                                name="is_cm"
+                                                checked={!!analysisData.is_cm}
+                                                onChange={handleAnalysisInputChange}
+                                            />
+                                            <label className="form-check-label" htmlFor="cm">
+                                                CM (เสียก่อนซ่อม)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -412,13 +468,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         <input
                                             className="form-check-input"
                                             type="checkbox"
-                                            id="urgentRepair"
-                                            name="urgentRepair"
+                                            id="urgent_repair"
+                                            name="urgent_repair"
                                             onChange={handleAnalysisInputChange}
-                                            checked={analysisData.urgentRepair || false}
+                                            checked={analysisData.urgent_repair || false}
 
                                         />
-                                        <label className="form-check-label ms-2" htmlFor="urgentRepair">
+                                        <label className="form-check-label ms-2" htmlFor="urgent_repair">
                                             จำเป็นต้องซ่อมด่วนทันที
                                         </label>
                                     </div>
@@ -428,13 +484,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         <input
                                             className="form-check-input"
                                             type="checkbox"
-                                            id="inhouseRepair"
-                                            name="inhouseRepair"
+                                            id="inhouse_repair"
+                                            name="inhouse_repair"
                                             onChange={handleAnalysisInputChange}
-                                            checked={analysisData.inhouseRepair || false}
+                                            checked={analysisData.inhouse_repair || false}
 
                                         />
-                                        <label className="form-check-label ms-2" htmlFor="inhouseRepair">
+                                        <label className="form-check-label ms-2" htmlFor="inhouse_repair">
                                             แผนกช่างซ่อมเองได้
                                         </label>
                                     </div>
@@ -444,13 +500,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         <input
                                             className="form-check-input"
                                             type="checkbox"
-                                            id="sendToGarage"
-                                            name="sendToGarage"
+                                            id="send_to_garage"
+                                            name="send_to_garage"
                                             onChange={handleAnalysisInputChange}
-                                            checked={analysisData.sendToGarage || false}
+                                            checked={analysisData.send_to_garage || false}
 
                                         />
-                                        <label className="form-check-label ms-2" htmlFor="sendToGarage">
+                                        <label className="form-check-label ms-2" htmlFor="send_to_garage">
                                             ต้องส่งอู่
                                         </label>
                                     </div>
@@ -459,16 +515,16 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
                             <div className="row mb-3">
                                 <div className="col-lg-3 mb-3">
-                                    <label htmlFor="planDate" className="form-label">
+                                    <label htmlFor="plan_date" className="form-label">
                                         ตั้งแต่วันที่
                                     </label>
                                     <input
                                         type="date"
-                                        name="planDate"
-                                        id="planDate"
+                                        name="plan_date"
+                                        id="plan_date"
                                         className="form-control"
                                         onChange={handleAnalysisInputChange}
-                                        value={analysisData.planDate || ""}
+                                        value={analysisData.plan_date || ""}
 
                                     />
                                     <div className="col-lg mb-2">
@@ -476,8 +532,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             <input
                                                 className="form-check-input"
                                                 type="checkbox"
-                                                id="is_quotation_required "
-                                                name="is_quotation_required "
+                                                id="is_quotation_required"
+                                                name="is_quotation_required"
                                                 onChange={handleAnalysisInputChange}
                                                 value={analysisData.is_quotation_required || false}
 
@@ -558,10 +614,10 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={q.garage_id}
-                                                onChange={e => handleQuotationChange(idx, "garage_id", e.target.value)}
+                                                value={q.garage_name}
+                                                onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
                                             />
-                                            <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails()}>
+                                            <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails(idx)}>
                                                 <i className="bi bi-search"></i>
                                             </button>
                                         </div>
@@ -802,6 +858,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                 <Modal_vandor_show_search
                     isOpen={isOpenModalVendorDetails}
                     onClose={handleCloseModalVendorDetails}
+                    onSubmit={(data) => handleDataFromModalVehicleShowSearch(data)}
                 />
             )}
         </div>
