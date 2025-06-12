@@ -283,55 +283,67 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     }
 
     // ฟังก์ชันจัดการการส่งฟอร์ม
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const formData = new FormData();
+
+    //         // แนบข้อมูล analysisData
+    //         for (const key in analysisData) {
+    //             formData.append(key, analysisData[key]);
+    //         }
+
+    //         // แนบข้อมูลใบเสนอราคาทุกใบ
+    //         quotations.forEach((quotation, index) => {
+    //             formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
+    //             formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+    //             formData.append(`quotations[${index}][note]`, quotation.note);
+    //             formData.append(`quotations[${index}][is_selected]`, quotation.is_selected);
+    //             formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode);
+
+    //             // แนบไฟล์
+    //             if (quotation.quotation_file) {
+    //                 formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+    //             }
+
+    //             // แนบข้อมูล parts
+    //             quotation.parts.forEach((part, partIndex) => {
+    //                 for (const key in part) {
+    //                     formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+    //                 }
+    //             });
+    //         });
+
+    //         const response = await axios.post(
+    //             `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //                     'Content-Type': 'multipart/form-data',
+    //                 },
+    //             }
+    //         );
+
+    //         console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+    //     } catch (error) {
+    //         console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
-        e.preventDefault();
-
+        e.preventDefault(); 
         try {
-            const formData = new FormData();
-
-            // แนบข้อมูล analysisData
-            for (const key in analysisData) {
-                formData.append(key, analysisData[key]);
-            }
-
-            // แนบข้อมูลใบเสนอราคาทุกใบ
-            quotations.forEach((quotation, index) => {
-                formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
-                formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
-                formData.append(`quotations[${index}][note]`, quotation.note);
-                formData.append(`quotations[${index}][is_selected]`, quotation.is_selected);
-                formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode);
-
-                // แนบไฟล์
-                if (quotation.quotation_file) {
-                    formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
-                }
-
-                // แนบข้อมูล parts
-                quotation.parts.forEach((part, partIndex) => {
-                    for (const key in part) {
-                        formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
-                    }
-                });
+            console.log("ข้อมูลที่ส่ง:", {
+                analysisData,
             });
-
-            const response = await axios.post(
-                `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            );
-
-            console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+            const formData = new FormData();
+            // แนบข้อมูล analysisData
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
         }
-    };
-
+    }
 
     return (
         <div className=" mb-4 ">
@@ -367,9 +379,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                 className="form-check-input"
                 type="checkbox"
                 id="pm"
-                name="repairType"
-                value="PM"
-        
+                name="is_pm"
+                checked={!!analysisData.is_pm}
                 onChange={handleAnalysisInputChange}
             />
             <label className="form-check-label" htmlFor="pm">
@@ -381,9 +392,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                 className="form-check-input"
                 type="checkbox"
                 id="cm"
-                name="repairType"
-                value="CM"
-                
+                name="is_cm"
+                checked={!!analysisData.is_cm}
                 onChange={handleAnalysisInputChange}
             />
             <label className="form-check-label" htmlFor="cm">
