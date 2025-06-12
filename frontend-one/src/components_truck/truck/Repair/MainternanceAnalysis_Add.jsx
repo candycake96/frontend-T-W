@@ -16,6 +16,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         sendToGarage: false,
         planDate: "",
         remark: "",
+        is_pm : "",
+        is_cm: "",
     });
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
@@ -75,6 +77,17 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             }));
         }
     }, [maintenanceJob]);
+
+
+    // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
+    const handleAnalysisInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setAnalysisData((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+
 
     // ฟังก์ชันลบข้อมูลอะไหล่
     const handleRemovePart = (quotationIndex, partIndex) => {
@@ -269,9 +282,60 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setIsOpenModalVendorDetails(false);
     }
 
+    // ฟังก์ชันจัดการการส่งฟอร์ม
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const formData = new FormData();
+
+            // แนบข้อมูล analysisData
+            for (const key in analysisData) {
+                formData.append(key, analysisData[key]);
+            }
+
+            // แนบข้อมูลใบเสนอราคาทุกใบ
+            quotations.forEach((quotation, index) => {
+                formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
+                formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+                formData.append(`quotations[${index}][note]`, quotation.note);
+                formData.append(`quotations[${index}][is_selected]`, quotation.is_selected);
+                formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode);
+
+                // แนบไฟล์
+                if (quotation.quotation_file) {
+                    formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+                }
+
+                // แนบข้อมูล parts
+                quotation.parts.forEach((part, partIndex) => {
+                    for (const key in part) {
+                        formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+                    }
+                });
+            });
+
+            const response = await axios.post(
+                `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+        }
+    };
+
+
     return (
         <div className=" mb-4 ">
-            <form>
+            <form onSubmit={handleSubmit} className="">
                 {/* <div className="card-header fw-bold fs-5">
                     ความเห็นของแผนกซ่อมบำรุง {maintenanceJob ? maintenanceJob.request_no : "ไม่ระบุ"}
                 </div> */}
@@ -295,35 +359,40 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
-                                <div className="col-lg-8 mb-3">
-                                    <label className="form-label mb-2">ประเภทการซ่อม</label>
-                                    <div className="d-flex gap-4">
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id="availableNow"
-                                                name="planning_vehicle_availability"
-                                                value="available"
-                                            />
-                                            <label className="form-check-label" htmlFor="availableNow">
-                                                PM (ซ่อมก่อนเสีย)
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id="notAvailable"
-                                                name="planning_vehicle_availability"
-                                                value="not_available"
-                                            />
-                                            <label className="form-check-label" htmlFor="notAvailable">
-                                                CM (เสียก่อนซ่อม)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+<div className="col-lg-8 mb-3">
+    <label className="form-label mb-2">ประเภทการซ่อม</label>
+    <div className="d-flex gap-4">
+        <div className="form-check">
+            <input
+                className="form-check-input"
+                type="checkbox"
+                id="pm"
+                name="repairType"
+                value="PM"
+        
+                onChange={handleAnalysisInputChange}
+            />
+            <label className="form-check-label" htmlFor="pm">
+                PM (ซ่อมก่อนเสีย)
+            </label>
+        </div>
+        <div className="form-check">
+            <input
+                className="form-check-input"
+                type="checkbox"
+                id="cm"
+                name="repairType"
+                value="CM"
+                
+                onChange={handleAnalysisInputChange}
+            />
+            <label className="form-check-label" htmlFor="cm">
+                CM (เสียก่อนซ่อม)
+            </label>
+        </div>
+    </div>
+</div>
+
                             </div>
 
                             <div className="row mb-4">
@@ -335,6 +404,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             type="checkbox"
                                             id="urgentRepair"
                                             name="urgentRepair"
+                                            onChange={handleAnalysisInputChange}
+                                            checked={analysisData.urgentRepair || false}
+
                                         />
                                         <label className="form-check-label ms-2" htmlFor="urgentRepair">
                                             จำเป็นต้องซ่อมด่วนทันที
@@ -348,6 +420,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             type="checkbox"
                                             id="inhouseRepair"
                                             name="inhouseRepair"
+                                            onChange={handleAnalysisInputChange}
+                                            checked={analysisData.inhouseRepair || false}
+
                                         />
                                         <label className="form-check-label ms-2" htmlFor="inhouseRepair">
                                             แผนกช่างซ่อมเองได้
@@ -361,6 +436,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             type="checkbox"
                                             id="sendToGarage"
                                             name="sendToGarage"
+                                            onChange={handleAnalysisInputChange}
+                                            checked={analysisData.sendToGarage || false}
+
                                         />
                                         <label className="form-check-label ms-2" htmlFor="sendToGarage">
                                             ต้องส่งอู่
@@ -379,6 +457,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         name="planDate"
                                         id="planDate"
                                         className="form-control"
+                                        onChange={handleAnalysisInputChange}
+                                        value={analysisData.planDate || ""}
+
                                     />
                                     <div className="col-lg mb-2">
                                         <div className="form-check">
@@ -387,6 +468,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 type="checkbox"
                                                 id="is_quotation_required "
                                                 name="is_quotation_required "
+                                                onChange={handleAnalysisInputChange}
+                                                value={analysisData.is_quotation_required || false}
+
                                             />
                                             <label className="form-check-label ms-2" htmlFor="is_quotation_required ">
                                                 ใบเสนอราคา
@@ -404,6 +488,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         className="form-control"
                                         rows={2}
                                         placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
+                                        onChange={handleAnalysisInputChange}
+                                        value={analysisData.remark || ""}
                                     ></textarea>
                                 </div>
                             </div>
@@ -485,7 +571,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         <input
                                             type="file"
                                             className="form-control"
-                                            onChange={e => handleQuotationChange(idx, "quotation_file", e.target.files[0])}
+                                            onChange={(e) => handleQuotationChange(idx, 'quotation_file', e.target.files[0])}
                                         />
                                     </div>
                                 </div>

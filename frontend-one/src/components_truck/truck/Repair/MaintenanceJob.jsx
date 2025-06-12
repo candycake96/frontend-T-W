@@ -234,11 +234,11 @@ const MaintenanceJob = () => {
                 <div className="mb-2">
                     <div className="mb-2">
                         <div className="d-flex justify-content-end gap-2">
-                            <button className="btn btn-outline-danger">
+                            <button className="btn btn-danger">
                                 <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
                             </button>
                             <button
-                                className="btn btn-outline-primary"
+                                className="btn btn-primary"
                                 onClick={generateReport}
                                 disabled={loading}
                             >
@@ -257,7 +257,7 @@ const MaintenanceJob = () => {
                                 <Link
                                     to="/truck/RepairRequestFormEdit"
                                     state={dataRepairID}
-                                    className="btn btn-outline-success"
+                                    className="btn btn-success"
                                 >
                                     <i className="bi bi-pencil-fill me-1"></i> แก้ไข
                                 </Link>
