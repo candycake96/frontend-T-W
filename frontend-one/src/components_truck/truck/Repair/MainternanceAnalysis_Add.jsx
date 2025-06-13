@@ -26,7 +26,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     const [analysisData, setAnalysisData] = React.useState({
         request_id: "", // รหัสคำขอซ่อม FK
         analysis_emp_id: "", // รหัสพนักงานที่วิเคราะห์ FK
-
         is_quotation_required: false, // ต้องการใบเสนอราคา
         urgent_repair: false,   // ซ่อมด่วน
         inhouse_repair: false, // ซ่อมในแผนก
@@ -71,12 +70,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
         {
-            garage_id: "",
+            vender_id: "",
             garage_name: "",
             quotation_date: "",
             quotation_file: null,
             note: "",
             is_selected: false,
+            quotation_vat: "",
             parts: [
                 { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
@@ -88,7 +88,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setQuotations([
             ...quotations,
             {
-                garage_id: "",
+                vender_id: "",
                 garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
@@ -169,7 +169,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
 
     // ฟังก์ชันคำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
-    const calculateSummary = (parts, vat_mode) => {
+    const calculateSummary = (parts, quotation_vat) => {
         let total = 0;
         let vatAmountPerItem = 0;
 
@@ -187,7 +187,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             vatAmountPerItem += vatVal;
         });
 
-        const vatRate = parseFloat(vat_mode) || 0;
+        const vatRate = parseFloat(quotation_vat) || 0;
         const extraVat = total * vatRate / 100;
 
         const vatAmount = vatAmountPerItem + extraVat;
@@ -211,11 +211,11 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     };
 
     // ฟังก์ชันเลือกใบเสนอราคาที่ใช้งาน
-    const handleToggleQuotation = (index) => {
-        const updated = [...quotations];
-        updated[index].is_selected = !updated[index].is_selected;
-        setQuotations(updated);
-    };
+    // const handleToggleQuotation = (index) => {
+    //     const updated = [...quotations];
+    //     updated[index].is_selected = !updated[index].is_selected;
+    //     setQuotations(updated);
+    // };
 
 
     // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
@@ -333,76 +333,77 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             // เก็บชื่ออู่/ร้านค้า
             updated[selectedQuotationIndex].garage_name = vendorData.vendor_name || "";
             // ถ้าต้องการเก็บ id จริงๆ ให้ใช้ vendorData.vendor_id ด้วย
-            updated[selectedQuotationIndex].garage_id = vendorData.vendor_id || "";
+            updated[selectedQuotationIndex].vender_id = vendorData.vendor_id || "";
             return updated;
         });
         setIsOpenModalVendorDetails(false);
     };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  try {
-    console.log("ข้อมูลที่ส่ง:", { dataToSend });
-    console.log("ข้อมูลใบเสนอราคา:", quotations);
-    const token = localStorage.getItem("accessToken");
-        if (!token) {
-            setMessage("Access token is missing. Please log in.");
-            setMessageType("error");
-            return; // Stop form submission
-        }
+        try {
+            console.log("ข้อมูลที่ส่ง:", { dataToSend });
+            console.log("ข้อมูลใบเสนอราคา:", quotations);
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                setMessage("Access token is missing. Please log in.");
+                setMessageType("error");
+                return; // Stop form submission
+            }
 
-    const formData = new FormData();
+            const formData = new FormData();
 
-    // ใช้ dataToSend (ผ่านการแปลง boolean แล้ว)
-    for (const key in dataToSend) {
-      formData.append(key, dataToSend[key]);
-    }
+            // ใช้ dataToSend (ผ่านการแปลง boolean แล้ว)
+            for (const key in dataToSend) {
+                formData.append(key, dataToSend[key]);
+            }
 
-    // แนบ quotations
-    quotations.forEach((quotation, index) => {
-      formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
-      formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
-      formData.append(`quotations[${index}][note]`, quotation.note);
-      formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
-      formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode || "");
+            // แนบ quotations
+            quotations.forEach((quotation, index) => {
+                formData.append(`quotations[${index}][vender_id]`, quotation.vender_id);
+                formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+                formData.append(`quotations[${index}][note]`, quotation.note);
+                formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
+                formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
 
-      if (quotation.quotation_file) {
-        formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
-      }
+                if (quotation.quotation_file) {
+                    formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+                }
 
-      quotation.parts.forEach((part, partIndex) => {
-        for (const key in part) {
-          formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
-        }
-      });
-    });
+                quotation.parts.forEach((part, partIndex) => {
+                    for (const key in part) {
+                        formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+                    }
+                });
+            });
 
-    const response = await axios.post(
-      `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
-      formData,
-      {
-         headers: {
+
+            const response = await axios.post(
+                `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
+                formData,
+                {
+                    headers: {
                         "Content-Type": "multipart/form-data",
                         Authorization: `Bearer ${token}`,
                     },
-      }
-    );
+                }
+            );
 
-    console.log("บันทึกข้อมูลสำเร็จ:", response.data);
-    setMessage(response.data.message);
-    setMessageType("success");
+            console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+            setMessage(response.data.message);
+            setMessageType("success");
 
-    // Optional: รีเซ็ตฟอร์ม
-    // setQuotations([]);
-    // setAnalysisData(initialAnalysisData);
+            // Optional: รีเซ็ตฟอร์ม
+            // setQuotations([]);
+            // setAnalysisData(initialAnalysisData);
 
-  } catch (error) {
-    console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
-    setMessage("เกิดข้อผิดพลาด");
-    setMessageType("error");
-  }
-};
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
+        }
+    };
 
 
     return (
@@ -527,19 +528,36 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                             </div>
 
                             <div className="row mb-3">
-                                <div className="col-lg-3 mb-3">
-                                    <label htmlFor="plan_date" className="form-label">
-                                        ตั้งแต่วันที่
-                                    </label>
-                                    <input
-                                        type="date"
-                                        name="plan_date"
-                                        id="plan_date"
-                                        className="form-control"
-                                        onChange={handleAnalysisInputChange}
-                                        value={analysisData.plan_date || ""}
+                                <div className="col-lg-4 mb-3">
+                                    <div className=" d-flex gap-3">
+                                        <div className="col-7">
+                                            <label htmlFor="plan_date" className="form-label">
+                                                ตั้งแต่วันที่
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="plan_date"
+                                                id="plan_date"
+                                                className="form-control"
+                                                onChange={handleAnalysisInputChange}
+                                                value={analysisData.plan_date || ""}
+                                            />
+                                        </div>
+                                        <div className="mb-2 col-5">
+                                            <label htmlFor="plan_time" className="form-label">
+                                                เวลา
+                                            </label>
+                                            <input
+                                                type="time"
+                                                name="plan_time"
+                                                id="plan_time"
+                                                className="form-control"
+                                                onChange={handleAnalysisInputChange}
+                                                value={analysisData.plan_time || ""}
+                                            />
+                                        </div>
+                                    </div>
 
-                                    />
                                     <div className="col-lg mb-2">
                                         <div className="form-check">
                                             <input
@@ -549,15 +567,15 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 name="is_quotation_required"
                                                 onChange={handleAnalysisInputChange}
                                                 value={analysisData.is_quotation_required || false}
-
                                             />
                                             <label className="form-check-label ms-2" htmlFor="is_quotation_required ">
-                                                ใบเสนอราคา
+                                                มีใบเสนอราคา
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-lg-9 mb-3">
+
+                                <div className="col-lg-8 mb-3">
                                     <label htmlFor="remark" className="form-label">
                                         หมายเหตุ
                                     </label>
@@ -609,9 +627,10 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 className="form-check-input"
                                                 type="checkbox"
                                                 id={`is_selected_${idx}`}
-                                                name={`is_selected_${idx}`}
+                                                name={`is_selected`}
                                                 checked={q.is_selected}
-                                                onChange={() => handleToggleQuotation(idx)}
+                                                // onChange={() => handleToggleQuotation(idx)}
+                                                onChange={(e) => handleQuotationChange(idx, 'is_selected', e.target.value)}
                                             />
                                             <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
                                                 เลือกใช้งาน
@@ -789,7 +808,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                 <div className="text-end">
                                     {(() => {
                                         // คำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
-                                        const summary = calculateSummary(q.parts, q.vat_mode);
+                                        const summary = calculateSummary(q.parts, q.quotation_vat);
 
 
 
@@ -812,11 +831,11 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                         <label className="form-label text-sm mb-0 me-2">VAT จากยอดรวม </label>
                                                         <input
                                                             type="number"
-                                                            name="vat_mode"
+                                                            name="quotation_vat"
                                                             className="form-control form-control-sm me-2"
                                                             style={{ width: "100px" }}
-                                                            value={q.vat_mode || ""}
-                                                            onChange={e => handleQuotationChange(idx, "vat_mode", e.target.value)}
+                                                            value={q.quotation_vat || ""}
+                                                            onChange={e => handleQuotationChange(idx, "quotation_vat", e.target.value)}
                                                             placeholder="0"
                                                         />
                                                         <p className="fw-bolder me-2">(%)</p>
