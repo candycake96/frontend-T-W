@@ -210,13 +210,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setQuotations(updated);
     };
 
-    // ฟังก์ชันเลือกใบเสนอราคาที่ใช้งาน
-    // const handleToggleQuotation = (index) => {
-    //     const updated = [...quotations];
-    //     updated[index].is_selected = !updated[index].is_selected;
-    //     setQuotations(updated);
-    // };
-
 
     // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
     const [requestParts, setRequestParts] = useState([]);
