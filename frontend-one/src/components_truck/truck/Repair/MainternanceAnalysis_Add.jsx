@@ -10,6 +10,9 @@ import { data } from "autoprefixer";
 
 const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
 
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
+
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
     useEffect(() => {
@@ -336,73 +339,83 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setIsOpenModalVendorDetails(false);
     };
 
-    // ฟังก์ชันจัดการการส่งฟอร์ม
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    //     try {
-    //         const formData = new FormData();
-
-    //         // แนบข้อมูล analysisData
-    //         for (const key in analysisData) {
-    //             formData.append(key, analysisData[key]);
-    //         }
-
-    //         // แนบข้อมูลใบเสนอราคาทุกใบ
-    //         quotations.forEach((quotation, index) => {
-    //             formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
-    //             formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
-    //             formData.append(`quotations[${index}][note]`, quotation.note);
-    //             formData.append(`quotations[${index}][is_selected]`, quotation.is_selected);
-    //             formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode);
-
-    //             // แนบไฟล์
-    //             if (quotation.quotation_file) {
-    //                 formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
-    //             }
-
-    //             // แนบข้อมูล parts
-    //             quotation.parts.forEach((part, partIndex) => {
-    //                 for (const key in part) {
-    //                     formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
-    //                 }
-    //             });
-    //         });
-
-    //         const response = await axios.post(
-    //             `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
-    //             formData,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    //                     'Content-Type': 'multipart/form-data',
-    //                 },
-    //             }
-    //         );
-
-    //         console.log("บันทึกข้อมูลสำเร็จ:", response.data);
-    //     } catch (error) {
-    //         console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
-    //     }
-    // };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            console.log("ข้อมูลที่ส่ง:", {
-                dataToSend,
-            });
-            console.log("ข้อมูลใบเสนอราคา:", quotations);
-
-            const formData = new FormData();
-            // แนบข้อมูล analysisData
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+  try {
+    console.log("ข้อมูลที่ส่ง:", { dataToSend });
+    console.log("ข้อมูลใบเสนอราคา:", quotations);
+    const token = localStorage.getItem("accessToken");
+        if (!token) {
+            setMessage("Access token is missing. Please log in.");
+            setMessageType("error");
+            return; // Stop form submission
         }
+
+    const formData = new FormData();
+
+    // ใช้ dataToSend (ผ่านการแปลง boolean แล้ว)
+    for (const key in dataToSend) {
+      formData.append(key, dataToSend[key]);
     }
+
+    // แนบ quotations
+    quotations.forEach((quotation, index) => {
+      formData.append(`quotations[${index}][garage_id]`, quotation.garage_id);
+      formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+      formData.append(`quotations[${index}][note]`, quotation.note);
+      formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
+      formData.append(`quotations[${index}][vat_mode]`, quotation.vat_mode || "");
+
+      if (quotation.quotation_file) {
+        formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+      }
+
+      quotation.parts.forEach((part, partIndex) => {
+        for (const key in part) {
+          formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+        }
+      });
+    });
+
+    const response = await axios.post(
+      `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
+      formData,
+      {
+         headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+      }
+    );
+
+    console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+    setMessage(response.data.message);
+    setMessageType("success");
+
+    // Optional: รีเซ็ตฟอร์ม
+    // setQuotations([]);
+    // setAnalysisData(initialAnalysisData);
+
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+    setMessage("เกิดข้อผิดพลาด");
+    setMessageType("error");
+  }
+};
+
 
     return (
         <div className=" mb-4 ">
+            {/* Display success or error message */}
+            {message && (
+                <div
+                    className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
+                >
+                    {message}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="">
                 {/* <div className="card-header fw-bold fs-5">
                     ความเห็นของแผนกซ่อมบำรุง {maintenanceJob ? maintenanceJob.request_no : "ไม่ระบุ"}
