@@ -571,16 +571,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                     <div className="mb-3">
                         <div className="">
 
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => setIsEditing(true)}
-                                style={{ whiteSpace: 'nowrap' }}
-                            >
-                                <i class="bi bi-pencil-square"></i> แก้ไข
-                            </button>
 
-                            <div className="row mb-3" >
+                            <div className="row mb-3 align-items-center" >
                                 <div className="col-lg-4 mb-3">
                                     <label htmlFor="reporter" className="form-label">
                                         ผู้ตรวจเช็ครถ <span className="text-danger">*</span>
@@ -595,7 +587,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
-                                <div className="col-lg-8 mb-3">
+                                <div className="col-lg-4 mb-3">
                                     <label className="form-label mb-2">ประเภทการซ่อม</label>
                                     <div className="d-flex gap-4">
                                         <div className="form-check">
@@ -635,7 +627,18 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         </div>
                                     </div>
                                 </div>
-
+ {!isEditing && (
+        <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+            <button
+                type="button"
+                className="btn btn-primary w-lg-auto"
+                onClick={() => setIsEditing(true)}
+                style={{ whiteSpace: 'nowrap' }}
+            >
+                <i className="bi bi-pencil-square"></i> แก้ไข
+            </button>
+        </div>
+    )}
                             </div>
 
                             <div className="row mb-4">

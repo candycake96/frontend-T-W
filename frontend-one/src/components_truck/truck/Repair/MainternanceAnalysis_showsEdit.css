@@ -3,3 +3,7 @@
   background-color: white !important;
   cursor: default;
 }
+
+.hide-when-editing {
+  display: contents !important;
+}
