@@ -4,8 +4,10 @@ import { Link, useLocation } from "react-router-dom"; // ใช้ดึงข�
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
 import Modal_vandor_show_search from "../Vandor/modal/Modal_vandor_show_search";
-import { use } from "react";
-import { data } from "autoprefixer";
+import '../Repair/MainternanceAnalysis_showsEdit.css'
+// import '../Repair/MainternanceAnalysis_showEdit.css';
+// import { use } from "react";
+// import { data } from "autoprefixer";
 
 
 const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
@@ -132,6 +134,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
     const handleAnalysisInputChange = (e) => {
+         if (!isEditing) return; // ไม่ให้แก้ไขถ้าไม่ได้อยู่ในโหมดแก้ไข
         const { name, value, type, checked } = e.target;
         setAnalysisData((prev) => ({
             ...prev,
@@ -511,39 +514,46 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
-                                <div className="col-lg-8 mb-3">
-                                    <label className="form-label mb-2">ประเภทการซ่อม</label>
-                                    <div className="d-flex gap-4">
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="pm"
-                                                name="is_pm"
-                                                checked={!!analysisData.is_pm}
-                                                onChange={handleAnalysisInputChange}
-                                                disabled={!isEditing}
-                                            />
-                                            <label className="form-check-label" htmlFor="pm">
-                                                PM (ซ่อมก่อนเสีย)
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                id="cm"
-                                                name="is_cm"
-                                                checked={!!analysisData.is_cm}
-                                                onChange={handleAnalysisInputChange}
-                                                disabled={!isEditing}
-                                            />
-                                            <label className="form-check-label" htmlFor="cm">
-                                                CM (เสียก่อนซ่อม)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+<div className="col-lg-8 mb-3">
+  <label className="form-label mb-2">ประเภทการซ่อม</label>
+  <div className="d-flex gap-4">
+    <div className="form-check">
+      <input
+        className="form-check-input no-disable-style"
+        type="checkbox"
+        id="pm"
+        name="is_pm"
+        checked={!!analysisData.is_pm}
+        onChange={handleAnalysisInputChange}
+        // disabled={!isEditing}
+      />
+      <label
+        className={`form-check-label ${analysisData.is_pm ? 'fw-bold' : 'text-muted'}`}
+        htmlFor="pm"
+      >
+        PM (ซ่อมก่อนเสีย)
+      </label>
+    </div>
+
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="checkbox"
+        id="cm"
+        name="is_cm"
+        checked={!!analysisData.is_cm}
+        onChange={handleAnalysisInputChange}
+        // disabled={!isEditing}
+      />
+      <label
+        className={`form-check-label ${analysisData.is_cm ? 'fw-bold' : 'text-muted'}`}
+        htmlFor="cm"
+      >
+        CM (เสียก่อนซ่อม)
+      </label>
+    </div>
+  </div>
+</div>
 
                             </div>
 
@@ -558,7 +568,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="urgent_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.urgent_repair || false}
-                                            disabled={!isEditing}
+                                            
                                         />
                                         <label className="form-check-label ms-2" htmlFor="urgent_repair">
                                             จำเป็นต้องซ่อมด่วนทันที
@@ -574,7 +584,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="inhouse_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.inhouse_repair || false}
-                                            disabled={!isEditing}
+                                            
 
                                         />
                                         <label className="form-check-label ms-2" htmlFor="inhouse_repair">
@@ -591,7 +601,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="send_to_garage"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.send_to_garage || false}
-                                            disabled={!isEditing}
+                                            
                                         />
                                         <label className="form-check-label ms-2" htmlFor="send_to_garage">
                                             ต้องส่งอู่
@@ -679,26 +689,26 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             <strong className="ms-2">
                                                 {isEditing && (
                                                     <>
-                                                     <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-danger ms-2"
-                                                    onClick={() => handleRemoveQuotation(idx)}
-                                                    disabled={!isEditing}
-                                                >
-                                                    <i className="bi bi-trash3-fill"></i>
-                                                    ลบใบเสนอราคาที่ {idx + 1}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-primary ms-2"
-                                                    onClick={() => handleInputChangeImportParts(idx)}
-                                                    disabled={!isEditing}
-                                                >
-                                                    <i class="bi bi-arrow-down-square-fill"></i>
-                                                    ดึงข้อมูลอะไหล่
-                                                </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-danger ms-2"
+                                                            onClick={() => handleRemoveQuotation(idx)}
+                                                            disabled={!isEditing}
+                                                        >
+                                                            <i className="bi bi-trash3-fill"></i>
+                                                            ลบใบเสนอราคาที่ {idx + 1}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-primary ms-2"
+                                                            onClick={() => handleInputChangeImportParts(idx)}
+                                                            disabled={!isEditing}
+                                                        >
+                                                            <i class="bi bi-arrow-down-square-fill"></i>
+                                                            ดึงข้อมูลอะไหล่
+                                                        </button>
                                                     </>
-                                                )}                                               
+                                                )}
 
                                             </strong>
                                         </p>
@@ -877,7 +887,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                                     disabled
                                                 />
                                             </div>
-                                            
+
                                             <div className={`col-lg-1 d-flex justify-content-center align-items-center mt-3 ${isEditing ? "" : " d-none"}`} style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
                                                 <button
                                                     className={`btn btn-sm btn-danger`}
@@ -893,18 +903,18 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                     ))}
 
                                     {isEditing && (
-                                      <div className="d-flex justify-content-end mb-3">
-                                        <button
-                                            className="btn btn-outline-primary"
-                                            type="button"
-                                            onClick={() => handleAddPart(idx)}
-                                            disabled={!isEditing}
-                                        >
-                                            เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
-                                        </button>
-                                    </div>  
+                                        <div className="d-flex justify-content-end mb-3">
+                                            <button
+                                                className="btn btn-outline-primary"
+                                                type="button"
+                                                onClick={() => handleAddPart(idx)}
+                                                disabled={!isEditing}
+                                            >
+                                                เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
+                                            </button>
+                                        </div>
                                     )}
-                                    
+
                                 </div>
 
                                 <div className="text-end">
