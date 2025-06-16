@@ -8,10 +8,12 @@ import { use } from "react";
 import { data } from "autoprefixer";
 
 
-const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
+const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
+
+
 
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
@@ -399,6 +401,72 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     };
 
 
+    // Edit
+
+    // Show {data} to input
+    useEffect(() => {
+        if (data) {
+            // กรณี data มีโครงสร้าง { analysis: {...}, quotations: [...] }
+            if (data.analysis) {
+                setAnalysisData({
+                    request_id: data.analysis.request_id || "",
+                    analysis_emp_id: data.analysis.analysis_emp_id || "",
+                    is_quotation_required: !!data.analysis.is_quotation_required,
+                    urgent_repair: !!data.analysis.urgent_repair,
+                    inhouse_repair: !!data.analysis.inhouse_repair,
+                    send_to_garage: !!data.analysis.send_to_garage,
+                    plan_date: data.analysis.plan_date ? data.analysis.plan_date.substring(0, 10) : "",
+                    plan_time: data.analysis.plan_time ? data.analysis.plan_time.substring(11, 16) : "",
+                    remark: data.analysis.remark || "",
+                    is_pm: !!data.analysis.is_pm,
+                    is_cm: !!data.analysis.is_cm,
+                });
+            }
+            if (Array.isArray(data.quotations)) {
+                setQuotations(
+                    data.quotations.map(q => ({
+                        vendor_id: q.vendor_id || "",
+                        garage_name: q.vendor_name || "",
+                        quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
+                        quotation_file: null, // ไม่สามารถ set ไฟล์เดิมได้
+                        note: q.note || "",
+                        is_selected: !!q.is_selected,
+                        quotation_vat: q.quotation_vat || "",
+                        parts: Array.isArray(q.parts)
+                            ? q.parts.map(part => {
+                                const price = parseFloat(part.part_price) || 0;
+                                const qty = parseFloat(part.part_qty) || 0;
+                                const vat = parseFloat(part.part_vat) || 0;
+                                const discount = parseFloat(part.part_discount) || 0;
+                                const subtotal = price * qty - discount;
+                                const vatVal = subtotal * vat / 100;
+                                const total = subtotal + vatVal;
+                                return {
+                                    part_id: part.part_id || "",
+                                    system_name: part.system_name || "",
+                                    part_name: part.part_name || "",
+                                    price: part.part_price?.toString() || "",
+                                    unit: part.part_unit || "",
+                                    maintenance_type: part.maintenance_type || "",
+                                    qty: part.part_qty?.toString() || "",
+                                    discount: part.part_discount?.toString() || "",
+                                    vat: part.part_vat?.toString() || "",
+                                    total: total.toFixed(2), // set total ที่คำนวณแล้ว
+                                };
+                            })
+                            : [],
+                    }))
+                );
+            }
+        }
+    }, [data]);
+
+    const [isEditing, setIsEditing] = useState(false);
+
+
+
+
+
     return (
         <div className=" mb-4 ">
             {/* Display success or error message */}
@@ -409,7 +477,6 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     {message}
                 </div>
             )}
-            <h1>เพิ่ม</h1>
 
             <form onSubmit={handleSubmit} className="">
                 {/* <div className="card-header fw-bold fs-5">
@@ -419,6 +486,15 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                     {/* ...ฟอร์มส่วนบน... */}
                     <div className="mb-3">
                         <div className="">
+
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => setIsEditing(true)}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
+                                <i class="bi bi-pencil-square"></i> แก้ไข
+                            </button>
 
                             <div className="row mb-3" >
                                 <div className="col-lg-4 mb-3">
@@ -446,6 +522,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 name="is_pm"
                                                 checked={!!analysisData.is_pm}
                                                 onChange={handleAnalysisInputChange}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="pm">
                                                 PM (ซ่อมก่อนเสีย)
@@ -459,6 +536,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 name="is_cm"
                                                 checked={!!analysisData.is_cm}
                                                 onChange={handleAnalysisInputChange}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="cm">
                                                 CM (เสียก่อนซ่อม)
@@ -480,7 +558,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             name="urgent_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.urgent_repair || false}
-
+                                            disabled={!isEditing}
                                         />
                                         <label className="form-check-label ms-2" htmlFor="urgent_repair">
                                             จำเป็นต้องซ่อมด่วนทันที
@@ -496,6 +574,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             name="inhouse_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.inhouse_repair || false}
+                                            disabled={!isEditing}
 
                                         />
                                         <label className="form-check-label ms-2" htmlFor="inhouse_repair">
@@ -512,7 +591,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             name="send_to_garage"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.send_to_garage || false}
-
+                                            disabled={!isEditing}
                                         />
                                         <label className="form-check-label ms-2" htmlFor="send_to_garage">
                                             ต้องส่งอู่
@@ -535,6 +614,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 className="form-control"
                                                 onChange={handleAnalysisInputChange}
                                                 value={analysisData.plan_date || ""}
+                                                disabled={!isEditing}
                                             />
                                         </div>
                                         <div className="mb-2 col-5">
@@ -548,6 +628,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 className="form-control"
                                                 onChange={handleAnalysisInputChange}
                                                 value={analysisData.plan_time || ""}
+                                                disabled={!isEditing}
                                             />
                                         </div>
                                     </div>
@@ -561,6 +642,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 name="is_quotation_required"
                                                 onChange={handleAnalysisInputChange}
                                                 value={analysisData.is_quotation_required || false}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label ms-2" htmlFor="is_quotation_required ">
                                                 มีใบเสนอราคา
@@ -581,6 +663,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
                                         onChange={handleAnalysisInputChange}
                                         value={analysisData.remark || ""}
+                                        disabled={!isEditing}
                                     ></textarea>
                                 </div>
                             </div>
@@ -594,11 +677,13 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                     <div className="col-lg-5">
                                         <p className="fw-bolder">ใบเสนอราคาที่ {idx + 1}
                                             <strong className="ms-2">
-
-                                                <button
+                                                {isEditing && (
+                                                    <>
+                                                     <button
                                                     type="button"
                                                     className="btn btn-sm btn-danger ms-2"
                                                     onClick={() => handleRemoveQuotation(idx)}
+                                                    disabled={!isEditing}
                                                 >
                                                     <i className="bi bi-trash3-fill"></i>
                                                     ลบใบเสนอราคาที่ {idx + 1}
@@ -607,28 +692,32 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     type="button"
                                                     className="btn btn-sm btn-primary ms-2"
                                                     onClick={() => handleInputChangeImportParts(idx)}
+                                                    disabled={!isEditing}
                                                 >
                                                     <i class="bi bi-arrow-down-square-fill"></i>
                                                     ดึงข้อมูลอะไหล่
                                                 </button>
+                                                    </>
+                                                )}                                               
 
                                             </strong>
                                         </p>
                                     </div>
                                     <div className="col-lg-2 mb-2">
-<div className="form-check">
-    <input
-        className="form-check-input"
-        type="checkbox"
-        id={`is_selected_${idx}`}
-        name={`is_selected`}
-        checked={q.is_selected}
-        onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
-        เลือกใช้งาน
-    </label>
-</div>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id={`is_selected_${idx}`}
+                                                name={`is_selected`}
+                                                checked={q.is_selected}
+                                                onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
+                                                disabled={!isEditing}
+                                            />
+                                            <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
+                                                เลือกใช้งาน
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -641,8 +730,9 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                 className="form-control"
                                                 value={q.garage_name}
                                                 onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
+                                                disabled={!isEditing}
                                             />
-                                            <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails(idx)}>
+                                            <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails(idx)} disabled={!isEditing}>
                                                 <i className="bi bi-search"></i>
                                             </button>
                                         </div>
@@ -655,6 +745,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             className="form-control"
                                             value={q.quotation_date}
                                             onChange={e => handleQuotationChange(idx, "quotation_date", e.target.value)}
+                                            disabled={!isEditing}
                                         />
                                     </div>
                                     <div className="col-lg-6 mb-3">
@@ -663,6 +754,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             type="file"
                                             className="form-control"
                                             onChange={(e) => handleQuotationChange(idx, 'quotation_file', e.target.files[0])}
+                                            disabled={!isEditing}
                                         />
                                     </div>
                                 </div>
@@ -673,6 +765,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         rows={2}
                                         value={q.note}
                                         onChange={e => handleQuotationChange(idx, "note", e.target.value)}
+                                        disabled={!isEditing}
                                         placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
                                     ></textarea>
                                 </div>
@@ -698,12 +791,14 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                         className="form-control"
                                                         value={part.part_name}
                                                         onChange={e => handleChange(idx, partIdx, "part_name", e.target.value)}
+                                                        disabled={!isEditing}
                                                         placeholder="ค้นหาอะไหล่..."
                                                     />
                                                     <button
                                                         className="btn btn-outline-secondary btn-sm"
                                                         type="button"
                                                         onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
+                                                        disabled={!isEditing}
                                                     >
                                                         <i className="bi bi-search"></i>
                                                     </button>
@@ -716,6 +811,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-select mb-3 form-select-sm"
                                                     value={part.maintenance_type}
                                                     onChange={e => handleChange(idx, partIdx, "maintenance_type", e.target.value)}
+                                                    disabled={!isEditing}
                                                 >
                                                     <option value=""></option>
                                                     <option value="CM">CM</option>
@@ -729,6 +825,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-control form-control-sm"
                                                     value={part.price}
                                                     onChange={e => handleChange(idx, partIdx, "price", e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                             <div className="col-lg-1">
@@ -738,6 +835,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-control form-control-sm"
                                                     value={part.unit}
                                                     onChange={e => handleChange(idx, partIdx, "unit", e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                             <div className="col-lg-1">
@@ -747,6 +845,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-control form-control-sm"
                                                     value={part.qty}
                                                     onChange={e => handleChange(idx, partIdx, "qty", e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                             <div className="col-lg-1">
@@ -756,6 +855,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-control form-control-sm"
                                                     value={part.discount || ""}
                                                     onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                             <div className="col" style={{ flex: "0 0 7.5%", maxWidth: "7.5%" }}>
@@ -765,6 +865,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     className="form-control form-control-sm"
                                                     value={part.vat}
                                                     onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                             <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "12.5%" }}>
@@ -776,26 +877,34 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                     disabled
                                                 />
                                             </div>
-                                            <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3" style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
+                                            
+                                            <div className={`col-lg-1 d-flex justify-content-center align-items-center mt-3 ${isEditing ? "" : " d-none"}`} style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
                                                 <button
-                                                    className="btn btn-sm btn-danger"
+                                                    className={`btn btn-sm btn-danger`}
                                                     type="button"
                                                     onClick={() => handleRemovePart(idx, partIdx)}
+                                                    disabled={!isEditing}
                                                 >
                                                     <i className="bi bi-trash3-fill"></i>
                                                 </button>
                                             </div>
+
                                         </div>
                                     ))}
-                                    <div className="d-flex justify-content-end mb-3">
+
+                                    {isEditing && (
+                                      <div className="d-flex justify-content-end mb-3">
                                         <button
                                             className="btn btn-outline-primary"
                                             type="button"
                                             onClick={() => handleAddPart(idx)}
+                                            disabled={!isEditing}
                                         >
                                             เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
                                         </button>
-                                    </div>
+                                    </div>  
+                                    )}
+                                    
                                 </div>
 
                                 <div className="text-end">
@@ -830,6 +939,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                                             value={q.quotation_vat || ""}
                                                             onChange={e => handleQuotationChange(idx, "quotation_vat", e.target.value)}
                                                             placeholder="0"
+                                                            disabled={!isEditing}
                                                         />
                                                         <p className="fw-bolder me-2">(%)</p>
                                                     </div>
@@ -847,24 +957,36 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                             </div>
                         ))}
                     </div>
-                    <div className="text-center mb-2">
-                        <button
-                            type="button"
-                            className="btn btn-outline-success"
-                            onClick={handleAddQuotation}
-                        >
-                            เพิ่มใบเสนอราคา <i className="bi bi-plus-square-fill"></i>
-                        </button>
-                    </div>
 
-                    <div className="text-center">
-                        <button type="submit" className="btn btn-primary me-2">
-                            บันทึก
-                        </button>
-                        <button type="reset" className="btn btn-secondary">
-                            ยกเลิก
-                        </button>
-                    </div>
+
+
+
+                    {isEditing && (
+                        <>
+                            <div className="text-center mb-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-success"
+                                    onClick={handleAddQuotation}
+                                >
+                                    เพิ่มใบเสนอราคา <i className="bi bi-plus-square-fill"></i>
+                                </button>
+                            </div>
+                            <div className="text-center">
+                                <button type="submit" className="btn btn-primary me-2">
+                                    บันทึก
+                                </button>
+                                <button
+                                    type="reset"
+                                    className="btn btn-secondary"
+                                    onClick={() => setIsEditing(false)}
+                                >
+                                    ยกเลิก
+                                </button>
+                            </div>
+                        </>
+                    )}
+
                 </div>
             </form>
 
@@ -890,4 +1012,4 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     );
 };
 
-export default MainternanceAnanlysis_Add;
+export default MainternanceAnalysis_showEdit;
