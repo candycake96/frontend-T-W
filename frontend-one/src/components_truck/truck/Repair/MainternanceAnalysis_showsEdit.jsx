@@ -78,6 +78,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             garage_name: "",
             quotation_date: "",
             quotation_file: null,
+            quotation_file_new: null,
             note: "",
             is_selected: false,
             quotation_vat: "",
@@ -96,6 +97,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                 garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
+                quotation_file_new: null,
                 note: "",
                 is_selected: false,
                 parts: [
@@ -134,7 +136,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     // ฟังก์ชันจัดการการเปลี่ยนแปลงข้อมูลในฟอร์ม
     const handleAnalysisInputChange = (e) => {
-         if (!isEditing) return; // ไม่ให้แก้ไขถ้าไม่ได้อยู่ในโหมดแก้ไข
+        if (!isEditing) return; // ไม่ให้แก้ไขถ้าไม่ได้อยู่ในโหมดแก้ไข
         const { name, value, type, checked } = e.target;
         setAnalysisData((prev) => ({
             ...prev,
@@ -210,9 +212,16 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
-        const updated = [...quotations];
-        updated[index][field] = value;
-        setQuotations(updated);
+        if (!isEditing) return;
+        setQuotations(prev => {
+            const updated = [...prev];
+            if (field === 'quotation_file') {
+                updated[index].quotation_file_new = value; // เก็บไฟล์ใหม่
+            } else {
+                updated[index][field] = value;
+            }
+            return updated;
+        });
     };
 
 
@@ -376,6 +385,13 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                 });
             });
 
+            //  เวลาส่งข้อมูล (handleSubmit) ให้ส่งไฟล์ใหม่ถ้ามี
+            if (quotations.quotation_file_new) {
+                formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file_new);
+            } else if (quotations.quotation_file) {
+                // ส่ง url หรือชื่อไฟล์เดิมถ้าต้องการ
+                formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file);
+            }
 
             const response = await axios.post(
                 `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
@@ -406,6 +422,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     // Edit
 
+
     // Show {data} to input
     useEffect(() => {
         if (data) {
@@ -431,7 +448,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                         vendor_id: q.vendor_id || "",
                         garage_name: q.vendor_name || "",
                         quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
-                        quotation_file: null, // ไม่สามารถ set ไฟล์เดิมได้
+                        quotation_file: q.quotation_file || null,
+                        quotation_file_new: null,
                         note: q.note || "",
                         is_selected: !!q.is_selected,
                         quotation_vat: q.quotation_vat || "",
@@ -463,6 +481,69 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             }
         }
     }, [data]);
+
+    // ...existing code...
+
+    // เพิ่มฟังก์ชันรีเซ็ตข้อมูล
+    const resetFormToInitial = () => {
+        if (data) {
+            if (data.analysis) {
+                setAnalysisData({
+                    request_id: data.analysis.request_id || "",
+                    analysis_emp_id: data.analysis.analysis_emp_id || "",
+                    is_quotation_required: !!data.analysis.is_quotation_required,
+                    urgent_repair: !!data.analysis.urgent_repair,
+                    inhouse_repair: !!data.analysis.inhouse_repair,
+                    send_to_garage: !!data.analysis.send_to_garage,
+                    plan_date: data.analysis.plan_date ? data.analysis.plan_date.substring(0, 10) : "",
+                    plan_time: data.analysis.plan_time ? data.analysis.plan_time.substring(11, 16) : "",
+                    remark: data.analysis.remark || "",
+                    is_pm: !!data.analysis.is_pm,
+                    is_cm: !!data.analysis.is_cm,
+                });
+            }
+            if (Array.isArray(data.quotations)) {
+                setQuotations(
+                    data.quotations.map(q => ({
+                        vendor_id: q.vendor_id || "",
+                        garage_name: q.vendor_name || "",
+                        quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
+                        quotation_file: q.quotation_file || null,
+                        quotation_file_new: null,
+                        note: q.note || "",
+                        is_selected: !!q.is_selected,
+                        quotation_vat: q.quotation_vat || "",
+                        parts: Array.isArray(q.parts)
+                            ? q.parts.map(part => {
+                                const price = parseFloat(part.part_price) || 0;
+                                const qty = parseFloat(part.part_qty) || 0;
+                                const vat = parseFloat(part.part_vat) || 0;
+                                const discount = parseFloat(part.part_discount) || 0;
+                                const subtotal = price * qty - discount;
+                                const vatVal = subtotal * vat / 100;
+                                const total = subtotal + vatVal;
+                                return {
+                                    part_id: part.part_id || "",
+                                    system_name: part.system_name || "",
+                                    part_name: part.part_name || "",
+                                    price: part.part_price?.toString() || "",
+                                    unit: part.part_unit || "",
+                                    maintenance_type: part.maintenance_type || "",
+                                    qty: part.part_qty?.toString() || "",
+                                    discount: part.part_discount?.toString() || "",
+                                    vat: part.part_vat?.toString() || "",
+                                    total: total.toFixed(2),
+                                };
+                            })
+                            : [],
+                    }))
+                );
+            }
+        }
+    };
+
+
+    // ...existing code...
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -514,46 +595,46 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         value={(user?.fname || "") + " " + (user?.lname || "")}
                                     />
                                 </div>
-<div className="col-lg-8 mb-3">
-  <label className="form-label mb-2">ประเภทการซ่อม</label>
-  <div className="d-flex gap-4">
-    <div className="form-check">
-      <input
-        className="form-check-input no-disable-style"
-        type="checkbox"
-        id="pm"
-        name="is_pm"
-        checked={!!analysisData.is_pm}
-        onChange={handleAnalysisInputChange}
-        // disabled={!isEditing}
-      />
-      <label
-        className={`form-check-label ${analysisData.is_pm ? 'fw-bold' : 'text-muted'}`}
-        htmlFor="pm"
-      >
-        PM (ซ่อมก่อนเสีย)
-      </label>
-    </div>
+                                <div className="col-lg-8 mb-3">
+                                    <label className="form-label mb-2">ประเภทการซ่อม</label>
+                                    <div className="d-flex gap-4">
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input no-disable-style"
+                                                type="checkbox"
+                                                id="pm"
+                                                name="is_pm"
+                                                checked={!!analysisData.is_pm}
+                                                onChange={handleAnalysisInputChange}
+                                            // disabled={!isEditing}
+                                            />
+                                            <label
+                                                className={`form-check-label ${analysisData.is_pm ? 'fw-bold' : 'text-muted'}`}
+                                                htmlFor="pm"
+                                            >
+                                                PM (ซ่อมก่อนเสีย)
+                                            </label>
+                                        </div>
 
-    <div className="form-check">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        id="cm"
-        name="is_cm"
-        checked={!!analysisData.is_cm}
-        onChange={handleAnalysisInputChange}
-        // disabled={!isEditing}
-      />
-      <label
-        className={`form-check-label ${analysisData.is_cm ? 'fw-bold' : 'text-muted'}`}
-        htmlFor="cm"
-      >
-        CM (เสียก่อนซ่อม)
-      </label>
-    </div>
-  </div>
-</div>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="cm"
+                                                name="is_cm"
+                                                checked={!!analysisData.is_cm}
+                                                onChange={handleAnalysisInputChange}
+                                            // disabled={!isEditing}
+                                            />
+                                            <label
+                                                className={`form-check-label ${analysisData.is_cm ? 'fw-bold' : 'text-muted'}`}
+                                                htmlFor="cm"
+                                            >
+                                                CM (เสียก่อนซ่อม)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -568,7 +649,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="urgent_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.urgent_repair || false}
-                                            
+
                                         />
                                         <label className="form-check-label ms-2" htmlFor="urgent_repair">
                                             จำเป็นต้องซ่อมด่วนทันที
@@ -584,7 +665,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="inhouse_repair"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.inhouse_repair || false}
-                                            
+
 
                                         />
                                         <label className="form-check-label ms-2" htmlFor="inhouse_repair">
@@ -601,7 +682,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             name="send_to_garage"
                                             onChange={handleAnalysisInputChange}
                                             checked={analysisData.send_to_garage || false}
-                                            
+
                                         />
                                         <label className="form-check-label ms-2" htmlFor="send_to_garage">
                                             ต้องส่งอู่
@@ -722,11 +803,14 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                                 name={`is_selected`}
                                                 checked={q.is_selected}
                                                 onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
-                                                disabled={!isEditing}
                                             />
-                                            <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
+                                            <label
+                                                className={`form-check-label ${q.is_selected ? 'font-bold text-black' : 'text-gray-400'}`}
+                                                htmlFor={`is_selected_${idx}`}
+                                            >
                                                 เลือกใช้งาน
                                             </label>
+
                                         </div>
                                     </div>
                                 </div>
@@ -760,13 +844,40 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                     </div>
                                     <div className="col-lg-6 mb-3">
                                         <label className="form-label">เอกสารแนบ</label>
-                                        <input
-                                            type="file"
-                                            className="form-control"
-                                            onChange={(e) => handleQuotationChange(idx, 'quotation_file', e.target.files[0])}
-                                            disabled={!isEditing}
-                                        />
+                                        {/* อัปโหลดไฟล์ใหม่ */}
+                                        {isEditing && (
+                                            <input
+                                                type="file"
+                                                className="form-control form-control-sm mb-2"
+                                                onChange={e =>
+                                                    handleQuotationChange(idx, 'quotation_file', e.target.files[0])
+                                                }
+                                            />
+                                        )}
+                                        {/* แสดงชื่อไฟล์ใหม่ที่เลือก */}
+                                        {q.quotation_file_new && (
+                                            <div className="mb-2 text-success">
+                                                <i className="bi bi-file-earmark-arrow-up me-1"></i>
+                                                ไฟล์ใหม่: {q.quotation_file_new.name}
+                                            </div>
+                                        )}
+                                        {/* แสดงชื่อไฟล์เดิมถ้ายังไม่มีไฟล์ใหม่ */}
+                                        {!q.quotation_file_new && q.quotation_file && (
+                                            <div className="mb-2">
+                                                <a
+                                                    href={q.quotation_file}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn btn-sm btn-outline-primary"
+                                                    download
+                                                >
+                                                    <i className="bi bi-download me-1"></i>
+                                                    ดาวน์โหลด: {q.quotation_file.split("/").pop()}
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
+
                                 </div>
                                 <div className="col-lg mb-3">
                                     <label className="form-label">หมายเหตุ</label>
@@ -989,7 +1100,10 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                 <button
                                     type="reset"
                                     className="btn btn-secondary"
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={() => {
+                                        resetFormToInitial();
+                                        setIsEditing(false);
+                                    }}
                                 >
                                     ยกเลิก
                                 </button>

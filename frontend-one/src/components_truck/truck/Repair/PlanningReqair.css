@@ -3,3 +3,10 @@
   /* background-color: white !important; */
   cursor: default;
 }
+.label-bold {
+  font-weight: bold;
+}
+
+.label-muted {
+  color: #6c757d;
+}
