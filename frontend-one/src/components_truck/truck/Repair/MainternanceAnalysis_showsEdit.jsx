@@ -28,6 +28,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
 
     const [analysisData, setAnalysisData] = React.useState({
+        analysis_id: "", // PK
         request_id: "", // รหัสคำขอซ่อม FK
         analysis_emp_id: "", // รหัสพนักงานที่วิเคราะห์ FK
         is_quotation_required: false, // ต้องการใบเสนอราคา
@@ -45,6 +46,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
     const dataToSend = {
         // รวมข้อมูลจาก analysisData เพื่อส่งไปยัง API
         ...analysisData,
+        analysis_id: analysisData.analysis_id || "",
         request_id: analysisData.request_id || "",
         analysis_emp_id: analysisData.analysis_emp_id || (user ? user.id_emp : ""),
         plan_date: analysisData.plan_date || "",
@@ -74,16 +76,16 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
         {
+            quotation_id: "",
             vendor_id: "",
             garage_name: "",
             quotation_date: "",
             quotation_file: null,
-            quotation_file_new: null,
             note: "",
             is_selected: false,
             quotation_vat: "",
             parts: [
-                { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+                { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
         }
     ]);
@@ -93,15 +95,15 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         setQuotations([
             ...quotations,
             {
+                quotation_id: "",
                 vendor_id: "",
                 garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
-                quotation_file_new: null,
                 note: "",
                 is_selected: false,
                 parts: [
-                    { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+                    { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
                 ]
             }
         ]);
@@ -208,15 +210,13 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
 
 
-
-
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
         if (!isEditing) return;
         setQuotations(prev => {
             const updated = [...prev];
             if (field === 'quotation_file') {
-                updated[index].quotation_file_new = value; // เก็บไฟล์ใหม่
+                updated[index][field] = value; // อาจเป็น File หรือ string
             } else {
                 updated[index][field] = value;
             }
@@ -346,79 +346,6 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         setIsOpenModalVendorDetails(false);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            console.log("ข้อมูลที่ส่ง:", { dataToSend });
-            console.log("ข้อมูลใบเสนอราคา:", quotations);
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                setMessage("Access token is missing. Please log in.");
-                setMessageType("error");
-                return; // Stop form submission
-            }
-
-            const formData = new FormData();
-
-            // ใช้ dataToSend (ผ่านการแปลง boolean แล้ว)
-            for (const key in dataToSend) {
-                formData.append(key, dataToSend[key]);
-            }
-
-            // แนบ quotations
-            quotations.forEach((quotation, index) => {
-                formData.append(`quotations[${index}][vendor_id]`, quotation.vendor_id);
-                formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
-                formData.append(`quotations[${index}][note]`, quotation.note);
-                formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
-                formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
-
-                if (quotation.quotation_file) {
-                    formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
-                }
-
-                quotation.parts.forEach((part, partIndex) => {
-                    for (const key in part) {
-                        formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
-                    }
-                });
-            });
-
-            //  เวลาส่งข้อมูล (handleSubmit) ให้ส่งไฟล์ใหม่ถ้ามี
-            if (quotations.quotation_file_new) {
-                formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file_new);
-            } else if (quotations.quotation_file) {
-                // ส่ง url หรือชื่อไฟล์เดิมถ้าต้องการ
-                formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file);
-            }
-
-            const response = await axios.post(
-                `${apiUrl}/api/ananlysis_add/${maintenanceJob?.request_id}`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            console.log("บันทึกข้อมูลสำเร็จ:", response.data);
-            setMessage(response.data.message);
-            setMessageType("success");
-
-            // Optional: รีเซ็ตฟอร์ม
-            // setQuotations([]);
-            // setAnalysisData(initialAnalysisData);
-
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
-            setMessage("เกิดข้อผิดพลาด");
-            setMessageType("error");
-        }
-    };
-
 
     // Edit
 
@@ -429,6 +356,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             // กรณี data มีโครงสร้าง { analysis: {...}, quotations: [...] }
             if (data.analysis) {
                 setAnalysisData({
+                    analysis_id: data.analysis.analysis_id || "",
                     request_id: data.analysis.request_id || "",
                     analysis_emp_id: data.analysis.analysis_emp_id || "",
                     is_quotation_required: !!data.analysis.is_quotation_required,
@@ -445,11 +373,11 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             if (Array.isArray(data.quotations)) {
                 setQuotations(
                     data.quotations.map(q => ({
+                        quotation_id: q.quotation_id || "",
                         vendor_id: q.vendor_id || "",
                         garage_name: q.vendor_name || "",
                         quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
                         quotation_file: q.quotation_file || null,
-                        quotation_file_new: null,
                         note: q.note || "",
                         is_selected: !!q.is_selected,
                         quotation_vat: q.quotation_vat || "",
@@ -463,6 +391,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                 const vatVal = subtotal * vat / 100;
                                 const total = subtotal + vatVal;
                                 return {
+                                    quotation_parts_id: part.quotation_parts_id || "",
                                     part_id: part.part_id || "",
                                     system_name: part.system_name || "",
                                     part_name: part.part_name || "",
@@ -505,11 +434,11 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             if (Array.isArray(data.quotations)) {
                 setQuotations(
                     data.quotations.map(q => ({
+                        quotation_id: q.quotation_id || "",
                         vendor_id: q.vendor_id || "",
                         garage_name: q.vendor_name || "",
                         quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
                         quotation_file: q.quotation_file || null,
-                        quotation_file_new: null,
                         note: q.note || "",
                         is_selected: !!q.is_selected,
                         quotation_vat: q.quotation_vat || "",
@@ -542,13 +471,148 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         }
     };
 
-
     // ...existing code...
-
     const [isEditing, setIsEditing] = useState(false);
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         console.log("ข้อมูลที่ส่ง:", { dataToSend });
+    //         console.log("ข้อมูลใบเสนอราคา:", quotations);
+    //         const token = localStorage.getItem("accessToken");
+    //         if (!token) {
+    //             setMessage("Access token is missing. Please log in.");
+    //             setMessageType("error");
+    //             return; // Stop form submission
+    //         }
+
+    //         const formData = new FormData();
+
+    //         // ใช้ dataToSend (ผ่านการแปลง boolean แล้ว)
+    //         for (const key in dataToSend) {
+    //             formData.append(key, dataToSend[key]);
+    //         }
+
+    //         // แนบ quotations
+    //         quotations.forEach((quotation, index) => {
+    //             formData.append(`quotations[${index}][vendor_id]`, quotation.vendor_id);
+    //             formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+    //             formData.append(`quotations[${index}][note]`, quotation.note);
+    //             formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
+    //             formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
+
+    //             if (quotation.quotation_file) {
+    //                 formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+    //             }
+
+    //             quotation.parts.forEach((part, partIndex) => {
+    //                 for (const key in part) {
+    //                     formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+    //                 }
+    //             });
+    //         });
+
+    //         //  เวลาส่งข้อมูล (handleSubmit) ให้ส่งไฟล์ใหม่ถ้ามี
+    //         if (quotations.quotation_file_new) {
+    //             formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file_new);
+    //         } else if (quotations.quotation_file) {
+    //             // ส่ง url หรือชื่อไฟล์เดิมถ้าต้องการ
+    //             formData.append(`quotations[${index}][quotation_file]`, quotations.quotation_file);
+    //         }
+
+    //         const response = await axios.put(
+    //             `${apiUrl}/api/ananlysis_update/${maintenanceJob?.request_id}`,
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "multipart/form-data",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+
+    //         console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+    //         setMessage(response.data.message);
+    //         setMessageType("success");
+
+    //         // Optional: รีเซ็ตฟอร์ม
+    //         // setQuotations([]);
+    //         // setAnalysisData(initialAnalysisData);
+
+    //     } catch (error) {
+    //         console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+    //         setMessage("เกิดข้อผิดพลาด");
+    //         setMessageType("error");
+    //     }
+    // };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            console.log("ข้อมูลที่ส่ง:", { dataToSend });
+            console.log("ข้อมูลใบเสนอราคา:", quotations);
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                setMessage("Access token is missing. Please log in.");
+                setMessageType("error");
+                return;
+            }
+
+            const formData = new FormData();
+
+            for (const key in dataToSend) {
+                formData.append(key, dataToSend[key]);
+            }
+
+            quotations.forEach((quotation, index) => {
+                formData.append(`quotations[${index}][vendor_id]`, quotation.vendor_id);
+                formData.append(`quotations[${index}][quotation_date]`, quotation.quotation_date);
+                formData.append(`quotations[${index}][note]`, quotation.note);
+                formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
+                formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
+
+                if (quotation.quotation_file instanceof File) {
+                    formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
+                } else if (typeof quotation.quotation_file === "string") {
+                    formData.append(`quotations[${index}][quotation_file_old]`, quotation.quotation_file);
+                }
 
 
+                quotation.parts.forEach((part, partIndex) => {
+                    for (const key in part) {
+                        formData.append(`quotations[${index}][parts][${partIndex}][${key}]`, part[key]);
+                    }
+                });
+            });
+
+            // ดูค่าทั้งหมดใน formData
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+
+            const response = await axios.put(
+                `${apiUrl}/api/ananlysis_update/${maintenanceJob?.request_id}`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            console.log("บันทึกข้อมูลสำเร็จ:", response.data);
+            setMessage(response.data.message);
+            setMessageType("success");
+
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
+        }
+    };
 
 
     return (
@@ -627,18 +691,18 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         </div>
                                     </div>
                                 </div>
- {!isEditing && (
-        <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
-            <button
-                type="button"
-                className="btn btn-primary w-lg-auto"
-                onClick={() => setIsEditing(true)}
-                style={{ whiteSpace: 'nowrap' }}
-            >
-                <i className="bi bi-pencil-square"></i> แก้ไข
-            </button>
-        </div>
-    )}
+                                {!isEditing && (
+                                    <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary w-lg-auto"
+                                            onClick={() => setIsEditing(true)}
+                                            style={{ whiteSpace: 'nowrap' }}
+                                        >
+                                            <i className="bi bi-pencil-square"></i> แก้ไข
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="row mb-4">
@@ -735,8 +799,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                                 id="is_quotation_required"
                                                 name="is_quotation_required"
                                                 onChange={handleAnalysisInputChange}
-                                                value={analysisData.is_quotation_required || false}
-                                                disabled={!isEditing}
+                                                checked={!!analysisData.is_quotation_required}
+                                            // disabled={!isEditing}
                                             />
                                             <label className="form-check-label ms-2" htmlFor="is_quotation_required ">
                                                 มีใบเสนอราคา
@@ -847,25 +911,27 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                     </div>
                                     <div className="col-lg-6 mb-3">
                                         <label className="form-label">เอกสารแนบ</label>
-                                        {/* อัปโหลดไฟล์ใหม่ */}
                                         {isEditing && (
                                             <input
                                                 type="file"
                                                 className="form-control form-control-sm mb-2"
-                                                onChange={e =>
-                                                    handleQuotationChange(idx, 'quotation_file', e.target.files[0])
-                                                }
+                                                onChange={e => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        handleQuotationChange(idx, 'quotation_file', file);
+                                                    }
+                                                }}
                                             />
                                         )}
                                         {/* แสดงชื่อไฟล์ใหม่ที่เลือก */}
-                                        {q.quotation_file_new && (
+                                        {isEditing && q.quotation_file instanceof File && (
                                             <div className="mb-2 text-success">
                                                 <i className="bi bi-file-earmark-arrow-up me-1"></i>
-                                                ไฟล์ใหม่: {q.quotation_file_new.name}
+                                                ไฟล์ใหม่: {q.quotation_file.name}
                                             </div>
                                         )}
-                                        {/* แสดงชื่อไฟล์เดิมถ้ายังไม่มีไฟล์ใหม่ */}
-                                        {!q.quotation_file_new && q.quotation_file && (
+                                        {/* แสดงปุ่มดาวน์โหลดไฟล์เดิม */}
+                                        {!isEditing && typeof q.quotation_file === "string" && q.quotation_file && (
                                             <div className="mb-2">
                                                 <a
                                                     href={q.quotation_file}

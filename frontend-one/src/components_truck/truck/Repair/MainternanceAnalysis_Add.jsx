@@ -616,19 +616,19 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                         </p>
                                     </div>
                                     <div className="col-lg-2 mb-2">
-<div className="form-check">
-    <input
-        className="form-check-input"
-        type="checkbox"
-        id={`is_selected_${idx}`}
-        name={`is_selected`}
-        checked={q.is_selected}
-        onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
-        เลือกใช้งาน
-    </label>
-</div>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id={`is_selected_${idx}`}
+                                                name={`is_selected`}
+                                                checked={q.is_selected}
+                                                onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
+                                            />
+                                            <label className="form-check-label" htmlFor={`is_selected_${idx}`}>
+                                                เลือกใช้งาน
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
