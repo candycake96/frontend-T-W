@@ -7,6 +7,7 @@ import NavMainternanceJob from "./navMainternanceJob";
 import MainternanceAnanlysis_ShowDetails from "./MainternanceAnalysis_ShowDetails";
 import MainternanceRepairRequestDetails from "./MainternanceRepairRequestDetails";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import MainternanceAnalysisApprover from "./MainternanceAnalysisApprover";
 
 const MaintenanceJob = () => {
 
@@ -325,8 +326,8 @@ const MaintenanceJob = () => {
                     <li className="nav-item">
                         <button
                             type="button"
-                            className={`nav-link d-flex align-items-center ${activeForm === 'ApproveAnanlysisForm' ? 'active text-primary fw-bold' : ''}`}
-                            onClick={() => setActiveForm('ApproveAnanlysisForm')}
+                            className={`nav-link d-flex align-items-center ${activeForm === 'MainternanceAnalysisApprover' ? 'active text-primary fw-bold' : ''}`}
+                            onClick={() => setActiveForm('MainternanceAnalysisApprover')}
                             style={{ border: "none" }}
                         >
                             <i className="bi bi-check2-square me-2 "></i>
@@ -363,6 +364,10 @@ const MaintenanceJob = () => {
 
                         {activeForm === 'AnanlysisForm' && (
                             <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
+                        )}
+
+                        {activeForm === 'MainternanceAnalysisApprover' && (
+                            <MainternanceAnalysisApprover maintenanceJob={formData} />
                         )}
                     </div>
                 </div>
