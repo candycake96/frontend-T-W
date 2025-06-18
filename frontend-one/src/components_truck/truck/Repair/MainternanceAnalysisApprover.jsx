@@ -2,8 +2,18 @@ import React, { useEffect, useState } from "react";
 
 const MainternanceAnalysisApprover = () => {
 
+    // ดึงข้อมูลผู้ใช้จาก localStorage
+    const [user, setUser] = useState(null);  //token
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
 
     const [isEditing, setIsEditing] = useState(false);
+
+    const [isAnalysisApprover, setAnalysisApprover] = useState([]);
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
@@ -21,15 +31,11 @@ const MainternanceAnalysisApprover = () => {
             ],
         }
     ]);
+    
+    useEffect(()=> {
 
-    // ดึงข้อมูลผู้ใช้จาก localStorage
-    const [user, setUser] = useState(null);  //token
-    useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-    }, []);
+    },[])
+
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
@@ -46,7 +52,7 @@ const MainternanceAnalysisApprover = () => {
         });
     };
 
-        const handleChange = (quotationIndex, partIndex, field, value) => {
+    const handleChange = (quotationIndex, partIndex, field, value) => {
         const updatedQuotations = [...quotations];
         const part = updatedQuotations[quotationIndex].parts[partIndex];
 
@@ -68,7 +74,7 @@ const MainternanceAnalysisApprover = () => {
     };
 
 
-    
+
     // ฟังก์ชันคำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
     const calculateSummary = (parts, quotation_vat) => {
         let total = 0;
@@ -106,9 +112,38 @@ const MainternanceAnalysisApprover = () => {
         <>
             <div className="md-2">
                 <div className="">
-                    <div className="text-center">
+                    <div className="text-center mb-3">
                         <p className="fw-bolder">อนุมัติผลตรวจ</p>
                     </div>
+
+                    <div className="">
+                        <div className="row mb-4">
+                            <div className="col-lg-3 mb-3">
+                                <label className="form-label">ผู้อนุมัติผลตรวจ</label>
+                                <div className="input-group "     >
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={`${user?.fname}${user?.lname}`}
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-lg-3 mb-3">
+                                <label className="form-label">วันที่ทำการอนุมัติผลตรวจ</label>
+                                <div className="input-group "     >
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        value={`${user?.fname}${user?.lname}`}
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div>
                         <form action="">
                             <div className="">
@@ -193,7 +228,7 @@ const MainternanceAnalysisApprover = () => {
                                                     </div>
                                                 )}
                                                 {/* แสดงปุ่มดาวน์โหลดไฟล์เดิม */}
-                                                {!isEditing && typeof q.quotation_file === "string" && q.quotation_file && (
+                                                {!isEditing && typeof q.quotation_file === "string" && q.quotation_file ? (
                                                     <div className="mb-2">
                                                         <a
                                                             href={q.quotation_file}
@@ -206,6 +241,10 @@ const MainternanceAnalysisApprover = () => {
                                                             ดาวน์โหลด: {q.quotation_file.split("/").pop()}
                                                         </a>
                                                     </div>
+                                                ) : (
+                                                    <>
+                                                        <p>ไม่มีเอกสารแนบ</p>
+                                                    </>
                                                 )}
                                             </div>
 
