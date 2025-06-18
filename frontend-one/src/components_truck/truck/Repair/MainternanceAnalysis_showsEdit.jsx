@@ -593,7 +593,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             }
 
             const response = await axios.put(
-                `${apiUrl}/api/ananlysis_update/${maintenanceJob?.request_id}`,
+                `${apiUrl}/api/ananlysis_update/${user?.id_emp}`,
                 formData,
                 {
                     headers: {
