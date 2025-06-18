@@ -897,8 +897,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                                 <i className="bi bi-search"></i>
                                             </button>
                                         </div>
-
                                     </div>
+
                                     <div className="col-lg-3 mb-3">
                                         <label className="form-label">วันที่สร้างใบเสนอราคา</label>
                                         <input

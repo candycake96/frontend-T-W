@@ -1,15 +1,418 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const MainternanceAnalysisApprover = () => {
+
+
+    const [isEditing, setIsEditing] = useState(false);
+
+    // เพิ่ม state สำหรับใบเสนอราคาแบบ array
+    const [quotations, setQuotations] = useState([
+        {
+            quotation_id: "",
+            vendor_id: "",
+            garage_name: "",
+            quotation_date: "",
+            quotation_file: null,
+            note: "",
+            is_selected: false,
+            quotation_vat: "",
+            parts: [
+                { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+            ],
+        }
+    ]);
+
+    // ดึงข้อมูลผู้ใช้จาก localStorage
+    const [user, setUser] = useState(null);  //token
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+
+    // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
+    const handleQuotationChange = (index, field, value) => {
+        if (!isEditing) return;
+        setQuotations(prev => {
+            const updated = [...prev];
+            if (field === 'quotation_file') {
+                updated[index][field] = value; // อาจเป็น File หรือ string
+            } else {
+                updated[index][field] = value;
+            }
+            return updated;
+        });
+    };
+
+        const handleChange = (quotationIndex, partIndex, field, value) => {
+        const updatedQuotations = [...quotations];
+        const part = updatedQuotations[quotationIndex].parts[partIndex];
+
+        part[field] = value;
+
+        const price = parseFloat(part.price) || 0;
+        const qty = parseFloat(part.qty) || 0;
+        const vat = parseFloat(part.vat) || 0;
+        const discount = parseFloat(part.discount) || 0;
+
+        // หักส่วนลดก่อนคิด VAT
+        const subtotal = price * qty - discount;
+        const vatVal = subtotal * vat / 100;
+        const total = subtotal + vatVal;
+
+        part.total = total.toFixed(2);
+
+        setQuotations(updatedQuotations);
+    };
+
+
+    
+    // ฟังก์ชันคำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
+    const calculateSummary = (parts, quotation_vat) => {
+        let total = 0;
+        let vatAmountPerItem = 0;
+
+        parts.forEach((part) => {
+            const price = parseFloat(part.price) || 0;
+            const qty = parseFloat(part.qty) || 0;
+            const vat = parseFloat(part.vat) || 0;
+            const discount = parseFloat(part.discount) || 0;
+
+            // หักส่วนลดออกจาก subtotal
+            const subtotal = price * qty - discount;
+            const vatVal = subtotal * vat / 100;
+
+            total += subtotal;
+            vatAmountPerItem += vatVal;
+        });
+
+        const vatRate = parseFloat(quotation_vat) || 0;
+        const extraVat = total * vatRate / 100;
+
+        const vatAmount = vatAmountPerItem + extraVat;
+
+        return {
+            total: total.toFixed(2),
+            vat: vatAmount.toFixed(2),
+            grandTotal: (total + vatAmount).toFixed(2),
+        };
+    };
+
+
+
     return (
         <>
-        <div className="md-2">
-            <div className="">
-                <div className="text-center">
-                    <p className="fw-bolder">อนุมัติผลตรวจ</p>
+            <div className="md-2">
+                <div className="">
+                    <div className="text-center">
+                        <p className="fw-bolder">อนุมัติผลตรวจ</p>
+                    </div>
+                    <div>
+                        <form action="">
+                            <div className="">
+                                {quotations.map((q, idx) => (
+                                    <div key={idx} className="mb-4 border rounded p-3">
+                                        <div className="row mb-2">
+                                            <div className="col-lg-5">
+                                                <p className="fw-bolder">ใบเสนอราคาที่ {idx + 1}
+                                                    <strong className="ms-2">
+
+
+                                                    </strong>
+                                                </p>
+                                            </div>
+                                            <div className="col-lg-2 mb-2">
+                                                <div className="form-check">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        id={`is_selected_${idx}`}
+                                                        name={`is_selected`}
+                                                        checked={q.is_selected}
+                                                        onChange={e => handleQuotationChange(idx, 'is_selected', e.target.checked)}
+                                                    />
+                                                    <label
+                                                        className={`form-check-label ${q.is_selected ? 'font-bold text-black' : 'text-gray-400'}`}
+                                                        htmlFor={`is_selected_${idx}`}
+                                                    >
+                                                        เลือกใช้งาน
+                                                    </label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-lg-3 mb-3">
+                                                <label className="form-label">ชื่ออู่/ร้านค้า</label>
+                                                <div className="input-group input-group-sm"     >
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        value={q.garage_name}
+                                                        onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
+                                                        disabled={!isEditing}
+                                                    />
+                                                    <button className="btn btn-outline-secondary" type="button" >
+                                                        <i className="bi bi-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-3 mb-3">
+                                                <label className="form-label">วันที่สร้างใบเสนอราคา</label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control"
+                                                    value={q.quotation_date}
+                                                    onChange={e => handleQuotationChange(idx, "quotation_date", e.target.value)}
+                                                    disabled={!isEditing}
+                                                />
+                                            </div>
+                                            <div className="col-lg-6 mb-3">
+                                                <label className="form-label">เอกสารแนบ</label>
+                                                {isEditing && (
+                                                    <input
+                                                        type="file"
+                                                        className="form-control form-control-sm mb-2"
+                                                        onChange={e => {
+                                                            const file = e.target.files[0];
+                                                            if (file) {
+                                                                handleQuotationChange(idx, 'quotation_file', file);
+                                                            }
+                                                        }}
+                                                    />
+                                                )}
+                                                {/* แสดงชื่อไฟล์ใหม่ที่เลือก */}
+                                                {isEditing && q.quotation_file instanceof File && (
+                                                    <div className="mb-2 text-success">
+                                                        <i className="bi bi-file-earmark-arrow-up me-1"></i>
+                                                        ไฟล์ใหม่: {q.quotation_file.name}
+                                                    </div>
+                                                )}
+                                                {/* แสดงปุ่มดาวน์โหลดไฟล์เดิม */}
+                                                {!isEditing && typeof q.quotation_file === "string" && q.quotation_file && (
+                                                    <div className="mb-2">
+                                                        <a
+                                                            href={q.quotation_file}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            download
+                                                        >
+                                                            <i className="bi bi-download me-1"></i>
+                                                            ดาวน์โหลด: {q.quotation_file.split("/").pop()}
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                        </div>
+                                        <div className="col-lg mb-3">
+                                            <label className="form-label">หมายเหตุ</label>
+                                            <textarea
+                                                className="form-control"
+                                                rows={2}
+                                                value={q.note}
+                                                onChange={e => handleQuotationChange(idx, "note", e.target.value)}
+                                                disabled={!isEditing}
+                                                placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
+                                            ></textarea>
+                                        </div>
+                                        <div className="mb-3" style={{ overflowX: "auto" }}>
+                                            {q.parts.map((part, partIdx) => (
+                                                <div className="row mb-3" key={partIdx}>
+                                                    <input type="hidden" value={part.part_id} readOnly />
+                                                    <div className="col-lg-2">
+                                                        <label className="form-label text-sm">ระบบ</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control form-control-sm"
+                                                            value={part.system_name}
+                                                            onChange={e => handleChange(idx, partIdx, "system_name", e.target.value)}
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div className="col-lg-2">
+                                                        <label className="form-label text-sm">อะไหล่ <span style={{ color: "red" }}>*</span></label>
+                                                        <div className="input-group input-group-sm">
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                value={part.part_name}
+                                                                onChange={e => handleChange(idx, partIdx, "part_name", e.target.value)}
+                                                                disabled={!isEditing}
+                                                                placeholder="ค้นหาอะไหล่..."
+                                                            />
+                                                            <button
+                                                                className="btn btn-outline-secondary btn-sm"
+                                                                type="button"
+                                                                // onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
+                                                                disabled={!isEditing}
+                                                            >
+                                                                <i className="bi bi-search"></i>
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-1">
+                                                        <label className="form-label text-sm">ประเภท <span style={{ color: "red" }}>*</span></label>
+                                                        <select
+                                                            className="form-select mb-3 form-select-sm"
+                                                            value={part.maintenance_type}
+                                                            onChange={e => handleChange(idx, partIdx, "maintenance_type", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        >
+                                                            <option value=""></option>
+                                                            <option value="CM">CM</option>
+                                                            <option value="PM">PM</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-lg-1">
+                                                        <label className="form-label text-sm">ราคา <span style={{ color: "red" }}>*</span></label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control form-control-sm"
+                                                            value={part.price}
+                                                            onChange={e => handleChange(idx, partIdx, "price", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
+                                                    <div className="col-lg-1">
+                                                        <label className="form-label text-sm">หน่วย <span style={{ color: "red" }}>*</span></label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control form-control-sm"
+                                                            value={part.unit}
+                                                            onChange={e => handleChange(idx, partIdx, "unit", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
+                                                    <div className="col-lg-1">
+                                                        <label className="form-label text-sm">จำนวน <span style={{ color: "red" }}>*</span></label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control form-control-sm"
+                                                            value={part.qty}
+                                                            onChange={e => handleChange(idx, partIdx, "qty", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
+                                                    <div className="col-lg-1">
+                                                        <label className="form-label text-sm">ส่วนลด</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control form-control-sm"
+                                                            value={part.discount || ""}
+                                                            onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
+                                                    <div className="col" style={{ flex: "0 0 7.5%", maxWidth: "7.5%" }}>
+                                                        <label className="form-label text-sm">VAT%</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control form-control-sm"
+                                                            value={part.vat}
+                                                            onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
+                                                    <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "12.5%" }}>
+                                                        <label className="form-label text-sm">ราคารวม</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control form-control-sm"
+                                                            value={part.total || ""}
+                                                            disabled
+                                                        />
+                                                    </div>
+
+                                                    <div className={`col-lg-1 d-flex justify-content-center align-items-center mt-3 ${isEditing ? "" : " d-none"}`} style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
+                                                        <button
+                                                            className={`btn btn-sm btn-danger`}
+                                                            type="button"
+                                                            // onClick={() => handleRemovePart(idx, partIdx)}
+                                                            disabled={!isEditing}
+                                                        >
+                                                            <i className="bi bi-trash3-fill"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            ))}
+
+                                            {isEditing && (
+                                                <div className="d-flex justify-content-end mb-3">
+                                                    <button
+                                                        className="btn btn-outline-primary"
+                                                        type="button"
+                                                        // onClick={() => handleAddPart(idx)}
+                                                        disabled={!isEditing}
+                                                    >
+                                                        เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                        </div>
+
+                                        <div className="text-end">
+                                            {(() => {
+                                                // คำนวณสรุปราคารวมของอะไหล่ในใบเสนอราคา
+                                                const summary = calculateSummary(q.parts, q.quotation_vat);
+
+
+
+                                                return (
+                                                    <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
+                                                        <div className="space-y-1 text-right">
+                                                            <p className="text-gray-700 text-sm">
+                                                                ราคารวม <span className="font-medium text-black">{summary.total}</span> บาท
+                                                            </p>
+
+                                                            <p className="text-gray-700 text-sm">
+                                                                ส่วนลด <span className="font-medium text-black">0.00</span> บาท
+                                                            </p>
+
+                                                            <p className="text-gray-700 text-sm">
+                                                                ภาษีมูลค่าเพิ่ม <span className="font-medium text-black">{summary.vat}</span> บาท
+                                                            </p>
+
+                                                            <div className="col-lg d-flex align-items-center justify-content-end">
+                                                                <label className="form-label text-sm mb-0 me-2">VAT จากยอดรวม </label>
+                                                                <input
+                                                                    type="number"
+                                                                    name="quotation_vat"
+                                                                    className="form-control form-control-sm me-2"
+                                                                    style={{ width: "100px" }}
+                                                                    value={q.quotation_vat || ""}
+                                                                    onChange={e => handleQuotationChange(idx, "quotation_vat", e.target.value)}
+                                                                    placeholder="0"
+                                                                    disabled={!isEditing}
+                                                                />
+                                                                <p className="fw-bolder me-2">(%)</p>
+                                                            </div>
+
+                                                            <p className="text-gray-900 text-sm font-semibold border-t pt-1">
+                                                                ราคารวมสุทธิ <span className="text-green-600">{summary.grandTotal}</span> บาท (รวมภาษีแล้ว)
+                                                            </p>
+                                                            <p className="text-gray-900 text-sm font-semibold border-t pt-1"></p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()}
+                                        </div>
+                                        {/* <hr className="mb-3" /> */}
+                                    </div>
+                                ))}
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     )
 }
