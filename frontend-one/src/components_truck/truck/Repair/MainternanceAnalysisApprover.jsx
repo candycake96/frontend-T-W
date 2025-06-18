@@ -1,6 +1,8 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
-const MainternanceAnalysisApprover = () => {
+const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
 
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
@@ -31,11 +33,27 @@ const MainternanceAnalysisApprover = () => {
             ],
         }
     ]);
-    
-    useEffect(()=> {
 
-    },[])
+    const fetchAnalysisDataApprover = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/ananlysis_approver_show/${maintenanceJob?.request_id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setAnalysisApprover(response.data);
+        } catch (error) {
+            console.error("Error fetching vehicle data:", error);
+        }
+    };
 
+    useEffect(()=>{
+        fetchAnalysisDataApprover();
+    }, 
+[]);
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
