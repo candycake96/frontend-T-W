@@ -243,8 +243,6 @@ const MaintenanceJob = () => {
   </span>
 </p>
 
-
-
                 <hr className="mb-3" />
                 <div className="mb-2">
                     <div className="mb-2">
@@ -369,7 +367,7 @@ const MaintenanceJob = () => {
                         {activeForm === 'MainternanceAnalysisApprover' && (
                             <MainternanceAnalysisApprover maintenanceJob={formData} />
                         )}
-                        
+
                     </div>
                 </div>
             </div>
