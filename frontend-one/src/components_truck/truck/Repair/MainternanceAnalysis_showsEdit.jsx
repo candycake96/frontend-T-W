@@ -78,12 +78,12 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         {
             quotation_id: "",
             vendor_id: "",
-            garage_name: "",
             quotation_date: "",
             quotation_file: null,
             note: "",
             is_selected: false,
             quotation_vat: "",
+            vendor_name: "",
             parts: [
                 { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
@@ -97,11 +97,12 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             {
                 quotation_id: "",
                 vendor_id: "",
-                garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
                 note: "",
                 is_selected: false,
+                quotation_vat: "",
+                vendor_name: "",
                 parts: [
                     { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
                 ]
@@ -338,7 +339,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         setQuotations(prev => {
             const updated = [...prev];
             // เก็บชื่ออู่/ร้านค้า
-            updated[selectedQuotationIndex].garage_name = vendorData.vendor_name || "";
+            updated[selectedQuotationIndex].vendor_name = vendorData.vendor_name || "";
             // ถ้าต้องการเก็บ id จริงๆ ให้ใช้ vendorData.vendor_id ด้วย
             updated[selectedQuotationIndex].vendor_id = vendorData.vendor_id || "";
             return updated;
@@ -381,6 +382,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                         note: q.note || "",
                         is_selected: !!q.is_selected,
                         quotation_vat: q.quotation_vat || "",
+                        vendor_name: q.vendor_name || "",
                         parts: Array.isArray(q.parts)
                             ? q.parts.map(part => {
                                 const price = parseFloat(part.part_price) || 0;
@@ -442,6 +444,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                         note: q.note || "",
                         is_selected: !!q.is_selected,
                         quotation_vat: q.quotation_vat || "",
+                        vendor_name: q.vendor_name || "",
                         parts: Array.isArray(q.parts)
                             ? q.parts.map(part => {
                                 const price = parseFloat(part.part_price) || 0;
@@ -816,8 +819,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={q.garage_name}
-                                                onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
+                                                value={q.vendor_name}
+                                                onChange={e => handleQuotationChange(idx, "vendor_name", e.target.value)}
                                                 disabled={!isEditing}
                                             />
                                             <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails(idx)} disabled={!isEditing}>

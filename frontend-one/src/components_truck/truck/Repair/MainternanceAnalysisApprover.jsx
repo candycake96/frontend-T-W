@@ -37,13 +37,14 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             note: "",
             is_selected: false,
             quotation_vat: "",
+            vendor_name: "",
             parts: [
                 { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
         }
     ]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setDataApprover([
             {
                 request_id: maintenanceJob?.request_id,
@@ -87,6 +88,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                 note: q.note || "",
                 is_selected: !!q.is_selected,
                 quotation_vat: q.quotation_vat ?? "",
+                vendor_name: q.vendor_name || "",
                 parts: (q.parts || []).map(p => ({
                     quotation_parts_id: p.quotation_parts_id,
                     request_id: p.request_id || "",
@@ -109,13 +111,13 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     }, [isAnalysisApprover]);
 
     // input Analysis
-const handleDataAnalysis = (index, field, value) => {
-    setDataApprover(prev => {
-        const updated = [...prev]; 
-        updated[index][field] = value;
-        return updated; // ต้อง return ค่าใหม่
-    });
-}
+    const handleDataAnalysis = (index, field, value) => {
+        setDataApprover(prev => {
+            const updated = [...prev];
+            updated[index][field] = value;
+            return updated; // ต้อง return ค่าใหม่
+        });
+    }
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
@@ -191,13 +193,13 @@ const handleDataAnalysis = (index, field, value) => {
         <>
             <div className="md-2">
                 <div className="">
-                    <div className="text-center mb-3">
+                    {/* <div className="text-center mb-3">
                         <p className="fw-bolder">อนุมัติผลตรวจ</p>
-                    </div>
+                    </div> */}
 
                     <div className="">
-                        <div className="row mb-4">
-                            <div className="col-lg-3 mb-3">
+                        <div className="row mb-2">
+                            <div className="col-lg-3 mb-2">
                                 <label className="form-label">ผู้อนุมัติผลตรวจ</label>
                                 <div className="input-group "     >
                                     <input
@@ -208,7 +210,7 @@ const handleDataAnalysis = (index, field, value) => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-lg-3 mb-3">
+                            <div className="col-lg-3 mb-2">
                                 <label className="form-label">วันที่ทำการอนุมัติผลตรวจ</label>
                                 <div className="input-group "     >
                                     <input
@@ -219,17 +221,17 @@ const handleDataAnalysis = (index, field, value) => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-lg-6 mb-3">
-                                <label className="form-label">หมายเหตุ</label>
-                                <div className="input-group "     >
-                                    <textarea
-                                        type="date"
-                                        className="form-control"
-                                        value=""
-                                    // disabled
-                                    />
+                        </div>
+                        <div className="col-lg-6 mb-4">
+                            <label className="form-label">หมายเหตุ</label>
+                            <div className="input-group "     >
+                                <textarea
+                                    type="date"
+                                    className="form-control"
+                                    value=""
+                                // disabled
+                                />
 
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -244,7 +246,6 @@ const handleDataAnalysis = (index, field, value) => {
                                             <div className="col-lg-5">
                                                 <p className="fw-bolder">ใบเสนอราคาที่ {idx + 1}
                                                     <strong className="ms-2">
-
 
                                                     </strong>
                                                 </p>
@@ -277,8 +278,8 @@ const handleDataAnalysis = (index, field, value) => {
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        value={q.garage_name}
-                                                        onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
+                                                        value={q.vendor_name}
+                                                        onChange={e => handleQuotationChange(idx, "vendor_name", e.target.value)}
                                                         disabled={!isEditing}
                                                     />
                                                     <button className="btn btn-outline-secondary" type="button" >
@@ -497,7 +498,6 @@ const handleDataAnalysis = (index, field, value) => {
                                                 const summary = calculateSummary(q.parts, q.quotation_vat);
 
 
-
                                                 return (
                                                     <div className="bg-white rounded-lg p-3 w-full max-w-xs ml-auto">
                                                         <div className="space-y-1 text-right">
@@ -541,10 +541,11 @@ const handleDataAnalysis = (index, field, value) => {
                                     </div>
                                 ))}
 
-                                <div className="text-center">
-                                    <button className="btn btn-danger me-2">ส่งแก้ไขการตรวจเช็ครถ</button>
-                                    <button className="btn btn-primary">บันทึก ส่งผู้จัดการอนุมัติ</button>
+                                <div className="text-center d-flex justify-content-center gap-2">
+                                    <button className="btn btn-danger w-25" style={{ minWidth: 120 }}>ไม่อนุมัติ</button>
+                                    <button className="btn btn-primary w-25" style={{ minWidth: 120 }}>อนุมัติ</button>
                                 </div>
+
                             </div>
                         </form>
                     </div>
