@@ -55,40 +55,40 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     },
         []);
 
-useEffect(() => {
-    if (isAnalysisApprover?.quotations) {
-        // สมมติ apiUrl คือ base url ของไฟล์
-        const fileBaseUrl = `${apiUrl}/uploads/quotation_files/`;
+    useEffect(() => {
+        if (isAnalysisApprover?.quotations) {
+            // สมมติ apiUrl คือ base url ของไฟล์
+            const fileBaseUrl = `${apiUrl}/uploads/quotation_files/`;
 
-        const mapped = isAnalysisApprover.quotations.map(q => ({
-            quotation_id: q.quotation_id,
-            vendor_id: q.vendor_id,
-            garage_name: q.garage_name || "",
-            quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
-            quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
-            note: q.note || "",
-            is_selected: !!q.is_selected,
-            quotation_vat: q.quotation_vat ?? "",
-            parts: (q.parts || []).map(p => ({
-                quotation_parts_id: p.quotation_parts_id,
-                request_id: p.request_id || "",
-                parts_used_id: p.parts_used_id || "",
-                part_id: p.part_id,
-                system_name: p.system_name || "",
-                part_name: p.part_name,
-                price: p.part_price,
-                unit: p.part_unit,
-                maintenance_type: p.maintenance_type,
-                qty: p.part_qty,
-                discount: p.part_discount,
-                vat: p.part_vat,
-                total: "", // จะคำนวณในฟังก์ชัน handleChange/calculateSummary
-            })),
-        }));
+            const mapped = isAnalysisApprover.quotations.map(q => ({
+                quotation_id: q.quotation_id,
+                vendor_id: q.vendor_id,
+                garage_name: q.garage_name || "",
+                quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
+                quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
+                note: q.note || "",
+                is_selected: !!q.is_selected,
+                quotation_vat: q.quotation_vat ?? "",
+                parts: (q.parts || []).map(p => ({
+                    quotation_parts_id: p.quotation_parts_id,
+                    request_id: p.request_id || "",
+                    parts_used_id: p.parts_used_id || "",
+                    part_id: p.part_id,
+                    system_name: p.system_name || "",
+                    part_name: p.part_name,
+                    price: p.part_price,
+                    unit: p.part_unit,
+                    maintenance_type: p.maintenance_type,
+                    qty: p.part_qty,
+                    discount: p.part_discount,
+                    vat: p.part_vat,
+                    total: "", // จะคำนวณในฟังก์ชัน handleChange/calculateSummary
+                })),
+            }));
 
-        setQuotations(mapped);
-    }
-}, [isAnalysisApprover]);
+            setQuotations(mapped);
+        }
+    }, [isAnalysisApprover]);
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
@@ -422,15 +422,9 @@ useEffect(() => {
                                                         />
                                                     </div>
 
-                                                    <div className={`col-lg-1 d-flex justify-content-center align-items-center mt-3 ${isEditing ? "" : " d-none"}`} style={{ flex: "0 0 4.5%", maxWidth: "4.5%" }} >
-                                                        <button
-                                                            className={`btn btn-sm btn-danger`}
-                                                            type="button"
-                                                            // onClick={() => handleRemovePart(idx, partIdx)}
-                                                            disabled={!isEditing}
-                                                        >
-                                                            <i className="bi bi-trash3-fill"></i>
-                                                        </button>
+                                                    <div className="col" >
+                                                        <label className="form-label text-sm"><i class="bi bi-check2-circle"></i></label>
+                                                        <input className="form-check-input" type="checkbox" name="" id="" />
                                                     </div>
 
                                                 </div>
@@ -500,6 +494,10 @@ useEffect(() => {
                                         {/* <hr className="mb-3" /> */}
                                     </div>
                                 ))}
+
+                                <div className="text-center">
+                                    <button className="btn btn-primary">อนุมัติ</button>
+                                </div>
                             </div>
                         </form>
                     </div>
