@@ -71,12 +71,12 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
     const [quotations, setQuotations] = useState([
         {
             vendor_id: "",
-            garage_name: "",
             quotation_date: "",
             quotation_file: null,
             note: "",
             is_selected: false,
             quotation_vat: "",
+            vendor_name: "",
             parts: [
                 { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
@@ -89,11 +89,12 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
             ...quotations,
             {
                 vendor_id: "",
-                garage_name: "",
                 quotation_date: "",
                 quotation_file: null,
                 note: "",
                 is_selected: false,
+                quotation_vat: "",
+                vendor_name: "",
                 parts: [
                     { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
                 ]
@@ -324,7 +325,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
         setQuotations(prev => {
             const updated = [...prev];
             // เก็บชื่ออู่/ร้านค้า
-            updated[selectedQuotationIndex].garage_name = vendorData.vendor_name || "";
+            updated[selectedQuotationIndex].vendor_name = vendorData.vendor_name || "";
             // ถ้าต้องการเก็บ id จริงๆ ให้ใช้ vendorData.vendor_id ด้วย
             updated[selectedQuotationIndex].vendor_id = vendorData.vendor_id || "";
             return updated;
@@ -359,6 +360,7 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                 formData.append(`quotations[${index}][note]`, quotation.note);
                 formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
                 formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
+                formData.append(`quotations[${index}][vendor_name]`, quotation.vendor_name || "");
 
                 if (quotation.quotation_file) {
                     formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
@@ -639,8 +641,8 @@ const MainternanceAnanlysis_Add = ({ maintenanceJob }) => {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={q.garage_name}
-                                                onChange={e => handleQuotationChange(idx, "garage_name", e.target.value)}
+                                                value={q.vendor_name}
+                                                onChange={e => handleQuotationChange(idx, "vendor_name", e.target.value)}
                                             />
                                             <button className="btn btn-outline-secondary" type="button" onClick={() => handleOpenModalVendorDetails(idx)}>
                                                 <i className="bi bi-search"></i>

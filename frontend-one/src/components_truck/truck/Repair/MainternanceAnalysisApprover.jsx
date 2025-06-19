@@ -43,6 +43,15 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         }
     ]);
 
+    useEffect(()=>{
+        setDataApprover([
+            {
+                request_id: maintenanceJob?.request_id,
+                approver_emp_id: user?.id_emp
+            }
+        ]);
+    }, [maintenanceJob, user]);
+
     const fetchAnalysisDataApprover = async () => {
         try {
             const response = await axios.get(
@@ -99,6 +108,14 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         }
     }, [isAnalysisApprover]);
 
+    // input Analysis
+const handleDataAnalysis = (index, field, value) => {
+    setDataApprover(prev => {
+        const updated = [...prev]; 
+        updated[index][field] = value;
+        return updated; // ต้อง return ค่าใหม่
+    });
+}
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
