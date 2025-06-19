@@ -50,10 +50,45 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchAnalysisDataApprover();
-    }, 
-[]);
+    },
+        []);
+
+useEffect(() => {
+    if (isAnalysisApprover?.quotations) {
+        // สมมติ apiUrl คือ base url ของไฟล์
+        const fileBaseUrl = `${apiUrl}/uploads/quotation_files/`;
+
+        const mapped = isAnalysisApprover.quotations.map(q => ({
+            quotation_id: q.quotation_id,
+            vendor_id: q.vendor_id,
+            garage_name: q.garage_name || "",
+            quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
+            quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
+            note: q.note || "",
+            is_selected: !!q.is_selected,
+            quotation_vat: q.quotation_vat ?? "",
+            parts: (q.parts || []).map(p => ({
+                quotation_parts_id: p.quotation_parts_id,
+                request_id: p.request_id || "",
+                parts_used_id: p.parts_used_id || "",
+                part_id: p.part_id,
+                system_name: p.system_name || "",
+                part_name: p.part_name,
+                price: p.part_price,
+                unit: p.part_unit,
+                maintenance_type: p.maintenance_type,
+                qty: p.part_qty,
+                discount: p.part_discount,
+                vat: p.part_vat,
+                total: "", // จะคำนวณในฟังก์ชัน handleChange/calculateSummary
+            })),
+        }));
+
+        setQuotations(mapped);
+    }
+}, [isAnalysisApprover]);
 
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
