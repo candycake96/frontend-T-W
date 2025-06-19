@@ -16,6 +16,15 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [isAnalysisApprover, setAnalysisApprover] = useState([]);
+    const [isDataApprover, setDataApprover] = useState([{
+        analysis_id: "",
+        approver_emp_id: "",
+        approver_name: "",
+        position: "",
+        approval_status: "",
+        approval_date: "",
+        remark: "",
+    }]);
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
@@ -191,6 +200,18 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                         value={`${user?.fname}${user?.lname}`}
                                         disabled
                                     />
+                                </div>
+                            </div>
+                            <div className="col-lg-6 mb-3">
+                                <label className="form-label">หมายเหตุ</label>
+                                <div className="input-group "     >
+                                    <textarea
+                                        type="date"
+                                        className="form-control"
+                                        value=""
+                                    // disabled
+                                    />
+
                                 </div>
                             </div>
                         </div>
@@ -424,7 +445,15 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
 
                                                     <div className="col" >
                                                         <label className="form-label text-sm"><i class="bi bi-check2-circle"></i></label>
-                                                        <input className="form-check-input" type="checkbox" name="" id="" />
+                                                        <input className="form-check-input" type="checkbox" name="" id=""
+                                                        // style={{
+                                                        //     border: '2px solid #0000FF',
+                                                        //     boxShadow: '0 0 5px #0000FF',
+                                                        //     borderRadius: '4px',
+                                                        //     padding: '8px',
+                                                        //     outline: 'none',
+                                                        // }}
+                                                        />
                                                     </div>
 
                                                 </div>
@@ -496,7 +525,8 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                 ))}
 
                                 <div className="text-center">
-                                    <button className="btn btn-primary">อนุมัติ</button>
+                                    <button className="btn btn-danger me-2">ส่งแก้ไขการตรวจเช็ครถ</button>
+                                    <button className="btn btn-primary">บันทึก ส่งผู้จัดการอนุมัติ</button>
                                 </div>
                             </div>
                         </form>
