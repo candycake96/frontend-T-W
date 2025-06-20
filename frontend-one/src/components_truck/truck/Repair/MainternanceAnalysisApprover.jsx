@@ -16,7 +16,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [isAnalysisApprover, setAnalysisApprover] = useState([]);
-    const [isDataApprover, setDataApprover] = useState([{
+    const [isDataApprover, setDataApprover] = useState({
         analysis_id: "",
         approver_emp_id: "",
         approver_name: "",
@@ -24,7 +24,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         approval_status: "",
         approval_date: "",
         remark: "",
-    }]);
+    });
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
@@ -45,12 +45,11 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     ]);
 
     useEffect(() => {
-        setDataApprover([
-            {
-                request_id: maintenanceJob?.request_id,
-                approver_emp_id: user?.id_emp
-            }
-        ]);
+        setDataApprover({
+            request_id: maintenanceJob?.request_id,
+            approver_emp_id: user?.id_emp,
+            approver_name: `${user?.fname || ""} ${user?.lname || ""}`,
+        });
     }, [maintenanceJob, user]);
 
     const fetchAnalysisDataApprover = async () => {
@@ -118,14 +117,13 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             return updated; // ต้อง return ค่าใหม่
         });
     }
-    
-    const handleDataApprover = (index, field, value) => {
-        setDataApprover(prev => {
-            const updated = [...prev];
-            updated[index][field] = value;
-            return updated;
-        })
-    }
+
+    const handleDataApprover = (field, value) => {
+        setDataApprover(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
@@ -214,8 +212,9 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        name=""
-                                        value={`${user?.fname}${user?.lname}`}
+                                        name="approver_name"
+                                        value={isDataApprover?.approver_name || ""}
+                                        onChange={e => handleDataApprover('approver_name', e.target.value)}
                                         disabled
                                     />
                                 </div>
@@ -226,7 +225,8 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                     <input
                                         type="date"
                                         className="form-control"
-                                        value={`${user?.fname}${user?.lname}`}
+                                        //  value={new Date().toISOString().slice(0, 10)}
+                                        value={isDataApprover?.approval_date}
                                         disabled
                                     />
                                 </div>
@@ -238,8 +238,8 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                 <textarea
                                     type="date"
                                     className="form-control"
-                                    value=""
-                                // disabled
+                                    value={isDataApprover?.remark}
+                                    onChange={e => handleDataApprover('remark', e.target.value)}
                                 />
 
                             </div>
