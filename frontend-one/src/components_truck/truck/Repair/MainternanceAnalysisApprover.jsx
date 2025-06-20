@@ -20,8 +20,8 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         analysis_id: "",
         approver_emp_id: "",
         approver_name: "",
-        position: "",
-        approval_status: "",
+        // position: "",
+        // approval_status: "",
         approval_date: "",
         remark: "",
     });
@@ -39,7 +39,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             quotation_vat: "",
             vendor_name: "",
             parts: [
-                { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+                { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "", is_approved_part: false }
             ],
         }
     ]);
@@ -51,6 +51,8 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             approver_name: `${user?.fname || ""} ${user?.lname || ""}`,
         });
     }, [maintenanceJob, user]);
+
+
 
     const fetchAnalysisDataApprover = async () => {
         try {
@@ -102,6 +104,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                     discount: p.part_discount,
                     vat: p.part_vat,
                     total: "", // จะคำนวณในฟังก์ชัน handleChange/calculateSummary
+                    is_approved_part: !!p.is_approved_part,
                 })),
             }));
 
@@ -143,8 +146,14 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     const handleChange = (quotationIndex, partIndex, field, value) => {
         const updatedQuotations = [...quotations];
         const part = updatedQuotations[quotationIndex].parts[partIndex];
+        console.log("CLICKED:", quotationIndex, partIndex, field, value);
 
-        part[field] = value;
+        // ถ้า field คือ is_approved_part ให้แปลงเป็น boolean
+        if (field === "is_approved_part") {
+            part[field] = !!value;
+        } else {
+            part[field] = value;
+        }
 
         const price = parseFloat(part.price) || 0;
         const qty = parseFloat(part.qty) || 0;
@@ -194,7 +203,32 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         };
     };
 
+    const handleApprovalPass = async (e) => {
+        e.preventDefault();
+        try {
+            // ตรวจสอบข้อมูลผู้อนุมัติ
+            if (
+                !isDataApprover.approver_emp_id ||
+                !isDataApprover.approver_name
+            ) {
+                alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
+                return;
+            }
+            // ตรวจสอบว่ามีใบเสนอราคาถูกเลือกหรือไม่
+            const hasSelectedQuotation = quotations.some(q => q.is_selected);
+            if (!hasSelectedQuotation) {
+                alert("กรุณาเลือกใบเสนอราคาที่ต้องการอนุมัติ...");
+                return;
+            }
 
+            console.log("ข้อมูลอนุมัติ", isDataApprover);
+            console.log("ข้อมูลอะไหล่", quotations);
+
+        } catch (error) {
+            console.error(error);
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        }
+    };
 
     return (
         <>
@@ -204,52 +238,52 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                         <p className="fw-bolder">อนุมัติผลตรวจ</p>
                     </div> */}
 
-                    <div className="">
-                        <div className="row mb-2">
-                            <div className="col-lg-3 mb-2">
-                                <label className="form-label">ผู้อนุมัติผลตรวจ</label>
-                                <div className="input-group "     >
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="approver_name"
-                                        value={isDataApprover?.approver_name || ""}
-                                        onChange={e => handleDataApprover('approver_name', e.target.value)}
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-lg-3 mb-2">
-                                <label className="form-label">วันที่ทำการอนุมัติผลตรวจ</label>
-                                <div className="input-group "     >
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        //  value={new Date().toISOString().slice(0, 10)}
-                                        value={isDataApprover?.approval_date}
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-6 mb-4">
-                            <label className="form-label">หมายเหตุ</label>
-                            <div className="input-group "     >
-                                <textarea
-                                    type="date"
-                                    className="form-control"
-                                    value={isDataApprover?.remark}
-                                    onChange={e => handleDataApprover('remark', e.target.value)}
-                                />
-
-                            </div>
-                        </div>
-                    </div>
-
-
                     <div>
-                        <form action="">
+                        <form action="" onSubmit={handleApprovalPass}>
                             <div className="">
+
+                                <div className="">
+                                    <div className="row mb-2">
+                                        <div className="col-lg-3 mb-2">
+                                            <label className="form-label">ผู้อนุมัติผลตรวจ</label>
+                                            <div className="input-group "     >
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="approver_name"
+                                                    value={isDataApprover?.approver_name || ""}
+                                                    onChange={e => handleDataApprover('approver_name', e.target.value)}
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-3 mb-2">
+                                            <label className="form-label">วันที่ทำการอนุมัติผลตรวจ</label>
+                                            <div className="input-group "     >
+                                                <input
+                                                    type="date"
+                                                    className="form-control"
+                                                    //  value={new Date().toISOString().slice(0, 10)}
+                                                    value={isDataApprover?.approval_date}
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-6 mb-4">
+                                        <label className="form-label">หมายเหตุ</label>
+                                        <div className="input-group "     >
+                                            <textarea
+                                                type="date"
+                                                className="form-control"
+                                                value={isDataApprover?.remark}
+                                                onChange={e => handleDataApprover('remark', e.target.value)}
+                                            />
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {quotations.map((q, idx) => (
                                     <div key={idx} className="mb-4 border rounded p-3">
                                         <div className="row mb-2">
@@ -472,15 +506,22 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                                     </div>
 
                                                     <div className="col" >
-                                                        <label className="form-label text-sm"><i class="bi bi-check2-circle"></i></label>
-                                                        <input className="form-check-input" type="checkbox" name="" id=""
-                                                        // style={{
-                                                        //     border: '2px solid #0000FF',
-                                                        //     boxShadow: '0 0 5px #0000FF',
-                                                        //     borderRadius: '4px',
-                                                        //     padding: '8px',
-                                                        //     outline: 'none',
-                                                        // }}
+                                                        <label className="form-label text-sm" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
+                                                            <i className="bi bi-check2-circle"></i>
+                                                        </label>
+                                                        <input
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                        id={`is_approved_part_${idx}_${partIdx}`}
+                                                        name={`is_approved_part_${idx}_${partIdx}`}
+// checked={!!part.is_approved_part}
+// onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
+                                                            // style={{
+                                                            //     boxShadow: '0 0 5px #0000FF',
+                                                            //     borderRadius: '4px',
+                                                            //     padding: '8px',
+                                                            //     outline: 'none',
+                                                            // }}
                                                         />
                                                     </div>
 
