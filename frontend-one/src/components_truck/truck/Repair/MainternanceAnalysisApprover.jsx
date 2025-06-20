@@ -118,6 +118,14 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             return updated; // ต้อง return ค่าใหม่
         });
     }
+    
+    const handleDataApprover = (index, field, value) => {
+        setDataApprover(prev => {
+            const updated = [...prev];
+            updated[index][field] = value;
+            return updated;
+        })
+    }
 
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
@@ -132,6 +140,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             return updated;
         });
     };
+
 
     const handleChange = (quotationIndex, partIndex, field, value) => {
         const updatedQuotations = [...quotations];
@@ -205,6 +214,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                     <input
                                         type="text"
                                         className="form-control"
+                                        name=""
                                         value={`${user?.fname}${user?.lname}`}
                                         disabled
                                     />
