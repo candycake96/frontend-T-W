@@ -4,6 +4,9 @@ import { apiUrl } from "../../../config/apiConfig";
 
 const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
 
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
+
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
     useEffect(() => {
@@ -203,6 +206,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         };
     };
 
+
     const handleApprovalPass = async (e) => {
         e.preventDefault();
         try {
@@ -214,29 +218,57 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                 alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
                 return;
             }
-            // ตรวจสอบว่ามีใบเสนอราคาถูกเลือกหรือไม่
-            const hasSelectedQuotation = quotations.some(q => q.is_selected);
-            if (!hasSelectedQuotation) {
-                alert("กรุณาเลือกใบเสนอราคาที่ต้องการอนุมัติ...");
-                return;
+
+
+            // เตรียมข้อมูลที่จะส่ง
+            const payload = {
+                approver: isDataApprover,
+                quotations: quotations
+            };
+
+            // เรียก API
+            const response = await axios.put(
+                `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            // แสดงผลลัพธ์
+            if (response.status === 200) {
+                alert("✅ อนุมัติสำเร็จ!");
+                console.log("Response:", response.data);
+                setMessage(response.data.message);
+                setMessageType("success");
+            } else {
+                alert("❌ ไม่สามารถอนุมัติได้");
             }
 
-            console.log("ข้อมูลอนุมัติ", isDataApprover);
-            console.log("ข้อมูลอะไหล่", quotations);
-
         } catch (error) {
-            console.error(error);
+            console.error("❌ Error:", error);
             alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
         }
     };
+
 
     return (
         <>
             <div className="md-2">
                 <div className="">
-                    {/* <div className="text-center mb-3">
-                        <p className="fw-bolder">อนุมัติผลตรวจ</p>
-                    </div> */}
+
+                    {message && (
+                        <div
+                            className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
+                        >
+                            {message}
+                        </div>
+                    )}
 
                     <div>
                         <form action="" onSubmit={handleApprovalPass}>
@@ -512,16 +544,16 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                                         <input
                                                             type="checkbox"
                                                             className="form-check-input"
-                                                        id={`is_approved_part_${idx}_${partIdx}`}
-                                                        name={`is_approved_part_${idx}_${partIdx}`}
-// checked={!!part.is_approved_part}
-// onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
-                                                            // style={{
-                                                            //     boxShadow: '0 0 5px #0000FF',
-                                                            //     borderRadius: '4px',
-                                                            //     padding: '8px',
-                                                            //     outline: 'none',
-                                                            // }}
+                                                            id={`is_approved_part_${idx}_${partIdx}`}
+                                                            name={`is_approved_part_${idx}_${partIdx}`}
+                                                            checked={!!part.is_approved_part}
+                                                            onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
+                                                            style={{
+                                                                boxShadow: '0 0 5px #0000FF',
+                                                                borderRadius: '4px',
+                                                                padding: '8px',
+                                                                outline: 'none',
+                                                            }}
                                                         />
                                                     </div>
 
