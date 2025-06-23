@@ -105,31 +105,32 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
             const fileBaseUrl = `${apiUrl}/uploads/quotation_files/`;
 
             const mapped = isApproverShowData.quotations.map(q => ({
-                quotation_id: q.quotation_id,
-                vendor_id: q.vendor_id,
-                garage_name: q.garage_name || "",
-                quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
-                quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
-                note: q.note || "",
-                is_selected: !!q.is_selected,
-                quotation_vat: q.quotation_vat ?? "",
-                vendor_name: q.vendor_name || "",
-                parts: (q.parts || []).map(p => ({
-                    quotation_parts_id: p.quotation_parts_id,
-                    request_id: p.request_id || "",
-                    parts_used_id: p.parts_used_id || "",
-                    part_id: p.part_id,
-                    system_name: p.system_name || "",
-                    part_name: p.part_name,
-                    price: p.part_price,
-                    unit: p.part_unit,
-                    maintenance_type: p.maintenance_type,
-                    qty: p.part_qty,
-                    discount: p.part_discount,
-                    vat: p.part_vat,
-                    total: "",
-                    is_approved_part: p.is_approved_part === null ? null : !!p.is_approved_part,
-                    approval_checked: p.approval_checked === null ? null : !!p.approval_checked,
+               quotation_id: q.quotation_id,
+            vendor_id: q.vendor_id,
+            garage_name: q.garage_name || "",
+            quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
+            quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
+            note: q.note || "",
+            is_selected: !!q.is_selected,
+            quotation_vat: q.quotation_vat ?? "",
+            vendor_name: q.vendor_name || "",
+            parts: (q.parts || []).map(p => ({
+                quotation_parts_id: p.quotation_parts_id,
+                request_id: p.request_id || "",
+                parts_used_id: p.parts_used_id || "",
+                part_id: p.part_id,
+                system_name: p.system_name || "",
+                part_name: p.part_name,
+                price: p.part_price,
+                unit: p.part_unit,
+                maintenance_type: p.maintenance_type,
+                qty: p.part_qty,
+                discount: p.part_discount,
+                vat: p.part_vat,
+                total: "",
+                // สำคัญ: ถ้า null ต้องให้ค่า null ไม่ใช่ false
+                is_approved_part: p.is_approved_part === null ? null : !!p.is_approved_part,
+                approval_checked: p.approval_checked === null ? null : !!p.approval_checked,
 
                 })),
             }));
@@ -298,6 +299,18 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
         <>
             <div className="md-2">
                 แก้ไข {maintenanceJob?.request_id}
+                {!isEditing && (
+                                    <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary w-lg-auto"
+                                            onClick={() => setIsEditing(true)}
+                                            style={{ whiteSpace: 'nowrap' }}
+                                        >
+                                            <i className="bi bi-pencil-square"></i> แก้ไข
+                                        </button>
+                                    </div>
+                                )}
                 <div className="">
 
                     {message && (
@@ -575,29 +588,34 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                         />
                                                     </div>
 
-                                                    <div className="col d-flex align-items-center">
-                                                        <label className="form-label text-sm mb-0 me-2" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
+                                                    <div className="col  align-items-center">
+                                                        <label className="form-label" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
                                                             <i className="bi bi-check2-circle"></i>
                                                         </label>
+                                                        {isEditing === true && (
                                                         <input
-    type="checkbox"
-    className="form-check-input"
-    id={`is_approved_part_${idx}_${partIdx}`}
-    checked={part.is_approved_part}
-    disabled // ป้องกันไม่ให้แก้ไข
-    style={{
-        boxShadow: '0 0 5px #0000FF',
-        borderRadius: '4px',
-        padding: '8px',
-        outline: 'none',
-    }}
-/>
-
-                                                        <span className={`badge ${part.is_approved_part ? "bg-success" : "bg-danger"}`}>
-                                                            {part.is_approved_part ? "อนุมัติ" : "ไม่อนุมัติ"} {part.is_approved_part}
-                                                        </span>
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            id={`is_approved_part_${idx}_${partIdx}`}
+                                                            checked={part.is_approved_part}
+                                                            disabled={!isEditing} // ถ้าไม่ต้องการให้แก้ไข ให้ใส่ disabled
+                                                            style={{
+                                                                boxShadow: '0 0 5px #0000FF',
+                                                                borderRadius: '4px',
+                                                                padding: '8px',
+                                                                outline: 'none',
+                                                            }}
+                                                        />
+                                                        )} 
+           {!isEditing && (                                      
+part.is_approved_part !== null && (
+  <span className={`badge ${part.is_approved_part ? "bg-success" : "bg-danger"}`}>
+    {part.is_approved_part ? "อนุมัติ" : "ไม่อนุมัติ"}
+  </span>
+)
+)}
                                                     </div>
-
+    
                                                 </div>
                                             ))}
 
