@@ -2,10 +2,17 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 
-const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
+const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowData }) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
+
+    // เพิ่มฟังก์ชันนี้ไว้บนสุดของไฟล์
+    const toBoolean = v =>
+        v === true ||
+        v === 1 ||
+        v === "1" ||
+        (typeof v === "string" && v.toLowerCase() === "true");
 
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
@@ -42,7 +49,22 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
             quotation_vat: "",
             vendor_name: "",
             parts: [
-                { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "", is_approved_part: false }
+                {
+                    request_id: "",
+                    parts_used_id: "",
+                    part_id: "",
+                    system_name: "",
+                    part_name: "",
+                    price: "",
+                    unit: "",
+                    maintenance_type: "",
+                    qty: "",
+                    discount: "",
+                    vat: "",
+                    total: "",
+                    is_approved_part: false,
+                    approval_checked: false
+                }
             ],
         }
     ]);
@@ -79,11 +101,10 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
         []);
 
     useEffect(() => {
-        if (isAnalysisApprover?.quotations) {
-            // สมมติ apiUrl คือ base url ของไฟล์
+        if (isApproverShowData?.quotations) {
             const fileBaseUrl = `${apiUrl}/uploads/quotation_files/`;
 
-            const mapped = isAnalysisApprover.quotations.map(q => ({
+            const mapped = isApproverShowData.quotations.map(q => ({
                 quotation_id: q.quotation_id,
                 vendor_id: q.vendor_id,
                 garage_name: q.garage_name || "",
@@ -106,14 +127,16 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
                     qty: p.part_qty,
                     discount: p.part_discount,
                     vat: p.part_vat,
-                    total: "", // จะคำนวณในฟังก์ชัน handleChange/calculateSummary
-                    is_approved_part: !!p.is_approved_part,
+                    total: "",
+                    is_approved_part: p.is_approved_part === null ? null : !!p.is_approved_part,
+                    approval_checked: p.approval_checked === null ? null : !!p.approval_checked,
+
                 })),
             }));
 
             setQuotations(mapped);
         }
-    }, [isAnalysisApprover]);
+    }, [isApproverShowData]);
 
     // input Analysis
     const handleDataAnalysis = (index, field, value) => {
@@ -256,10 +279,25 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
         }
     };
 
+    // Edit
+    // show input
+    useEffect(() => {
+        const approver = isApproverShowData?.approvers?.[0] || {};
+        setDataApprover({
+            analysis_id: approver.analysis_id || "",
+            approver_emp_id: approver.approver_emp_id || "",
+            approver_name: approver.approver_name || "",
+            approval_date: approver.approval_date || "",
+            remark: approver.remark || "",
+        });
+
+
+    }, [isApproverShowData]);
 
     return (
         <>
             <div className="md-2">
+                แก้ไข {maintenanceJob?.request_id}
                 <div className="">
 
                     {message && (
@@ -537,24 +575,27 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob }) => {
                                                         />
                                                     </div>
 
-                                                    <div className="col" >
-                                                        <label className="form-label text-sm" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
+                                                    <div className="col d-flex align-items-center">
+                                                        <label className="form-label text-sm mb-0 me-2" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
                                                             <i className="bi bi-check2-circle"></i>
                                                         </label>
                                                         <input
-                                                            type="checkbox"
-                                                            className="form-check-input"
-                                                            id={`is_approved_part_${idx}_${partIdx}`}
-                                                            name={`is_approved_part_${idx}_${partIdx}`}
-                                                            checked={!!part.is_approved_part}
-                                                            onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
-                                                            style={{
-                                                                boxShadow: '0 0 5px #0000FF',
-                                                                borderRadius: '4px',
-                                                                padding: '8px',
-                                                                outline: 'none',
-                                                            }}
-                                                        />
+    type="checkbox"
+    className="form-check-input"
+    id={`is_approved_part_${idx}_${partIdx}`}
+    checked={part.is_approved_part}
+    disabled // ป้องกันไม่ให้แก้ไข
+    style={{
+        boxShadow: '0 0 5px #0000FF',
+        borderRadius: '4px',
+        padding: '8px',
+        outline: 'none',
+    }}
+/>
+
+                                                        <span className={`badge ${part.is_approved_part ? "bg-success" : "bg-danger"}`}>
+                                                            {part.is_approved_part ? "อนุมัติ" : "ไม่อนุมัติ"} {part.is_approved_part}
+                                                        </span>
                                                     </div>
 
                                                 </div>
