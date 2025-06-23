@@ -8,6 +8,7 @@ import MainternanceAnanlysis_ShowDetails from "./MainternanceAnalysis_ShowDetail
 import MainternanceRepairRequestDetails from "./MainternanceRepairRequestDetails";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import MainternanceAnalysisApprover from "./MainternanceAnalysisApprover";
+import MainternanceAnalysisApproverMain from "./MainternanceAnalysisApproverMain";
 
 const MaintenanceJob = () => {
 
@@ -365,7 +366,9 @@ const MaintenanceJob = () => {
                         )}
 
                         {activeForm === 'MainternanceAnalysisApprover' && (
-                            <MainternanceAnalysisApprover maintenanceJob={formData} />
+                            <MainternanceAnalysisApproverMain maintenanceJob={formData} />
+                            // <MainternanceAnalysisApprover maintenanceJob={formData} />
+
                         )}
 
                     </div>
