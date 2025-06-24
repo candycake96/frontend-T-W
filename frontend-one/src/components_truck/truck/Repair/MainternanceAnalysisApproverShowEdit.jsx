@@ -6,6 +6,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
+    const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
 
     // เพิ่มฟังก์ชันนี้ไว้บนสุดของไฟล์
     const toBoolean = v =>
@@ -31,7 +32,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
         approver_emp_id: "",
         approver_name: "",
         // position: "",
-        // approval_status: "",
+        approval_status: "",
         approval_date: "",
         remark: "",
     });
@@ -246,13 +247,18 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
             // เตรียมข้อมูลที่จะส่ง
             const payload = {
-                approver: isDataApprover,
+                approver: {
+                    ...isDataApprover,
+                    approval_status: approvalStatus // ใช้ค่าจาก state
+                },
                 quotations: quotations
             };
 
+            console.log('ข้อมูล : ',payload);
+            
             // เรียก API
             const response = await axios.put(
-                `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
+                `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
                 payload,
                 {
                     headers: {
@@ -333,7 +339,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                     )}
 
                     <div>
-                        <form action="" onSubmit={handleApprovalPass}>
+                        <form id="approval-form" onSubmit={handleApprovalPass}>
                             <div className="">
 
                                 <div className="">
@@ -696,9 +702,27 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                     </div>
                                 ))}
 
+                                {/* // ในปุ่ม */}
                                 <div className="text-center d-flex justify-content-center gap-2">
-                                    <button className="btn btn-danger w-25" style={{ minWidth: 120 }}>ไม่อนุมัติ</button>
-                                    <button className="btn btn-primary w-25" style={{ minWidth: 120 }}>อนุมัติ</button>
+                                    <button
+                                        className="btn btn-danger w-25"
+                                        style={{ minWidth: 120 }}
+                                        type="button"
+                                        onClick={() => {
+                                            setApprovalStatus("rejected");
+                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+                                        }}
+                                    >
+                                        ไม่อนุมัติ
+                                    </button>
+                                    <button
+                                        className="btn btn-primary w-25"
+                                        type="submit"
+                                        style={{ minWidth: 120 }}
+                                        onClick={() => setApprovalStatus("approved")}
+                                    >
+                                        อนุมัติ
+                                    </button>
                                 </div>
 
                             </div>
