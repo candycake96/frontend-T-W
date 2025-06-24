@@ -9,6 +9,7 @@ import MainternanceRepairRequestDetails from "./MainternanceRepairRequestDetails
 import "bootstrap-icons/font/bootstrap-icons.css";
 import MainternanceAnalysisApprover from "./MainternanceAnalysisApprover";
 import MainternanceAnalysisApproverMain from "./MainternanceAnalysisApproverMain";
+import MainternanceApprover_mgr_add from "./MainternanceApprover_mgr_add";
 
 const MaintenanceJob = () => {
 
@@ -369,6 +370,10 @@ const MaintenanceJob = () => {
                             <MainternanceAnalysisApproverMain maintenanceJob={formData} />
                             // <MainternanceAnalysisApprover maintenanceJob={formData} />
 
+                        )}
+
+                        {activeForm === 'ApproveMainternanceForm' && (
+                            <MainternanceApprover_mgr_add maintenanceJob={formData} />
                         )}
 
                     </div>
