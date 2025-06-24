@@ -383,7 +383,6 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                             <div className="col-lg-5">
                                                 <p className="fw-bolder">ใบเสนอราคาที่ {idx + 1}
                                                     <strong className="ms-2">
-
                                                     </strong>
                                                 </p>
                                             </div>
@@ -514,15 +513,18 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                                 disabled
                                                                 placeholder="ค้นหาอะไหล่..."
                                                             />
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                type="button"
-                                                                // onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
-                                                                disabled
-                                                            >
-                                                                <i className="bi bi-search"></i>
-                                                            </button>
-
+                                                            {!isEditing ? (
+                                                                <></>
+                                                            ) : (
+                                                                <button
+                                                                    className="btn btn-outline-secondary btn-sm"
+                                                                    type="button"
+                                                                    // onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
+                                                                    disabled
+                                                                >
+                                                                    <i className="bi bi-search"></i>
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className="col-lg-1">

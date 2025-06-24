@@ -17,6 +17,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     }, []);
 
     const [isEditing, setIsEditing] = useState(false);
+const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
 
     const [isAnalysisApprover, setAnalysisApprover] = useState([]);
     const [isDataApprover, setDataApprover] = useState({
@@ -24,7 +25,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
         approver_emp_id: "",
         approver_name: "",
         // position: "",
-        // approval_status: "",
+        approval_status: "",
         approval_date: "",
         remark: "",
     });
@@ -219,13 +220,16 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                 return;
             }
 
+ // เตรียมข้อมูลที่จะส่ง
+        const payload = {
+            approver: {
+                ...isDataApprover,
+                approval_status: approvalStatus // ใช้ค่าจาก state
+            },
+            quotations: quotations
+        };
 
-            // เตรียมข้อมูลที่จะส่ง
-            const payload = {
-                approver: isDataApprover,
-                quotations: quotations
-            };
-
+            
             // เรียก API
             const response = await axios.put(
                 `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
@@ -271,7 +275,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                     )}
 
                     <div>
-                        <form action="" onSubmit={handleApprovalPass}>
+                        <form id="approval-form" action="" onSubmit={handleApprovalPass}>
                             <div className="">
 
                                 <div className="">
@@ -624,9 +628,27 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                     </div>
                                 ))}
 
+                                {/* // ในปุ่ม */}
                                 <div className="text-center d-flex justify-content-center gap-2">
-                                    <button className="btn btn-danger w-25" style={{ minWidth: 120 }}>ไม่อนุมัติ</button>
-                                    <button className="btn btn-primary w-25" style={{ minWidth: 120 }}>อนุมัติ</button>
+                                    <button
+                                        className="btn btn-danger w-25"
+                                        style={{ minWidth: 120 }}
+                                        type="button"
+                                        onClick={() => {
+                                            setApprovalStatus("rejected");
+                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+                                        }}
+                                    >
+                                        ไม่อนุมัติ
+                                    </button>
+                                    <button
+                                        className="btn btn-primary w-25"
+                                        type="submit"
+                                        style={{ minWidth: 120 }}
+                                        onClick={() => setApprovalStatus("approved")}
+                                    >
+                                        อนุมัติ
+                                    </button>
                                 </div>
 
                             </div>
