@@ -19,18 +19,22 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                             </div>
                             <div className="row mb-2">
                                 <div className="col-md-6 mb-2"><strong>รายละเอียด:</strong> {maintenanceJob?.description || "-"}</div>
-                                <div className="col-md-3 mb-2"><strong>เลขไมล์:</strong> {maintenanceJob?.mileage || "-"}</div>
-                                <div className="col-md-3 mb-2"><strong>สาขา:</strong> {maintenanceJob?.branch || "-"}</div>
                             </div>
                             <div className="row mb-2">
+                                <div className="col-md-3 mb-2"><strong>เลขไมล์:</strong> {maintenanceJob?.mileage || "-"}</div>
+                                <div className="col-md-3 mb-2"><strong>สาขา:</strong> {maintenanceJob?.branch || "-"}</div>
                                 <div className="col-md-3 mb-2"><strong>ประเภท:</strong> {maintenanceJob?.type || "-"}</div>
+                            </div>
+                            <div className="row mb-2">
                                 <div className="col-md-3 mb-2"><strong>ผู้จัดรถ:</strong> {maintenanceJob?.manager || "-"}</div>
-                                <div className="col-md-6 mb-2">
+                                <div className="col-md-4 mb-2">
                                     <strong>สถานะ:</strong>{" "}
                                     <span className="badge bg-success bg-gradient px-3 py-2">
                                         <i className="bi bi-check-circle me-1"></i>รถว่างสามารถเข้าซ่อมได้ทันที
                                     </span>
                                 </div>
+                                <div className="col-md-4 mb-2"><strong>วันที่:</strong> {maintenanceJob?.manager || "-"} <strong> เวลา:</strong>  {maintenanceJob?.manager || "-"}</div>
+                                <div className="col-md-4 mb-2"><strong>หมายเหตุ:</strong> {maintenanceJob?.manager || "-"}</div>
                             </div>
                         </div>
                     </div>
@@ -130,6 +134,19 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                         </div>
                     ))}
 
+<div className="my-4">
+    <div className="card border-0 shadow-sm bg-light">
+        <div className="card-body d-flex align-items-center">
+            <i className="bi bi-clock-history fs-3 text-primary me-3"></i>
+            <div>
+                <h6 className="mb-1 fw-bold text-primary">ประวัติการซ่อมรถยนต์คันนี้</h6>
+                <p className="mb-0 text-secondary" style={{ fontSize: "1rem" }}>
+                    เพื่อโปรดพิจารณา ทั้งนี้รถยนต์คันดังกล่าวมีประวัติการซ่อมดังนี้
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
                     {/* Action Buttons */}
                     <div className="text-center mt-4 d-flex justify-content-center gap-3">
                         <button className="btn btn-danger btn-lg px-5 shadow" onClick={onReject}>
