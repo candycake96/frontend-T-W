@@ -373,7 +373,6 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value={isDataApprover?.remark}
                                                 onChange={e => handleDataApprover('remark', e.target.value)}
                                             />
-
                                         </div>
                                     </div>
                                 </div>
@@ -418,7 +417,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                         className="form-control"
                                                         value={q.vendor_name}
                                                         onChange={e => handleQuotationChange(idx, "vendor_name", e.target.value)}
-                                                        disabled={!isEditing}
+                                                        disabled
                                                     />
                                                     <button className="btn btn-outline-secondary" type="button" >
                                                         <i className="bi bi-search"></i>
@@ -433,12 +432,12 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                     className="form-control"
                                                     value={q.quotation_date}
                                                     onChange={e => handleQuotationChange(idx, "quotation_date", e.target.value)}
-                                                    disabled={!isEditing}
+                                                    disabled
                                                 />
                                             </div>
                                             <div className="col-lg-6 mb-3">
                                                 <label className="form-label">เอกสารแนบ</label>
-                                                {isEditing && (
+                                                {/* {isEditing && (
                                                     <input
                                                         type="file"
                                                         className="form-control form-control-sm mb-2"
@@ -449,7 +448,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             }
                                                         }}
                                                     />
-                                                )}
+                                                )} */}
                                                 {/* แสดงชื่อไฟล์ใหม่ที่เลือก */}
                                                 {isEditing && q.quotation_file instanceof File && (
                                                     <div className="mb-2 text-success">
@@ -486,7 +485,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 rows={2}
                                                 value={q.note}
                                                 onChange={e => handleQuotationChange(idx, "note", e.target.value)}
-                                                disabled={!isEditing}
+                                                disabled
                                                 placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
                                             ></textarea>
                                         </div>
@@ -494,7 +493,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                             {q.parts.map((part, partIdx) => (
                                                 <div className="row mb-3" key={partIdx}>
                                                     <input type="hidden" value={part.part_id} readOnly />
-                                                    <div className="col-lg-2">
+                                                    <div className="col" style={{ flex: "0 0 12.5%", maxWidth: "15.5%" }}>
                                                         <label className="form-label text-sm">ระบบ</label>
                                                         <input
                                                             type="text"
@@ -512,14 +511,14 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                                 className="form-control"
                                                                 value={part.part_name}
                                                                 onChange={e => handleChange(idx, partIdx, "part_name", e.target.value)}
-                                                                disabled={!isEditing}
+                                                                disabled
                                                                 placeholder="ค้นหาอะไหล่..."
                                                             />
                                                             <button
                                                                 className="btn btn-outline-secondary btn-sm"
                                                                 type="button"
                                                                 // onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
-                                                                disabled={!isEditing}
+                                                                disabled
                                                             >
                                                                 <i className="bi bi-search"></i>
                                                             </button>
@@ -532,7 +531,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-select mb-3 form-select-sm"
                                                             value={part.maintenance_type}
                                                             onChange={e => handleChange(idx, partIdx, "maintenance_type", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         >
                                                             <option value=""></option>
                                                             <option value="CM">CM</option>
@@ -546,7 +545,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-control form-control-sm"
                                                             value={part.price}
                                                             onChange={e => handleChange(idx, partIdx, "price", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         />
                                                     </div>
                                                     <div className="col-lg-1">
@@ -556,7 +555,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-control form-control-sm"
                                                             value={part.unit}
                                                             onChange={e => handleChange(idx, partIdx, "unit", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         />
                                                     </div>
                                                     <div className="col-lg-1">
@@ -566,7 +565,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-control form-control-sm"
                                                             value={part.qty}
                                                             onChange={e => handleChange(idx, partIdx, "qty", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         />
                                                     </div>
                                                     <div className="col-lg-1">
@@ -576,7 +575,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-control form-control-sm"
                                                             value={part.discount || ""}
                                                             onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         />
                                                     </div>
                                                     <div className="col" style={{ flex: "0 0 7.5%", maxWidth: "7.5%" }}>
@@ -586,10 +585,10 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             className="form-control form-control-sm"
                                                             value={part.vat}
                                                             onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
-                                                            disabled={!isEditing}
+                                                            disabled
                                                         />
                                                     </div>
-                                                    <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "12.5%" }}>
+                                                    <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "10.5%" }}>
                                                         <label className="form-label text-sm">ราคารวม</label>
                                                         <input
                                                             type="number"
@@ -610,7 +609,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                                 id={`is_approved_part_${idx}_${partIdx}`}
                                                                 checked={part.is_approved_part}
                                                                 onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
-                                                                disabled={!isEditing}
+                                                                // disabled
                                                                 style={{
                                                                     boxShadow: '0 0 5px #0000FF',
                                                                     borderRadius: '4px',
@@ -637,7 +636,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                         className="btn btn-outline-primary"
                                                         type="button"
                                                         // onClick={() => handleAddPart(idx)}
-                                                        disabled={!isEditing}
+                                                        disabled
                                                     >
                                                         เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
                                                     </button>
@@ -677,7 +676,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                                     value={q.quotation_vat || ""}
                                                                     onChange={e => handleQuotationChange(idx, "quotation_vat", e.target.value)}
                                                                     placeholder="0"
-                                                                    disabled={!isEditing}
+                                                                    disabled
                                                                 />
                                                                 <p className="fw-bolder me-2">(%)</p>
                                                             </div>
