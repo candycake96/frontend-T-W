@@ -42,7 +42,7 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     }
-    // ฟังก์ชันแปลงเวลา ISO เป็น HH:MM
+    // ฟังก์ชันแปลงเวลา ISO เป็น HH:MM 
     function formatTimeHM(timeString) {
         if (!timeString) return "-";
         // รองรับทั้ง "HH:MM:SS", "HH:MM" และ "1970-01-01T11:53:00.000Z"
@@ -117,36 +117,46 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                         <div className="card-body">
                             <div className="row mb-3">
                                 <div className="col-lg-12 d-flex flex-wrap gap-3">
-                                    <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
-                                        <i className="bi bi-gear-fill me-1"></i> PM (ซ่อมก่อนเสีย)
-                                    </span>
-                                    <span className="badge rounded-pill bg-danger px-3 py-2">
-                                        <i className="bi bi-exclamation-triangle-fill me-1"></i> CM (เสียก่อนซ่อม)
-                                    </span>
-                                    <span className="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
-                                        <i className="bi bi-lightning-fill me-1"></i> จำเป็นต้องซ่อมด่วนทันที
-                                    </span>
-                                    <span className="badge rounded-pill bg-secondary px-3 py-2">
-                                        <i className="bi bi-house-gear-fill me-1"></i> แผนกช่างซ่อมเองได้
-                                    </span>
-                                    <span className="badge rounded-pill bg-primary px-3 py-2">
-                                        <i className="bi bi-truck-front-fill me-1"></i> ต้องส่งอู่
-                                    </span>
+                                    {dataRequest?.is_pm && (
+                                        <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                            <i className="bi bi-gear-fill me-1"></i> PM (ซ่อมก่อนเสีย)
+                                        </span>
+                                    )}
+                                    {dataRequest?.is_cm && (
+                                        <span className="badge rounded-pill bg-danger px-3 py-2">
+                                            <i className="bi bi-exclamation-triangle-fill me-1"></i> CM (เสียก่อนซ่อม)
+                                        </span>
+                                    )}
+                                    {dataRequest?.urgent_repair && (
+                                        <span className="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                                            <i className="bi bi-lightning-fill me-1"></i> จำเป็นต้องซ่อมด่วนทันที
+                                        </span>
+                                    )}
+                                    {dataRequest?.inhouse_repair && (
+                                        <span className="badge rounded-pill bg-secondary px-3 py-2">
+                                            <i className="bi bi-house-gear-fill me-1"></i> แผนกช่างซ่อมเองได้
+                                        </span>
+                                    )}
+                                    {dataRequest?.send_to_garage && (
+                                        <span className="badge rounded-pill bg-primary px-3 py-2">
+                                            <i className="bi bi-truck-front-fill me-1"></i> ต้องส่งอู่
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                             <div className="row mb-2">
-                                <div className="col-md-4"><strong>ตั้งแต่วันที่:</strong> 2025-06-24 </div>
-                                <div className="col-md-4"><strong>เนื่องจาก:</strong> xxxxxxxxxxxxxxx </div>
+                                <div className="col-md-4"><strong>ตั้งแต่วันที่:</strong>  {formatDateDMY(dataRequest?.analysis_date) || '-'} <strong>เวลา:</strong>{formatTimeHM(dataRequest?.analysis_time) || '-'}</div>
+                                <div className="col-md-4"><strong>เนื่องจาก:</strong>  {dataRequest?.analysis_remark || '-'} </div>
                                 <div className="col-md-4"><strong>ราคา:</strong> xxxxxxxxx </div>
                             </div>
                             <div className="row mb-2">
                                 <div className="col-md-4"><strong>อู่ / บริษัท:</strong> xxxxxxxxxxxxxxx </div>
-                                <div className="col-md-4"><strong>ผู้ตรวจสอบ:</strong> xxxxxxxxxxxxxxx </div>
-                                <div className="col-md-4"><strong>วันที่:</strong> xxxxxxxxx </div>
+                                <div className="col-md-4"><strong>ผู้ตรวจสอบ:</strong> {dataRequest?.analysis_emp_name || '-'}  </div>
+                                <div className="col-md-4"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.analysis_date) || '-'} </div>
                             </div>
                             <div className="row mb-2">
-                                <div className="col-md-6"><strong>หัวหน้าแผนกซ่อมบำรุง:</strong> xxxxxxxxxxxxxxx </div>
-                                <div className="col-md-6"><strong>วันที่:</strong> xxxxxxxxx </div>
+                                <div className="col-md-6"><strong>หัวหน้าแผนกซ่อมบำรุง:</strong>  {dataRequest?.approver_emp_name || '-'} </div>
+                                <div className="col-md-6"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.approval_date) || '-'} </div>
                             </div>
                         </div>
                     </div>
@@ -191,7 +201,7 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                                                                 {part.is_approved_part
                                                                     ? <><i className="bi bi-check-circle me-1"></i>อนุมัติ</>
                                                                     : <><i className="bi bi-x-circle me-1"></i>ไม่อนุมัติ</>
-                                                                }
+                                                                } 
                                                             </span>
                                                         )}
                                                     </td>
