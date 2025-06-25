@@ -1,6 +1,62 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { apiUrl } from "../../../config/apiConfig";
 
 const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onApprove, onReject }) => {
+
+    const [isDataRequestAll, setDataRequestAll] = useState([]);
+    const fetchDataRequestAll = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get(`${apiUrl}/api/approval_shows_id/${maintenanceJob?.request_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setDataRequestAll(response.data);
+        } catch (error) {
+            console.error("Error fetching detailscartype:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchDataRequestAll();
+    }, [maintenanceJob]);
+
+    const dataRequest = isDataRequestAll.length > 0 ? isDataRequestAll[0] : null;
+
+    // ฟังก์ชันแปลงวันที่เป็น dd/mm/yyyy
+    function formatDateDMY(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+    // ฟังก์ชันแปลงเวลา ISO เป็น HH:MM
+    function formatTimeHM(timeString) {
+        if (!timeString) return "-";
+        // รองรับทั้ง "HH:MM:SS", "HH:MM" และ "1970-01-01T11:53:00.000Z"
+        if (timeString.includes("T")) {
+            // กรณีเป็น ISO string
+            const date = new Date(timeString);
+            if (isNaN(date)) return "-";
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        }
+        // กรณีเป็น HH:MM:SS หรือ HH:MM
+        return timeString.length >= 5 ? timeString.substring(0, 5) : timeString;
+    }
     return (
         <div className="container my-4">
             <div className="row justify-content-center">
@@ -13,28 +69,42 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                         </div>
                         <div className="card-body pb-2">
                             <div className="row mb-2">
-                                <div className="col-md-4 mb-2"><strong>เลขที่ใบงาน:</strong> <span className="text-primary">{maintenanceJob?.request_id}</span></div>
-                                <div className="col-md-4 mb-2"><strong>ทะเบียนรถ:</strong> <span>{maintenanceJob?.license_plate || "-"}</span></div>
-                                <div className="col-md-4 mb-2"><strong>วันที่แจ้ง:</strong> {maintenanceJob?.request_date || "-"}</div>
+                                <div className="col-md-4 mb-2"><strong>เลขที่ใบงาน:</strong> <span className="text-primary">{dataRequest ? dataRequest.request_no : "-"}</span></div>
+                                <div className="col-md-4 mb-2"><strong>ผู้แจ้ง:</strong> <span>{dataRequest ? dataRequest.request_emp_name : "-"}</span></div>
+                                <div className="col-md-4 mb-2"><strong>วันที่แจ้ง:</strong>{dataRequest ? formatDateDMY(dataRequest.request_date) : "-"}</div>
                             </div>
-                            <div className="row mb-2">
+                            {/* <div className="row mb-2">
                                 <div className="col-md-6 mb-2"><strong>รายละเอียด:</strong> {maintenanceJob?.description || "-"}</div>
+                            </div> */}
+                            <div className="row mb-2">
+                                <div className="col-md-3 mb-2"><strong>ทะเบียนรถ:</strong> <span>{dataRequest ? dataRequest.reg_number : "-"}</span></div>
+                                <div className="col-md-3 mb-2"><strong>เลขไมล์:</strong> {dataRequest ? dataRequest.car_mileage : "-"}</div>
+                                <div className="col-md-3 mb-2"><strong>สาขา:</strong> {dataRequest ? dataRequest.branch_name : "-"}</div>
+                                <div className="col-md-3 mb-2"><strong>ประเภท:</strong> {dataRequest ? dataRequest.car_type_name : "-"}</div>
                             </div>
                             <div className="row mb-2">
-                                <div className="col-md-3 mb-2"><strong>เลขไมล์:</strong> {maintenanceJob?.mileage || "-"}</div>
-                                <div className="col-md-3 mb-2"><strong>สาขา:</strong> {maintenanceJob?.branch || "-"}</div>
-                                <div className="col-md-3 mb-2"><strong>ประเภท:</strong> {maintenanceJob?.type || "-"}</div>
-                            </div>
-                            <div className="row mb-2">
-                                <div className="col-md-3 mb-2"><strong>ผู้จัดรถ:</strong> {maintenanceJob?.manager || "-"}</div>
+                                <div className="col-md-3 mb-2"><strong>ผู้จัดรถ:</strong> {dataRequest ? dataRequest.planning_name : "-"}</div>
                                 <div className="col-md-4 mb-2">
                                     <strong>สถานะ:</strong>{" "}
-                                    <span className="badge bg-success bg-gradient px-3 py-2">
-                                        <i className="bi bi-check-circle me-1"></i>รถว่างสามารถเข้าซ่อมได้ทันที
-                                    </span>
+                                    {dataRequest?.planning_vehicle_availability && (
+                                        dataRequest.planning_vehicle_availability === 'available' ? (
+                                            <span className="badge bg-success bg-gradient px-3 py-2">
+                                                <i className="bi bi-check-circle me-1"></i>
+                                                รถว่างสามารถเข้าซ่อมได้ทันที
+                                            </span>
+                                        ) : (
+                                            <span className="badge bg-warning bg-gradient px-3 py-2">
+                                                <i className="bi bi-clock me-1"></i>
+                                                รอคิวซ่อม ({dataRequest.planning_vehicle_availability || "ไม่ระบุผู้วางแผน"})
+                                            </span>
+                                        )
+                                    )}
+
+
+
                                 </div>
-                                <div className="col-md-4 mb-2"><strong>วันที่:</strong> {maintenanceJob?.manager || "-"} <strong> เวลา:</strong>  {maintenanceJob?.manager || "-"}</div>
-                                <div className="col-md-4 mb-2"><strong>หมายเหตุ:</strong> {maintenanceJob?.manager || "-"}</div>
+                                <div className="col-md-4 mb-2"><strong>จะว่างตั้งแต่ วันที่:</strong> {dataRequest ? formatDateDMY(dataRequest.planning_event_date) : "-"} <strong> เวลา:</strong>  {dataRequest ? formatTimeHM(dataRequest.planning_event_time) : "-"} </div>
+                                <div className="col-md-4 mb-2"><strong>หมายเหตุ:</strong> {dataRequest ? dataRequest.planning_event_remarke : "-"}</div>
                             </div>
                         </div>
                     </div>
@@ -134,19 +204,19 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                         </div>
                     ))}
 
-<div className="my-4">
-    <div className="card border-0 shadow-sm bg-light">
-        <div className="card-body d-flex align-items-center">
-            <i className="bi bi-clock-history fs-3 text-primary me-3"></i>
-            <div>
-                <h6 className="mb-1 fw-bold text-primary">ประวัติการซ่อมรถยนต์คันนี้</h6>
-                <p className="mb-0 text-secondary" style={{ fontSize: "1rem" }}>
-                    เพื่อโปรดพิจารณา ทั้งนี้รถยนต์คันดังกล่าวมีประวัติการซ่อมดังนี้
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+                    <div className="my-4">
+                        <div className="card border-0 shadow-sm bg-light">
+                            <div className="card-body d-flex align-items-center">
+                                <i className="bi bi-clock-history fs-3 text-primary me-3"></i>
+                                <div>
+                                    <h6 className="mb-1 fw-bold text-primary">ประวัติการซ่อมรถยนต์คันนี้</h6>
+                                    <p className="mb-0 text-secondary" style={{ fontSize: "1rem" }}>
+                                        เพื่อโปรดพิจารณา ทั้งนี้รถยนต์คันดังกล่าวมีประวัติการซ่อมดังนี้
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {/* Action Buttons */}
                     <div className="text-center mt-4 d-flex justify-content-center gap-3">
                         <button className="btn btn-danger btn-lg px-5 shadow" onClick={onReject}>
