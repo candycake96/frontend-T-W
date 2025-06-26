@@ -140,14 +140,6 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
         }
     }, [isApproverShowData]);
 
-    // input Analysis
-    const handleDataAnalysis = (index, field, value) => {
-        setDataApprover(prev => {
-            const updated = [...prev];
-            updated[index][field] = value;
-            return updated; // ต้อง return ค่าใหม่
-        });
-    }
 
     const handleDataApprover = (field, value) => {
         setDataApprover(prev => ({
@@ -232,74 +224,77 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
     };
 
 
-    const handleApprovalPass = async (e) => {
-        e.preventDefault();
-        try {
-            // ตรวจสอบข้อมูลผู้อนุมัติ
-            if (
-                !isDataApprover.approver_emp_id ||
-                !isDataApprover.approver_name
-            ) {
-                alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
-                return;
-            }
+    // ...existing code...
 
+// --- แก้ไข useEffect สำหรับ setDataApprover ให้รวม approval_status ด้วย (กัน approval_status หาย) ---
+useEffect(() => {
+    const approver = isApproverShowData?.approvers?.[0] || {};
+    setDataApprover({
+        analysis_id: approver.analysis_id || "",
+        approver_emp_id: approver.approver_emp_id || "",
+        approver_name: approver.approver_name || "",
+        approval_date: approver.approval_date || "",
+        remark: approver.remark || "",
+        approval_status: approver.approval_status || "", // เพิ่มบรรทัดนี้
+    });
+}, [isApproverShowData]);
 
-            // เตรียมข้อมูลที่จะส่ง
-            const payload = {
-                approver: {
-                    ...isDataApprover,
-                    approval_status: approvalStatus // ใช้ค่าจาก state
-                },
-                quotations: quotations
-            };
-
-            console.log('ข้อมูล : ', payload);
-
-            // เรียก API
-            const response = await axios.put(
-                `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
-                payload,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            // แสดงผลลัพธ์
-            if (response.status === 200) {
-                alert("✅ อนุมัติสำเร็จ!");
-                console.log("Response:", response.data);
-                setMessage(response.data.message);
-                setMessageType("success");
-            } else {
-                alert("❌ ไม่สามารถอนุมัติได้");
-            }
-
-        } catch (error) {
-            console.error("❌ Error:", error);
-            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-            setMessage("เกิดข้อผิดพลาด");
-            setMessageType("error");
+// --- แก้ไข handleApprovalPass ให้เช็ค approval_status ก่อน submit ---
+const handleApprovalPass = async (e) => {
+    e.preventDefault();
+    try {
+        // ตรวจสอบข้อมูลผู้อนุมัติ
+        if (
+            !isDataApprover.approver_emp_id ||
+            !isDataApprover.approver_name
+        ) {
+            alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
+            return;
         }
-    };
+        if (!isDataApprover.approval_status) {
+            alert("กรุณาเลือกสถานะการอนุมัติ");
+            return;
+        }
 
+        // เตรียมข้อมูลที่จะส่ง
+        const payload = {
+            approver: isDataApprover,
+            quotations: quotations
+        };
+
+        // ...existing code...
+        const response = await axios.put(
+            `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
+            payload,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (response.status === 200) {
+            alert("✅ อนุมัติสำเร็จ!");
+            setMessage(response.data.message);
+            setMessageType("success");
+            fetchAnalysisDataApprover();
+            setIsEditing(false);
+        } else {
+            alert("❌ ไม่สามารถอนุมัติได้");
+        }
+
+    } catch (error) {
+        console.error("❌ Error:", error);
+        alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        setMessage("เกิดข้อผิดพลาด");
+        setMessageType("error");
+    }
+};
+
+// ...existing code...
     // Edit
-    // show input
-    useEffect(() => {
-        const approver = isApproverShowData?.approvers?.[0] || {};
-        setDataApprover({
-            analysis_id: approver.analysis_id || "",
-            approver_emp_id: approver.approver_emp_id || "",
-            approver_name: approver.approver_name || "",
-            approval_date: approver.approval_date || "",
-            remark: approver.remark || "",
-        });
 
-
-    }, [isApproverShowData]);
 
     return (
         <>
@@ -704,39 +699,56 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
                                 {/* // ในปุ่ม */}
                                 {/* // ...existing code... */}
-                                <div className="text-center d-flex justify-content-center gap-2">
-                                    <button
-                                        className="btn btn-warning w-25"
-                                        style={{ minWidth: 120 }}
-                                        type="button"
-                                        onClick={() => {
-                                            setApprovalStatus("revise");
-                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-                                        }}
-                                    >
-                                        ส่งกลับแก้ไข
-                                    </button>
-                                    <button
-                                        className="btn btn-danger w-25"
-                                        style={{ minWidth: 120 }}
-                                        type="button"
-                                        onClick={() => {
-                                            setApprovalStatus("rejected");
-                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-                                        }}
-                                    >
-                                        ไม่อนุมัติ
-                                    </button>
-                                    <button
-                                        className="btn btn-primary w-25"
-                                        type="submit"
-                                        style={{ minWidth: 120 }}
-                                        onClick={() => setApprovalStatus("approved")}
-                                    >
-                                        อนุมัติ
-                                    </button>
+                                <div className="mb-3">
+                                    <label className="form-label">สถานะการอนุมัติ</label>
+                                    <div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="approved"
+                                                value="approved"
+                                                checked={isDataApprover.approval_status === "approved"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="approved">อนุมัติ</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="rejected"
+                                                value="rejected"
+                                                checked={isDataApprover.approval_status === "rejected"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="rejected">ไม่อนุมัติ</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="revise"
+                                                value="revise"
+                                                checked={isDataApprover.approval_status === "revise"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="revise">ส่งกลับแก้ไข</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 {/* // ...existing code... */}
+
+                                <button
+                                    className="btn btn-primary w-25"
+                                    type="submit"
+                                    style={{ minWidth: 120 }}
+                                >
+                                    อนุมัติ
+                                </button>
 
                             </div>
                         </form>

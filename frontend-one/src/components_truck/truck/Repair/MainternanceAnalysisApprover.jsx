@@ -221,19 +221,19 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             }
 
             // เตรียมข้อมูลที่จะส่ง
-            const payload = {
-                approver: {
-                    ...isDataApprover,
-                    approval_status: approvalStatus // ใช้ค่าจาก state
-                },
-                quotations: quotations
-            };
+            // const payload = {
+            //     approver: {
+            //         ...isDataApprover,
+            //         approval_status: approvalStatus // ใช้ค่าจาก state
+            //     },
+            //     quotations: quotations
+            // };
 
 
             // เรียก API
             const response = await axios.put(
                 `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
-                payload,
+                isDataApprover,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -631,38 +631,36 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
 
                                 {/* // ในปุ่ม */}
                                 {/* // ...existing code... */}
-                                <div className="text-center d-flex justify-content-center gap-2">
-                                    <button
-                                        className="btn btn-warning w-25"
-                                        style={{ minWidth: 120 }}
-                                        type="button"
-                                        onClick={() => {
-                                            setApprovalStatus("revise");
-                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-                                        }}
-                                    >
-                                        ส่งกลับแก้ไข
-                                    </button>
-                                    <button
-                                        className="btn btn-danger w-25"
-                                        style={{ minWidth: 120 }}
-                                        type="button"
-                                        onClick={() => {
-                                            setApprovalStatus("rejected");
-                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-                                        }}
-                                    >
-                                        ไม่อนุมัติ
-                                    </button>
-                                    <button
-                                        className="btn btn-primary w-25"
-                                        type="submit"
-                                        style={{ minWidth: 120 }}
-                                        onClick={() => setApprovalStatus("approved")}
-                                    >
-                                        อนุมัติ
-                                    </button>
-                                </div>
+                                <button
+    className="btn btn-warning w-25"
+    style={{ minWidth: 120 }}
+    type="button"
+    onClick={() => {
+        setDataApprover(prev => ({ ...prev, approval_status: "revise" }));
+        setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+    }}
+>
+    ส่งกลับแก้ไข
+</button>
+<button
+    className="btn btn-danger w-25"
+    style={{ minWidth: 120 }}
+    type="button"
+    onClick={() => {
+        setDataApprover(prev => ({ ...prev, approval_status: "rejected" }));
+        setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+    }}
+>
+    ไม่อนุมัติ
+</button>
+<button
+    className="btn btn-primary w-25"
+    type="submit"
+    style={{ minWidth: 120 }}
+    // ไม่ต้องมี onClick
+>
+    อนุมัติ
+</button>
                                 {/* // ...existing code... */}
 
                             </div>
