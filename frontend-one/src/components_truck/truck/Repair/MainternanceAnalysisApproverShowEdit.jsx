@@ -254,8 +254,8 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                 quotations: quotations
             };
 
-            console.log('ข้อมูล : ',payload);
-            
+            console.log('ข้อมูล : ', payload);
+
             // เรียก API
             const response = await axios.put(
                 `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
@@ -703,7 +703,19 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                 ))}
 
                                 {/* // ในปุ่ม */}
+                                {/* // ...existing code... */}
                                 <div className="text-center d-flex justify-content-center gap-2">
+                                    <button
+                                        className="btn btn-warning w-25"
+                                        style={{ minWidth: 120 }}
+                                        type="button"
+                                        onClick={() => {
+                                            setApprovalStatus("revise");
+                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+                                        }}
+                                    >
+                                        ส่งกลับแก้ไข
+                                    </button>
                                     <button
                                         className="btn btn-danger w-25"
                                         style={{ minWidth: 120 }}
@@ -724,6 +736,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                         อนุมัติ
                                     </button>
                                 </div>
+                                {/* // ...existing code... */}
 
                             </div>
                         </form>

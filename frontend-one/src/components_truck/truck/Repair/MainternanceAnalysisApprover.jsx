@@ -17,7 +17,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     }, []);
 
     const [isEditing, setIsEditing] = useState(false);
-const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
+    const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
 
     const [isAnalysisApprover, setAnalysisApprover] = useState([]);
     const [isDataApprover, setDataApprover] = useState({
@@ -220,16 +220,16 @@ const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม sta
                 return;
             }
 
- // เตรียมข้อมูลที่จะส่ง
-        const payload = {
-            approver: {
-                ...isDataApprover,
-                approval_status: approvalStatus // ใช้ค่าจาก state
-            },
-            quotations: quotations
-        };
+            // เตรียมข้อมูลที่จะส่ง
+            const payload = {
+                approver: {
+                    ...isDataApprover,
+                    approval_status: approvalStatus // ใช้ค่าจาก state
+                },
+                quotations: quotations
+            };
 
-            
+
             // เรียก API
             const response = await axios.put(
                 `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
@@ -305,19 +305,20 @@ const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม sta
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-lg-6 mb-4">
-                                        <label className="form-label">หมายเหตุ</label>
-                                        <div className="input-group "     >
-                                            <textarea
-                                                type="date"
-                                                className="form-control"
-                                                value={isDataApprover?.remark}
-                                                onChange={e => handleDataApprover('remark', e.target.value)}
-                                            />
+                                        <div className="col-lg-6 mb-4">
+                                            <label className="form-label">หมายเหตุ</label>
+                                            <div className="input-group "     >
+                                                <textarea
+                                                    type="date"
+                                                    className="form-control"
+                                                    value={isDataApprover?.remark}
+                                                    onChange={e => handleDataApprover('remark', e.target.value)}
+                                                />
 
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 {quotations.map((q, idx) => (
@@ -629,7 +630,19 @@ const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม sta
                                 ))}
 
                                 {/* // ในปุ่ม */}
+                                {/* // ...existing code... */}
                                 <div className="text-center d-flex justify-content-center gap-2">
+                                    <button
+                                        className="btn btn-warning w-25"
+                                        style={{ minWidth: 120 }}
+                                        type="button"
+                                        onClick={() => {
+                                            setApprovalStatus("revise");
+                                            setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
+                                        }}
+                                    >
+                                        ส่งกลับแก้ไข
+                                    </button>
                                     <button
                                         className="btn btn-danger w-25"
                                         style={{ minWidth: 120 }}
@@ -650,6 +663,7 @@ const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม sta
                                         อนุมัติ
                                     </button>
                                 </div>
+                                {/* // ...existing code... */}
 
                             </div>
                         </form>

@@ -155,7 +155,30 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                                 <div className="col-md-4"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.analysis_date) || '-'} </div>
                             </div>
                             <div className="row mb-2">
-                                <div className="col-md-6"><strong>หัวหน้าแผนกซ่อมบำรุง:</strong>  {dataRequest?.approver_emp_name || '-'} </div>
+                                <div className="col-md-6">
+                                    <strong className="me-1">หัวหน้าแผนกซ่อมบำรุง:</strong>
+                                    <span className="me-2">
+                                        {dataRequest?.approver_emp_name || '-'}
+                                    </span>
+                                    {dataRequest?.approval_status === 'approved' ? (
+                                        <span className="badge rounded-pill bg-success px-3 py-2">
+                                            <i className="bi bi-check-circle me-1"></i> อนุมัติ
+                                        </span>
+                                    ) : dataRequest?.approval_status === 'rejected' ? (
+                                        <span className="badge rounded-pill bg-danger px-3 py-2">
+                                            <i class="bi bi-ban"></i> ไม่อนุมัติ
+                                        </span>
+                                    ) : dataRequest?.approval_status === 'revise' ? (
+                                        <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                            <i class="bi bi-clock-history"></i> รอการแก้ไข
+                                        </span>
+                                    ) : (
+                                    <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                        <i class="bi bi-clock-history"></i> รอการอนุมัติ
+                                    </span>                                        
+                                    )}
+
+                                </div>
                                 <div className="col-md-6"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.approval_date) || '-'} </div>
                             </div>
                         </div>
@@ -201,7 +224,7 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                                                                 {part.is_approved_part
                                                                     ? <><i className="bi bi-check-circle me-1"></i>อนุมัติ</>
                                                                     : <><i className="bi bi-x-circle me-1"></i>ไม่อนุมัติ</>
-                                                                } 
+                                                                }
                                                             </span>
                                                         )}
                                                     </td>
