@@ -50,7 +50,6 @@ const Vendor_table_details = ({ refresh }) => {
     }
 
 
-
     return (
         <div className="card">
             <div className="card-body">
