@@ -17,7 +17,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     }, []);
 
     const [isEditing, setIsEditing] = useState(false);
-    const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
+
 
     const [isAnalysisApprover, setAnalysisApprover] = useState([]);
     const [isDataApprover, setDataApprover] = useState({
@@ -221,19 +221,16 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             }
 
             // เตรียมข้อมูลที่จะส่ง
-            // const payload = {
-            //     approver: {
-            //         ...isDataApprover,
-            //         approval_status: approvalStatus // ใช้ค่าจาก state
-            //     },
-            //     quotations: quotations
-            // };
+            const payload = {
+                approver: isDataApprover,
+                quotations: quotations
+            };
 
 
             // เรียก API
             const response = await axios.put(
                 `${apiUrl}/api/analysis_approver_save/${user?.id_emp}`,
-                isDataApprover,
+                payload,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -631,36 +628,58 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
 
                                 {/* // ในปุ่ม */}
                                 {/* // ...existing code... */}
-                                <button
-    className="btn btn-warning w-25"
-    style={{ minWidth: 120 }}
-    type="button"
-    onClick={() => {
-        setDataApprover(prev => ({ ...prev, approval_status: "revise" }));
-        setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-    }}
->
-    ส่งกลับแก้ไข
-</button>
-<button
-    className="btn btn-danger w-25"
-    style={{ minWidth: 120 }}
-    type="button"
-    onClick={() => {
-        setDataApprover(prev => ({ ...prev, approval_status: "rejected" }));
-        setTimeout(() => document.getElementById("approval-form").requestSubmit(), 0);
-    }}
->
-    ไม่อนุมัติ
-</button>
-<button
-    className="btn btn-primary w-25"
-    type="submit"
-    style={{ minWidth: 120 }}
-    // ไม่ต้องมี onClick
->
-    อนุมัติ
-</button>
+                                <div className="mb-3">
+                                    <label className="form-label">สถานะการอนุมัติ</label>
+                                    <div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="approved"
+                                                value="approved"
+                                                checked={isDataApprover.approval_status === "approved"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="approved">อนุมัติ</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="rejected"
+                                                value="rejected"
+                                                checked={isDataApprover.approval_status === "rejected"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="rejected">ไม่อนุมัติ</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="approval_status"
+                                                id="revise"
+                                                value="revise"
+                                                checked={isDataApprover.approval_status === "revise"}
+                                                onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                            />
+                                            <label className="form-check-label" htmlFor="revise">ส่งกลับแก้ไข</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* // ...existing code... */}
+                                <div className="text-center">
+                                    <button
+                                        className="btn btn-primary w-25"
+                                        type="submit"
+                                        style={{ minWidth: 120 }}
+                                    >
+                                        อนุมัติ
+                                    </button>
+                                </div>
+
                                 {/* // ...existing code... */}
 
                             </div>

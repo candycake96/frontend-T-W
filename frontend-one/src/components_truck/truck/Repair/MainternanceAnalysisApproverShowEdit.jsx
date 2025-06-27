@@ -6,8 +6,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
-    const [approvalStatus, setApprovalStatus] = useState(""); // เพิ่ม state
-
+    
     // เพิ่มฟังก์ชันนี้ไว้บนสุดของไฟล์
     const toBoolean = v =>
         v === true ||
@@ -26,7 +25,6 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const [isAnalysisApprover, setAnalysisApprover] = useState([]);
     const [isDataApprover, setDataApprover] = useState({
         analysis_id: "",
         approver_emp_id: "",
@@ -80,26 +78,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
 
 
-    const fetchAnalysisDataApprover = async () => {
-        try {
-            const response = await axios.get(
-                `${apiUrl}/api/ananlysis_approver_show/${maintenanceJob?.request_id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                }
-            );
-            setAnalysisApprover(response.data);
-        } catch (error) {
-            console.error("Error fetching vehicle data:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchAnalysisDataApprover();
-    },
-        []);
+ 
 
     useEffect(() => {
         if (isApproverShowData?.quotations) {
@@ -139,6 +118,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
             setQuotations(mapped);
         }
     }, [isApproverShowData]);
+
 
 
     const handleDataApprover = (field, value) => {
@@ -278,7 +258,6 @@ const handleApprovalPass = async (e) => {
             alert("✅ อนุมัติสำเร็จ!");
             setMessage(response.data.message);
             setMessageType("success");
-            fetchAnalysisDataApprover();
             setIsEditing(false);
         } else {
             alert("❌ ไม่สามารถอนุมัติได้");
