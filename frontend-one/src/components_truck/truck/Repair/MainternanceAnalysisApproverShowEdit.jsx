@@ -6,7 +6,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
-    
+
     // เพิ่มฟังก์ชันนี้ไว้บนสุดของไฟล์
     const toBoolean = v =>
         v === true ||
@@ -78,7 +78,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
 
 
- 
+
 
     useEffect(() => {
         if (isApproverShowData?.quotations) {
@@ -206,72 +206,72 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     // ...existing code...
 
-// --- แก้ไข useEffect สำหรับ setDataApprover ให้รวม approval_status ด้วย (กัน approval_status หาย) ---
-useEffect(() => {
-    const approver = isApproverShowData?.approvers?.[0] || {};
-    setDataApprover({
-        analysis_id: approver.analysis_id || "",
-        approver_emp_id: approver.approver_emp_id || "",
-        approver_name: approver.approver_name || "",
-        approval_date: approver.approval_date || "",
-        remark: approver.remark || "",
-        approval_status: approver.approval_status || "", // เพิ่มบรรทัดนี้
-    });
-}, [isApproverShowData]);
+    // --- แก้ไข useEffect สำหรับ setDataApprover ให้รวม approval_status ด้วย (กัน approval_status หาย) ---
+    useEffect(() => {
+        const approver = isApproverShowData?.approvers?.[0] || {};
+        setDataApprover({
+            analysis_id: approver.analysis_id || "",
+            approver_emp_id: approver.approver_emp_id || "",
+            approver_name: approver.approver_name || "",
+            approval_date: approver.approval_date || "",
+            remark: approver.remark || "",
+            approval_status: approver.approval_status || "", // เพิ่มบรรทัดนี้
+        });
+    }, [isApproverShowData]);
 
-// --- แก้ไข handleApprovalPass ให้เช็ค approval_status ก่อน submit ---
-const handleApprovalPass = async (e) => {
-    e.preventDefault();
-    try {
-        // ตรวจสอบข้อมูลผู้อนุมัติ
-        if (
-            !isDataApprover.approver_emp_id ||
-            !isDataApprover.approver_name
-        ) {
-            alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
-            return;
-        }
-        if (!isDataApprover.approval_status) {
-            alert("กรุณาเลือกสถานะการอนุมัติ");
-            return;
-        }
-
-        // เตรียมข้อมูลที่จะส่ง
-        const payload = {
-            approver: isDataApprover,
-            quotations: quotations
-        };
-
-        // ...existing code...
-        const response = await axios.put(
-            `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
-            payload,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    'Content-Type': 'application/json'
-                }
+    // --- แก้ไข handleApprovalPass ให้เช็ค approval_status ก่อน submit ---
+    const handleApprovalPass = async (e) => {
+        e.preventDefault();
+        try {
+            // ตรวจสอบข้อมูลผู้อนุมัติ
+            if (
+                !isDataApprover.approver_emp_id ||
+                !isDataApprover.approver_name
+            ) {
+                alert("กรุณากรอกข้อมูลผู้อนุมัติให้ครบถ้วน...");
+                return;
             }
-        );
+            if (!isDataApprover.approval_status) {
+                alert("กรุณาเลือกสถานะการอนุมัติ");
+                return;
+            }
 
-        if (response.status === 200) {
-            alert("✅ อนุมัติสำเร็จ!");
-            setMessage(response.data.message);
-            setMessageType("success");
-            setIsEditing(false);
-        } else {
-            alert("❌ ไม่สามารถอนุมัติได้");
+            // เตรียมข้อมูลที่จะส่ง
+            const payload = {
+                approver: isDataApprover,
+                quotations: quotations
+            };
+
+            // ...existing code...
+            const response = await axios.put(
+                `${apiUrl}/api/analysis_approver_edit/${user?.id_emp}`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response.status === 200) {
+                alert("✅ อนุมัติสำเร็จ!");
+                setMessage(response.data.message);
+                setMessageType("success");
+                setIsEditing(false);
+            } else {
+                alert("❌ ไม่สามารถอนุมัติได้");
+            }
+
+        } catch (error) {
+            console.error("❌ Error:", error);
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+            setMessage("เกิดข้อผิดพลาด");
+            setMessageType("error");
         }
+    };
 
-    } catch (error) {
-        console.error("❌ Error:", error);
-        alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        setMessage("เกิดข้อผิดพลาด");
-        setMessageType("error");
-    }
-};
-
-// ...existing code...
+    // ...existing code...
     // Edit
 
 
@@ -720,15 +720,15 @@ const handleApprovalPass = async (e) => {
                                     </div>
                                 </div>
                                 {/* // ...existing code... */}
-
-                                <button
-                                    className="btn btn-primary w-25"
-                                    type="submit"
-                                    style={{ minWidth: 120 }}
-                                >
-                                    อนุมัติ
-                                </button>
-
+                                <div className="text-center">
+                                    <button
+                                        className="btn btn-primary w-25"
+                                        type="submit"
+                                        style={{ minWidth: 120 }}
+                                    >
+                                        อนุมัติ
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
