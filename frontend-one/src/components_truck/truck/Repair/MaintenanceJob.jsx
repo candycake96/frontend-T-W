@@ -373,7 +373,7 @@ const MaintenanceJob = () => {
                         )}
 
                         {activeForm === 'ApproveMainternanceForm' && (
-                            <MainternanceApprover_mgr_add maintenanceJob={formData} />
+                            <MainternanceApprover_mgr_add maintenanceJob={formData} user={user} />
                         )}
 
                     </div>

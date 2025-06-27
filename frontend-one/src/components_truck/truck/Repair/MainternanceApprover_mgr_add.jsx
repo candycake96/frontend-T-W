@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_Edit_Approval_End from "./Mobal/Modal_Edit_Approval_End";
 
-const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onApprove, onReject }) => {
+const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], user }) => {
 
     const [isDataRequestAll, setDataRequestAll] = useState([]);
     const fetchDataRequestAll = async () => {
@@ -57,6 +58,47 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
         // กรณีเป็น HH:MM:SS หรือ HH:MM
         return timeString.length >= 5 ? timeString.substring(0, 5) : timeString;
     }
+
+    const handleApprovalAdd = async (status) => {
+        try {
+            const payload = {
+                request_id: maintenanceJob?.request_id,
+                approver_name: `${user?.fname} ${user?.lname}`,
+                approval_status: status,
+                approval_date: new Date(),
+                remark: "", // หรือใส่หมายเหตุจากช่อง input ก็ได้
+            };
+
+            const response = await axios.post(
+                `${apiUrl}/api/approval_save/${user.id_emp}`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                alert("✅ บันทึกสถานะเรียบร้อยแล้ว");
+            } else {
+                alert("❌ ไม่สามารถบันทึกสถานะได้");
+            }
+        } catch (error) {
+            console.error("❌ Error:", error);
+            alert("เกิดข้อผิดพลาดในการบันทึก");
+        }
+    };
+
+const [isOpenModalApprovalEdit, setOpenModalApprovalEdit] = useState(false);
+const [dataModalApprovalEdit, setModalApprovalEdit] = useState(null);
+const handleOpenModaleApprovalEdit = (data) => {
+    setOpenModalApprovalEdit(true);
+    setModalApprovalEdit(data);
+};
+const handaleCloseModalApprovalEdit = () => {
+    setOpenModalApprovalEdit(false);
+}
     return (
         <div className="container my-4">
             <div className="row justify-content-center">
@@ -173,9 +215,9 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                                             <i class="bi bi-clock-history"></i> รอการแก้ไข
                                         </span>
                                     ) : (
-                                    <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
-                                        <i class="bi bi-clock-history"></i> รอการอนุมัติ
-                                    </span>                                        
+                                        <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                            <i class="bi bi-clock-history"></i> รอการอนุมัติ
+                                        </span>
                                     )}
 
                                 </div>
@@ -184,25 +226,21 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                             <div className="row">
                                 <div className="col-md-6">
                                     <strong className="me-1">ผู้จัดการฝ่ายขนส่งและคลังสินค้า:</strong>
-                                     {dataRequest?.approval_status === 'approved' ? (
+                                    {dataRequest?.approval_status_end === 'อนุมัติ' ? (
                                         <span className="badge rounded-pill bg-success px-3 py-2">
                                             <i className="bi bi-check-circle me-1"></i> อนุมัติ
                                         </span>
-                                    ) : dataRequest?.approval_status === 'rejected' ? (
+                                    ) : dataRequest?.approval_status_end === 'ไม่อนุมัติ' ? (
                                         <span className="badge rounded-pill bg-danger px-3 py-2">
                                             <i class="bi bi-ban"></i> ไม่อนุมัติ
                                         </span>
-                                    ) : dataRequest?.approval_status === 'revise' ? (
-                                        <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
-                                            <i class="bi bi-clock-history"></i> รอการแก้ไข
-                                        </span>
                                     ) : (
-                                    <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
-                                        <i class="bi bi-clock-history"></i> รอการอนุมัติ
-                                    </span>                                        
+                                        <span className="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                            <i class="bi bi-clock-history"></i> รอการอนุมัติ
+                                        </span>
                                     )}
                                 </div>
-                                <div className="col-md-6"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.approval_date) || '-'} </div>
+                                <div className="col-md-6"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.approval_date_end) || '-'} </div>
                             </div>
                         </div>
                     </div>
@@ -275,15 +313,39 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], onAppro
                     </div>
                     {/* Action Buttons */}
                     <div className="text-center mt-4 d-flex justify-content-center gap-3">
-                        <button className="btn btn-danger btn-lg px-5 shadow" onClick={onReject}>
-                            <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
-                        </button>
-                        <button className="btn btn-primary btn-lg px-5 shadow" onClick={onApprove}>
-                            <i className="bi bi-check-circle me-2"></i>อนุมัติ
-                        </button>
+                       {Array.isArray(dataRequest?.approval_status_end) && dataRequest.approval_status_end.length > 0 ? (
+                            <button
+                                className="btn btn-warning btn-lg px-5 shadow"
+                                onClick={() => handleOpenModaleApprovalEdit(dataRequest)}
+                                style={{ color: "#ffffff" }}
+                            >
+                                <i className="bi bi-check-circle me-2"></i>แก้ไข
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    className="btn btn-danger btn-lg px-5 shadow"
+                                    onClick={() => handleApprovalAdd("ไม่อนุมัติ")}
+                                >
+                                    <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
+                                </button>
+                                <button
+                                    className="btn btn-primary btn-lg px-5 shadow"
+                                    onClick={() => handleApprovalAdd("อนุมัติ")}
+                                >
+                                    <i className="bi bi-check-circle me-2"></i>อนุมัติ
+                                </button>
+                            </>
+                        )}
+
+
                     </div>
+
                 </div>
             </div>
+            {isOpenModalApprovalEdit && (
+                <Modal_Edit_Approval_End isOpen={isOpenModalApprovalEdit} onClose={handaleCloseModalApprovalEdit} user={user} initialData={dataModalApprovalEdit} />
+            )}
         </div>
     );
 };
