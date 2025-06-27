@@ -343,8 +343,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-lg-6 mb-4">
+                                         <div className="col-lg-6 mb-4">
                                         <label className="form-label">หมายเหตุ</label>
                                         <div className="input-group "     >
                                             <textarea
@@ -355,6 +354,8 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                             />
                                         </div>
                                     </div>
+                                    </div>
+                                   
                                 </div>
 
                                 {quotations.map((q, idx) => (
