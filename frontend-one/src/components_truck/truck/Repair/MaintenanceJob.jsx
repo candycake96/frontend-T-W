@@ -219,6 +219,27 @@ const MaintenanceJob = () => {
 
     const [activeForm, setActiveForm] = useState("RequestForm");
 
+    const [dataLog, setDataLog] = useState([]);
+    // Fetch Employees
+    const fetchDataLogs = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/reqair_log_show/${dataRepairID?.request_id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            // กรณีข้อมูลที่ได้คือ object เดียว
+            setDataLog(response.data.data ? [response.data.data] : []);
+        } catch (error) {
+            console.error("Error fetching DataLogs:", error);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchDataLogs();
+    }, []);
 
     return (
         <div className="p-1">
@@ -227,23 +248,27 @@ const MaintenanceJob = () => {
                     <NavMainternanceJob fromPage={fromPage} />
                 </div>
 
-<p className="fw-bolder fs-4 mb-0 d-flex align-items-end gap-2">
-  <i className="bi bi-tools me-2 text-primary"></i>
-  รายละเอียดการซ่อม
-  <span
-    className="badge bg-warning"
-    style={{
-      fontSize: "0.7rem",
-      padding: "2px 10px",
-      marginBottom: "6px", // เพิ่มระยะห่างด้านล่าง
-      alignSelf: "flex-end", // เพิ่มบรรทัดนี้
-      color: "#060606"
-    // verticalAlign: "baseline" // ใช้แทน alignSelf
-    }}
-  >
-    <small>อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</small>
-  </span>
-</p>
+                <p className="fw-bolder fs-4 mb-0 d-flex align-items-end gap-2">
+                    <i className="bi bi-tools me-2 text-primary"></i>
+                    รายละเอียดการซ่อม
+
+                    {dataLog.map((row, index) => (
+                        <span
+                            className="badge bg-warning"
+                            style={{
+                                fontSize: "0.7rem",
+                                padding: "2px 10px",
+                                marginBottom: "6px",
+                                alignSelf: "flex-end",
+                                color: "#060606"
+                            }}
+                            key={index}
+                        >
+                            <small>{row?.status || ''}</small>
+                        </span>
+                    ))}
+
+                </p>
 
                 <hr className="mb-3" />
                 <div className="mb-2">
