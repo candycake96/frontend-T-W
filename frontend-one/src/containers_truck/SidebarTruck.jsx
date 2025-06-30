@@ -185,8 +185,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/CarMainRepair"
-                  className={`nav-link ${["/truck/3"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/MainternanceAnalysisApprover_table_main"
+                  className={`nav-link ${["/truck/MainternanceAnalysisApprover_table_main"].includes(location.pathname) ? "active" : ""}`}>
                   ตรวจสอบแผนซ่อมบำรุง
                 </Link>
               </li>
