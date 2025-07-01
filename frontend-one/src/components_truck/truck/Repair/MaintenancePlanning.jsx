@@ -88,7 +88,7 @@ const filteredData = filterByDateRange(
                     <div>
                         <h5 className="fw-bold text-primary mb-1">ตรวจสอบความพร้อม</h5>
                         <p className="text-muted mb-0">
-                            รายงานและผลวิเคราะห์งานซ่อมบำรุงจากการตรวจสอบ
+                            รายงานการตรวจสอบความพร้อมและการจัดวันเวลารถเข้าซ่อม
                         </p>
                     </div>
                     <div className="btn-group" role="group">
@@ -96,13 +96,13 @@ const filteredData = filterByDateRange(
                             className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
                             onClick={() => setFilterType("pending")}
                         >
-                            <i className="bi bi-clock me-1"></i> รออนุมัติผลตรวจ
+                            <i className="bi bi-clock me-1"></i> รอจัดรถ
                         </button>
                         <button
                             className={`btn btn-sm ${filterType === "approved" ? "btn-success" : "btn-outline-success"}`}
                             onClick={() => setFilterType("approved")}
                         >
-                            <i className="bi bi-check2-circle me-1"></i> อนุมัติแล้ว
+                            <i className="bi bi-check2-circle me-1"></i> จัดรถแล้ว
                         </button>
                         <button
                             className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
