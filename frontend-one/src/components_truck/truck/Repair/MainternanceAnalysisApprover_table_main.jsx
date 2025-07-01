@@ -60,16 +60,18 @@ const MainternanceAnalysisApprover_table_main = () => {
         });
     };
 
-    const filteredData = filterByDateRange(
-        analysisData.filter((item) => {
-            const keyword = appliedSearchTerm.toLowerCase();
-            return (
-                item.request_no?.toLowerCase().includes(keyword) ||
-                item.reg_number?.toLowerCase().includes(keyword) ||
-                item.status?.toLowerCase().includes(keyword)
-            );
-        })
-    );
+const filteredData = filterByDateRange(
+    analysisData.filter((item) => {
+        const keyword = appliedSearchTerm.toLowerCase(); // ✅ ค้นหาเฉพาะตอนกดปุ่ม
+        return (
+            item.request_no?.toLowerCase().includes(keyword) ||
+            item.reg_number?.toLowerCase().includes(keyword) ||
+            item.status?.toLowerCase().includes(keyword)
+        );
+    })
+);
+
+
 
     // ✅ กดปุ่ม "ค้นหา" แล้วค่อยนำค่าปัจจุบันมาใช้งาน
     const handleSearch = () => {
@@ -112,17 +114,16 @@ const MainternanceAnalysisApprover_table_main = () => {
             </div>
 
             <div className="card-body">
-                <div className="mb-3">
-                    <input
-                        type="text"
-                        className="form-control form-control-sm"
-                        placeholder="ค้นหาเลขเอกสาร / ทะเบียน "
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-
                 <div className="row mb-3 g-2">
+                    <div className="col-sm-3">
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="ค้นหาเลขเอกสาร / ทะเบียน "
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <div className="col-sm-3">
                         <input
                             type="date"
