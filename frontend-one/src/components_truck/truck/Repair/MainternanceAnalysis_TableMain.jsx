@@ -20,7 +20,6 @@ const MainternanceAnalysisTableMain = () => {
         }
     };
 
-
     useEffect(() => {
         fetchAnalysisTable();
     }, []);
@@ -55,7 +54,6 @@ const MainternanceAnalysisTableMain = () => {
                                 </span>
                             )}
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -95,7 +93,7 @@ const MainternanceAnalysisTableMain = () => {
                                         <td> <span className='badge bg-warning text-dark'> รอตรวจสอบ </span>
                                         </td>
                                         <td>
-                                            <Link to="/truck/MaintenanceJob"state={{ ...item,  fromPage: "Analysis" }} className="btn btn-sm btn-outline-primary">
+                                            <Link to="/truck/MaintenanceJob" state={{ ...item, fromPage: "Analysis" }} className="btn btn-sm btn-outline-primary">
                                                 ตรวจสอบ
                                             </Link>
                                         </td>
