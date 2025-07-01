@@ -120,7 +120,7 @@ const filteredData = filterByDateRange(
                         <input
                             type="text"
                             className="form-control form-control-sm"
-                            placeholder="ค้นหาเลขเอกสาร / ทะเบียน "
+                            placeholder="ค้นหาเลขเอกสาร / ทะเบียน"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
