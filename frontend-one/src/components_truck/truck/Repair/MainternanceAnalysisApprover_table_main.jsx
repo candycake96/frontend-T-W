@@ -4,30 +4,38 @@ import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
 
 const MainternanceAnalysisApprover_table_main = () => {
-    const [analysisData, setAnalysisData] = useState([]);
-    const [filterType, setFilterType] = useState("pending"); // "pending", "approved", "finished"
+const [analysisData, setAnalysisData] = useState([]);
+const [filterType, setFilterType] = useState("pending");
+const [loading, setLoading] = useState(false); // ✅ เพิ่มบรรทัดนี้
 
-    const fetchAnalysisTable = async () => {
-        let endpoint = "";
-        if (filterType === "pending") {
-            endpoint = "/api/RepairAnalysisPending";
-        } else if (filterType === "approved") {
-            endpoint = "/api/RepairAnalysisApproved";
-        } else if (filterType === "finished") {
-            endpoint = "/api/RepairAnalysisFinished";
-        }
 
-        try {
-            const response = await axios.get(`${apiUrl}${endpoint}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            setAnalysisData(response.data);
-        } catch (error) {
-            console.error("Error fetching analysis data:", error);
-        }
-    };
+   const fetchAnalysisTable = async () => {
+    let endpoint = "";
+    if (filterType === "pending") {
+        endpoint = "/api/RepairAnalysisPending";
+    } else if (filterType === "approved") {
+        endpoint = "/api/RepairAnalysisApproved";
+    } else if (filterType === "finished") {
+        endpoint = "/api/RepairAnalysisFinished";
+    }
+
+    setLoading(true);
+    setAnalysisData([]); // ✅ เคลียร์ข้อมูลก่อนโหลดใหม่
+
+    try {
+        const response = await axios.get(`${apiUrl}${endpoint}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        });
+        setAnalysisData(response.data);
+    } catch (error) {
+        console.error("Error fetching analysis data:", error);
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     useEffect(() => {
         fetchAnalysisTable();
@@ -71,7 +79,8 @@ const MainternanceAnalysisApprover_table_main = () => {
 
             <div className="card shadow-sm border-0">
                 <div className="card-body">
-                    <AnalysisApprover_table analysisData={analysisData} />
+                    <AnalysisApprover_table analysisData={analysisData} loading={loading} />
+
                 </div>
             </div>
         </div>
