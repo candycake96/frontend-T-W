@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import { apiUrl } from "../../../config/apiConfig";
-import Modal_setting_doc_repair from "./Mobal/Modal_setting_doc_Repair";
+import MainternanceRequest_table from "./MaintenanceRequest_table";
 
 const MaintenanceRequest = () => {
 
@@ -23,9 +22,9 @@ const MaintenanceRequest = () => {
     const fetchAnalysisTable = async () => {
         let endpoint = "";
         if (filterType === "pending") {
-            endpoint = "/api/RepairAnalysisPending";
+            endpoint = "/api/repair_requests_detail";
         } else if (filterType === "approved") {
-            endpoint = "/api/RepairAnalysisApproved";
+            endpoint = "/api/repair_requests_detail";
         } else if (filterType === "finished") {
             endpoint = "/api/RepairAnalysisFinished";
         }
@@ -158,7 +157,7 @@ const filteredData = filterByDateRange(
                     </div>
                 ) : (
                     <>
-                    {/* <AnalysisApprover_table analysisData={filteredData} loading={loading} /> */}
+                    <MainternanceRequest_table analysisData={filteredData} loading={loading} />
                     </>
                     
                 )}
