@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiUrl } from "../../../config/apiConfig";
 import MainternanceRequest_table from "./MaintenanceRequest_table";
+import Modal_setting_doc_repair from "./Mobal/Modal_setting_doc_Repair";
 
 const MaintenanceRequest = () => {
 
-  const [analysisData, setAnalysisData] = useState([]);
+    const [analysisData, setAnalysisData] = useState([]);
     const [filterType, setFilterType] = useState("pending");
     const [loading, setLoading] = useState(false);
 
@@ -62,16 +63,16 @@ const MaintenanceRequest = () => {
         });
     };
 
-const filteredData = filterByDateRange(
-    analysisData.filter((item) => {
-        const keyword = appliedSearchTerm.toLowerCase(); // ✅ ค้นหาเฉพาะตอนกดปุ่ม
-        return (
-            item.request_no?.toLowerCase().includes(keyword) ||
-            item.reg_number?.toLowerCase().includes(keyword) ||
-            item.status?.toLowerCase().includes(keyword)
-        );
-    })
-);
+    const filteredData = filterByDateRange(
+        analysisData.filter((item) => {
+            const keyword = appliedSearchTerm.toLowerCase(); // ✅ ค้นหาเฉพาะตอนกดปุ่ม
+            return (
+                item.request_no?.toLowerCase().includes(keyword) ||
+                item.reg_number?.toLowerCase().includes(keyword) ||
+                item.status?.toLowerCase().includes(keyword)
+            );
+        })
+    );
 
 
 
@@ -82,36 +83,42 @@ const filteredData = filterByDateRange(
         setAppliedSearchTerm(searchTerm);
     };
 
+    const [isOpenModalSetting, setOpenModalSetting] = useState(false);
+    const handleOpenModalSetting = () => setOpenModalSetting(true);
+    const handleClossModalSetting = () => setOpenModalSetting(false);
+
+
     return (
         <div className="container py-3">
             <div className="mb-4">
-    <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-            <h5 className="fw-bold text-primary mb-1">แจ้งซ่อม / งานซ่อม</h5>
-            <p className="text-muted mb-0">รายงานการแจ้งซ่อม</p>
-        </div>
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 className="fw-bold text-primary mb-1">แจ้งซ่อม / งานซ่อม</h5>
+                        <p className="text-muted mb-0">รายงานการแจ้งซ่อม</p>
+                    </div>
 
-        <div className="d-flex gap-2 flex-wrap">
-             {/* ปุ่มแจ้งซ่อม */}
+                    <div className="d-flex gap-2 flex-wrap">
+                        {/* ปุ่มแจ้งซ่อม */}
 
-            <div className="btn-group" role="group">
-                <button
-                    className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
-                    onClick={() => setFilterType("pending")}
-                >
-                    <i className="bi bi-clock me-1"></i> รายการแจ้งซ่อม
-                </button>
-                <button
-                    className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
-                    onClick={() => setFilterType("finished")}
-                >
-                    <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
-                </button>
-            </div>
+                        <div className="btn-group" role="group">
+                            <button
+                                className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
+                                onClick={() => setFilterType("pending")}
+                            >
+                                <i className="bi bi-clock me-1"></i> รายการแจ้งซ่อม
+                            </button>
+                            <button
+                                className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
+                                onClick={() => setFilterType("finished")}
+                            >
+                                <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
+                            </button>
+                        </div>
                         <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm me-1"> <i className="bi bi-plus-circle me-1"></i> แจ้งซ่อม</Link>
-        </div>
-    </div>
-</div>
+                        <button className="btn btn-secondary btn-sm" onClick={handleOpenModalSetting}> <i class="bi bi-gear"></i> ตั้งค่า</button>
+                    </div>
+                </div>
+            </div>
 
             <div className="card-body">
                 <div className="row mb-3 g-2">
@@ -157,11 +164,15 @@ const filteredData = filterByDateRange(
                     </div>
                 ) : (
                     <>
-                    <MainternanceRequest_table analysisData={filteredData} loading={loading} />
+                        <MainternanceRequest_table analysisData={filteredData} loading={loading} />
                     </>
-                    
+
                 )}
             </div>
+
+            {isOpenModalSetting && (
+                <Modal_setting_doc_repair isOpen={isOpenModalSetting} onClose={handleClossModalSetting} />
+            )}
         </div>
     )
 }
