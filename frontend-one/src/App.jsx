@@ -70,6 +70,7 @@ import MaintenancPlanning from "./components_truck/truck/Repair/MaintenancePlann
 import MainternanceAnalysisRequestJob from "./components_truck/truck/Repair/MainternanceAnalysisRequestJob";
 import MainternanceAnalysisApprover_table_main from "./components_truck/truck/Repair/MainternanceAnalysisApprover_table_main";
 import MainternanceApprovalManager from "./components_truck/truck/Repair/MainternanceApprovalManager";
+import PM_setting from "./components_truck/truck/PreventiveMaintenance/PM_setting";
 
 Modal.setAppElement("#root");
 
@@ -154,6 +155,7 @@ function App() {
           <Route path="MainternanceAnalysisRequestJob" element={<MainternanceAnalysisRequestJob/>} /> {/*  หน้า วิเคราะจากแผนกซ่อมบำรุง */} 
           <Route path="MainternanceAnalysisApprover_table_main" element={<MainternanceAnalysisApprover_table_main/>} />{/*  หน้า อนุมัติวิเคราะจากแผนกซ่อมบำรุง */} 
           <Route path="MainternanceApprovalManager" element={<MainternanceApprovalManager/>} />{/*  หน้า Manager อนุมัติวิเคราะจากแผนกซ่อมบำรุง */} 
+          <Route path="PM_setting" element={<PM_setting/>} />{/*  หน้า PM */} 
           </Route> 
         </Routes> 
       </Router> 
