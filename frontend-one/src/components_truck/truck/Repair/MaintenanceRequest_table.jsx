@@ -34,7 +34,7 @@ const MainternanceRequest_table = ({ analysisData = [], loading = false }) => {
                                 <td>{formatDate(data.request_date)}</td>
                                 <td>{data.job_type || '-'}</td>
                                 <td>
-                                    <span className="badge bg-warning text-dark">
+                                    <span className="badge bg-success ">
                                         {data.status}
                                     </span>
                                 </td>
