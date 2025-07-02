@@ -1,13 +1,10 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
-import { Link } from "react-router-dom";
+import AnalysisApprover_table from "./AnalysisApprover_table";
+import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
-import Modal_setting_doc_repair from "./Mobal/Modal_setting_doc_Repair";
 
-const MaintenanceRequest = () => {
-
-  const [analysisData, setAnalysisData] = useState([]);
+const MainternanceApprovalManager = () => {
+      const [analysisData, setAnalysisData] = useState([]);
     const [filterType, setFilterType] = useState("pending");
     const [loading, setLoading] = useState(false);
 
@@ -84,35 +81,37 @@ const filteredData = filterByDateRange(
     };
 
     return (
-        <div className="container py-3">
+ <div className="container py-3">
             <div className="mb-4">
-    <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-            <h5 className="fw-bold text-primary mb-1">แจ้งซ่อม / งานซ่อม</h5>
-            <p className="text-muted mb-0">รายงานการแจ้งซ่อม</p>
-        </div>
-
-        <div className="d-flex gap-2 flex-wrap">
-             {/* ปุ่มแจ้งซ่อม */}
-
-            <div className="btn-group" role="group">
-                <button
-                    className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
-                    onClick={() => setFilterType("pending")}
-                >
-                    <i className="bi bi-clock me-1"></i> รายการแจ้งซ่อม
-                </button>
-                <button
-                    className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
-                    onClick={() => setFilterType("finished")}
-                >
-                    <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
-                </button>
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 className="fw-bold text-primary mb-1">อนุมัติงานซ่อมบำรุง</h5>
+                        <p className="text-muted mb-0">
+                            รายงานการอนุมัติผู้จัดการฝ่ายขนส่งและคลังสินค้า
+                        </p>
+                    </div>
+                    <div className="btn-group" role="group">
+                        <button
+                            className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("pending")}
+                        >
+                            <i className="bi bi-clock me-1"></i> รออนุมัติ
+                        </button>
+                        <button
+                            className={`btn btn-sm ${filterType === "approved" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("approved")}
+                        >
+                            <i className="bi bi-check2-circle me-1"></i> อนุมัติแล้ว
+                        </button>
+                        <button
+                            className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("finished")}
+                        >
+                            <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
+                        </button>
+                    </div>
+                </div>
             </div>
-                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm me-1"> <i className="bi bi-plus-circle me-1"></i> แจ้งซ่อม</Link>
-        </div>
-    </div>
-</div>
 
             <div className="card-body">
                 <div className="row mb-3 g-2">
@@ -157,14 +156,11 @@ const filteredData = filterByDateRange(
                         กำลังโหลดข้อมูล...
                     </div>
                 ) : (
-                    <>
-                    {/* <AnalysisApprover_table analysisData={filteredData} loading={loading} /> */}
-                    </>
-                    
+                    <AnalysisApprover_table analysisData={filteredData} loading={loading} />
                 )}
             </div>
         </div>
     )
 }
 
-export default MaintenanceRequest;
+export default MainternanceApprovalManager;

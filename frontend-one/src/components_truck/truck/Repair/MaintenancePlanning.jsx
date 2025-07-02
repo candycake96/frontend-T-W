@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 import axios from "axios";
-import ReactPaginate from "react-paginate";
 import MainternancePlanning_table from "./MainternancePlanning_table";
 
 const MaintenancPlanning = () => {
-      const [isPlanningData, setPlanningData] = useState([]);
+    const [isPlanningData, setPlanningData] = useState([]);
     const [filterType, setFilterType] = useState("pending");
     const [loading, setLoading] = useState(false);
 
@@ -13,7 +12,7 @@ const MaintenancPlanning = () => {
     const [endDate, setEndDate] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
 
-    // ✅ ตัวแปรที่ใช้เมื่อ "กดปุ่มค้นหา" เท่านั้น
+    // ✅ ตัวแปรที่จะใช้เมื่อ "กดค้นหา"
     const [appliedStartDate, setAppliedStartDate] = useState("");
     const [appliedEndDate, setAppliedEndDate] = useState("");
     const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
@@ -49,32 +48,38 @@ const MaintenancPlanning = () => {
         fetchPlanningTable();
     }, [filterType]);
 
+    // ✅ ฟังก์ชันกรองตามวันที่
     const filterByDateRange = (data) => {
         if (!appliedStartDate && !appliedEndDate) return data;
 
         return data.filter(item => {
+            if (!item.request_date) return false;
+
             const itemDate = new Date(item.request_date).toISOString().split("T")[0];
-            if (appliedStartDate && appliedEndDate) return itemDate >= appliedStartDate && itemDate <= appliedEndDate;
-            if (appliedStartDate) return itemDate >= appliedStartDate;
-            if (appliedEndDate) return itemDate <= appliedEndDate;
+            if (appliedStartDate && appliedEndDate)
+                return itemDate >= appliedStartDate && itemDate <= appliedEndDate;
+            if (appliedStartDate)
+                return itemDate >= appliedStartDate;
+            if (appliedEndDate)
+                return itemDate <= appliedEndDate;
+
             return true;
         });
     };
 
-const filteredData = filterByDateRange(
-    isPlanningData.filter((item) => {
-        const keyword = appliedSearchTerm.toLowerCase(); // ✅ ค้นหาเฉพาะตอนกดปุ่ม
-        return (
-            item.request_no?.toLowerCase().includes(keyword) ||
-            item.reg_number?.toLowerCase().includes(keyword) ||
-            item.status?.toLowerCase().includes(keyword)
-        );
-    })
-);
+    // ✅ กรองตามข้อความ + วันที่
+    const filteredData = filterByDateRange(
+        isPlanningData.filter((item) => {
+            const keyword = appliedSearchTerm.toLowerCase();
+            return (
+                item.request_no?.toLowerCase().includes(keyword) ||
+                item.reg_number?.toLowerCase().includes(keyword) ||
+                item.status?.toLowerCase().includes(keyword)
+            );
+        })
+    );
 
-
-
-    // ✅ กดปุ่ม "ค้นหา" แล้วค่อยนำค่าปัจจุบันมาใช้งาน
+    // ✅ เมื่อกดปุ่ม "ค้นหา"
     const handleSearch = () => {
         setAppliedStartDate(startDate);
         setAppliedEndDate(endDate);
@@ -82,7 +87,7 @@ const filteredData = filterByDateRange(
     };
 
     return (
-          <div className="container py-3">
+        <div className="container py-3">
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
@@ -157,7 +162,10 @@ const filteredData = filterByDateRange(
                         กำลังโหลดข้อมูล...
                     </div>
                 ) : (
-                    <MainternancePlanning_table PlanningData={filteredData} loading={loading} />
+                    <>
+                     <MainternancePlanning_table PlanningData={filteredData} loading={loading} />
+                    </>
+                    
                 )}
             </div>
         </div>

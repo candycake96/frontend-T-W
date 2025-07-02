@@ -26,6 +26,7 @@ const MainternanceAnalysisTableMain = () => {
 
 
     return (
+        
         <div className="container py-4" style={{ maxWidth: 1200 }}>
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
