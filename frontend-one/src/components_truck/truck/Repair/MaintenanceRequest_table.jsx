@@ -2,21 +2,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const MainternanceRequest_table = ({ analysisData = [], loading = false }) => {
-     const formatDate = (dateString) => {
+    const formatDate = (dateString) => {
         const date = new Date(dateString);
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return date.toLocaleDateString('th-TH', options);
     };
     return (
- <div className="table-responsive">
+        <div className="table-responsive">
             <table className="table table-bordered table-hover align-middle">
                 <thead className="table-light">
                     <tr>
                         <th>เลขเอกสาร</th>
-                        <th>วันที่แจ้ง</th>
-                        <th>ประเภทงาน</th>
-                        <th>สถานะ</th>
                         <th>ทะเบียนรถ</th>
+                        <th>วันที่แจ้งซ่อม</th>
+                        <th>ผู้แจ้ง</th>
+                        <th>สถานะ</th>
+
                         <th className="text-center">การดำเนินการ</th>
                     </tr>
                 </thead>
@@ -31,14 +32,15 @@ const MainternanceRequest_table = ({ analysisData = [], loading = false }) => {
                         analysisData.map((data, index) => (
                             <tr key={index}>
                                 <td>{data.request_no}</td>
+                                <td>{data.reg_number}</td>
                                 <td>{formatDate(data.request_date)}</td>
-                                <td>{data.job_type || '-'}</td>
+                                <td> {`${data.fname} ${data.lname}`}</td>
                                 <td>
                                     <span className="badge bg-success ">
                                         {data.status}
                                     </span>
                                 </td>
-                                <td>{data.reg_number}</td>
+
                                 <td className="text-center">
                                     <Link
                                         to="/truck/MaintenanceJob"
