@@ -132,6 +132,17 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                   รายงานรถ ม.79/ม.89
                 </Link>
               </li>
+                            <li>
+                <Link
+                  to="/truck/PM_setting"
+                  className={`nav-link ${location.pathname === "/truck/PM_setting" || location.pathname.startsWith("/truck/Vehicle_status/")
+                      ? "active"
+                      : ""
+                    }`}
+                >
+                  ตั้งค่าแผน PM
+                </Link>
+              </li>
             </ul>
           )}
         </li>
