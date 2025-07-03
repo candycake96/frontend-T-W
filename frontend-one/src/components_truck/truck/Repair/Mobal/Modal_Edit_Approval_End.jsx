@@ -4,6 +4,7 @@ import axios from "axios";
 import { apiUrl } from "../../../../config/apiConfig";
 
 
+
 const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
     const [dataApproval, setDataApproval] = useState({
         approver_emp_id: "",
@@ -14,13 +15,13 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
     });
 
     useEffect(() => {
-        if (user && isOpen) {
-            setDataApproval({
+            if (user && isOpen) {
+                setDataApproval({
                 approver_emp_id: user?.id_emp || "",
                 approver_name: `${user?.fname || ""} ${user?.lname || ""}`,
                 approval_status: initialData?.approval_status_end || "",
-                approval_date: initialData?.approval_date_end?.slice(0, 10) || new Date().toISOString().slice(0, 10),
-                remark: initialData?.remark_end || ""
+                approval_date: new Date().toISOString().slice(0, 10),
+                remark: ""
             });
         }
     }, [isOpen, user, initialData]);
@@ -34,8 +35,9 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
 
     const handleSave = async () => {
         try {
+            console.log('ข้อมูล : ', dataApproval);
             const response = await axios.put(
-                `${apiUrl}/api/approval_update/${initialData?.approval_id}`, // สมมติคุณส่ง ID มาด้วย
+                `${apiUrl}/api/approval_update/${initialData?.approver_id}`, // สมมติคุณส่ง ID มาด้วย
                 dataApproval,
                 {
                     headers: {
@@ -77,7 +79,7 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
                 },
             }}
         >
-            <h5 className="fw-bold mb-3">✏️ แก้ไขข้อมูลการอนุมัติขั้นสุดท้าย</h5>
+            <h5 className="fw-bold mb-3">✏️ แก้ไขข้อมูลการอนุมัติขั้นสุดท้าย { user?.id_emp }</h5>
 
             <div className="mb-3">
                 <label className="form-label">สถานะการอนุมัติ</label>
