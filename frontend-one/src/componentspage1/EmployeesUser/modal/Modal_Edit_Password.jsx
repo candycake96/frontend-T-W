@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../config/apiConfig";
 
 
 const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
@@ -7,35 +9,79 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
         password: "",
         confirmPassword: "",
     });
-    const [showPassword, setShowPassword] = useState(false); // สถานะการแสดงข้อมูล
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setFormData({ password: "", confirmPassword: "" });
+            setShowPassword(false);
+            setErrors({});
+        }
+    }, [isOpen]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = () => {
-        if (formData.password !== formData.confirmPassword) {
-            alert("รหัสผ่านไม่ตรงกัน!");
-            return;
+    const validateForm = () => {
+        const newErrors = {};
+        const { password, confirmPassword } = formData;
+
+        if (!password) {
+            newErrors.password = "กรุณากรอกรหัสผ่าน";
+        } else if (password.length < 6) {
+            newErrors.password = "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
         }
-        // ส่งข้อมูลไปยัง API หรือ parent component
-        console.log("รหัสผ่านใหม่:", formData.password);
-        onClose(); // ปิด Modal
+
+        if (password !== confirmPassword) {
+            newErrors.confirmPassword = "รหัสผ่านไม่ตรงกัน";
+        }
+
+        return newErrors;
     };
 
-    const handleCheckboxChange = () => {
-        setShowPassword(!showPassword); // เปลี่ยนสถานะการแสดงรหัสผ่าน
-    };
+    const handleSubmit = async () => {
+        const validationErrors = validateForm();
+        setErrors(validationErrors);
 
-    // ด้านใน component
-    useEffect(() => {
-        if (!isOpen) {
-            setFormData({ password: "", confirmPassword: "" });
-            setShowPassword(false);
+        if (Object.keys(validationErrors).length === 0) {
+            if (user && user.id_emp) {
+                try {
+                    const token = localStorage.getItem("accessToken"); // ✅ ดึง token
+                    const response = await axios.put(
+                        `${apiUrl}/api/password_update/${user.id_emp}`,
+                        {
+                            password: formData.password,
+                        },
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    alert("เปลี่ยนรหัสผ่านเรียบร้อยแล้ว");
+                    onClose();
+                } catch (error) {
+                    console.error("เปลี่ยนรหัสผ่านล้มเหลว:", error);
+                    alert("เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน");
+                }
+            } else {
+                alert("ไม่พบข้อมูลผู้ใช้งาน กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+            }
         }
-    }, [isOpen]);
-
-    if (!onData) return null;
+    };
 
     return (
         <ReactModal
@@ -46,13 +92,11 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
             style={{
                 content: {
                     width: "100%",
-                    maxWidth: "600px",
-                    height: "350px",
+                    maxWidth: "500px",
+                    height: "400px",
                     margin: "auto",
-                    padding: "20px",
-                    border: "none",
+                    padding: "30px",
                     borderRadius: "10px",
-                    overflowY: "auto",
                 },
                 overlay: {
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -63,52 +107,58 @@ const Modal_Edit_Password = ({ isOpen, onClose, onData }) => {
                 },
             }}
         >
-            <div className="text-center mb-3">
-                <h5 className="fw-bolder">เปลี่ยนรหัสผ่านเข้าใช้งาน</h5>
+            <div className="text-center mb-4">
+                <h5 className="fw-bold">เปลี่ยนรหัสผ่านเข้าใช้งาน</h5>
             </div>
-            <div className="row">
-                <div className="col-12 mb-3">
-                    <label htmlFor="password" className="form-label fw-medium">รหัสผ่าน</label>
-                    <input
-                        type={showPassword === true ? "text" : "password"}
-                        id="password"
-                        name="password"
-                        className="form-control"
-                        value={formData.password}
-                        onChange={handleChange}
-                        autoComplete="new-password"
-                    />
 
-                </div>
-                <div className="col-12 mb-3">
-                    <label htmlFor="confirmPassword" className="form-label fw-medium">ยืนยันรหัสผ่าน</label>
-                    <input
-                        type={showPassword === true ? "text" : "password"}
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        className="form-control"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        autoComplete="new-password"
-                    />
-
-                </div>
+            <div className="mb-3">
+                <label htmlFor="password" className="form-label fw-medium">
+                    รหัสผ่านใหม่
+                </label>
+                <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                    value={formData.password}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                />
+                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>
+
+            <div className="mb-3">
+                <label htmlFor="confirmPassword" className="form-label fw-medium">
+                    ยืนยันรหัสผ่าน
+                </label>
+                <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                />
+                {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+            </div>
+
             <div className="form-check mb-3">
                 <input
                     type="checkbox"
                     className="form-check-input"
                     id="showPasswordCheckbox"
                     checked={showPassword}
-                    onChange={handleCheckboxChange}
+                    onChange={() => setShowPassword(!showPassword)}
                 />
                 <label className="form-check-label" htmlFor="showPasswordCheckbox">
                     แสดงรหัสผ่าน
                 </label>
             </div>
-            <div className="text-center">
-                <button className="btn btn-primary w-100" onClick={handleSubmit}>บันทึก</button>
-            </div>
+
+            <button className="btn btn-primary w-100" onClick={handleSubmit}>
+                <i className="bi bi-save me-2"></i>บันทึกรหัสผ่าน
+            </button>
         </ReactModal>
     );
 };

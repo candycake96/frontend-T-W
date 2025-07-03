@@ -7,6 +7,7 @@ import { apiUrl } from "../../../../config/apiConfig";
 
 const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
     const [dataApproval, setDataApproval] = useState({
+        request_id: "",
         approver_emp_id: "",
         approver_name: "",
         approval_status: "",
@@ -15,8 +16,9 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
     });
 
     useEffect(() => {
-            if (user && isOpen) {
-                setDataApproval({
+        if (user && isOpen) {
+            setDataApproval({
+                request_id: initialData?.request_id || "",
                 approver_emp_id: user?.id_emp || "",
                 approver_name: `${user?.fname || ""} ${user?.lname || ""}`,
                 approval_status: initialData?.approval_status_end || "",
@@ -79,7 +81,7 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
                 },
             }}
         >
-            <h5 className="fw-bold mb-3">✏️ แก้ไขข้อมูลการอนุมัติขั้นสุดท้าย { user?.id_emp }</h5>
+            <h5 className="fw-bold mb-3">✏️ แก้ไขข้อมูลการอนุมัติขั้นสุดท้าย {user?.id_emp}</h5>
 
             <div className="mb-3">
                 <label className="form-label">สถานะการอนุมัติ</label>
