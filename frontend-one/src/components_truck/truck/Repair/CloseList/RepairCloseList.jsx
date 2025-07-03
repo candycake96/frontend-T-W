@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../../config/apiConfig";
 import RepairCloseListTable from "./RepairCloseListTable";
-import MainternanceAnalysisRequestJob_table from "../MainternanceAnalysisRequestJob_table";
 
 
 const RepairCloseList = () => {
@@ -168,7 +167,7 @@ const RepairCloseList = () => {
                     </div>
                 ) : (
                     <>
-                        <MainternanceAnalysisRequestJob_table PendingTable={filteredData} loading={loading} />
+                        <RepairCloseListTable PendingTable={filteredData} loading={loading} />
                     </>
                 )}
 
