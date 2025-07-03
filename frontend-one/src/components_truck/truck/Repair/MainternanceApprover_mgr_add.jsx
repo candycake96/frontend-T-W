@@ -189,10 +189,12 @@ const handaleCloseModalApprovalEdit = () => {
                             <div className="row mb-2">
                                 <div className="col-md-4"><strong>ตั้งแต่วันที่:</strong>  {formatDateDMY(dataRequest?.analysis_date) || '-'} <strong>เวลา:</strong>{formatTimeHM(dataRequest?.analysis_time) || '-'}</div>
                                 <div className="col-md-4"><strong>เนื่องจาก:</strong>  {dataRequest?.analysis_remark || '-'} </div>
-                                <div className="col-md-4"><strong>ราคา:</strong> xxxxxxxxx </div>
+                                <div className="col-md-4"><strong>ราคา:</strong> {dataRequest?.total_with_vat || '-'} </div>
                             </div>
                             <div className="row mb-2">
-                                <div className="col-md-4"><strong>อู่ / บริษัท:</strong> xxxxxxxxxxxxxxx </div>
+                                <div className="col-md"><strong>อู่ / บริษัท:</strong> {dataRequest?.vendor_names_all || '-'} </div>
+                             </div>   
+                            <div className="row mb-2">
                                 <div className="col-md-4"><strong>ผู้ตรวจสอบ:</strong> {dataRequest?.analysis_emp_name || '-'}  </div>
                                 <div className="col-md-4"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.analysis_date) || '-'} </div>
                             </div>
