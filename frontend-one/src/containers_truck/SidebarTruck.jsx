@@ -109,7 +109,7 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
               </li>
               <li>
                 <Link to="/truck/CarInsurance_Main"
-                  className={`nav-link ${["/truck/CarInsurance_Main" , "/truck/Insurance_Details", "/truck/insuranceDataComparison"].includes(location.pathname) ? "active" : ""}`}>
+                  className={`nav-link ${["/truck/CarInsurance_Main", "/truck/Insurance_Details", "/truck/insuranceDataComparison"].includes(location.pathname) ? "active" : ""}`}>
                   ข้อมูลรถต่อ ประกัน
                 </Link>
               </li>
@@ -125,19 +125,19 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 <Link
                   to="/truck/CarStopTaxRemittanc"
                   className={`nav-link ${location.pathname === "/truck/CarStopTaxRemittanc" || location.pathname.startsWith("/truck/Vehicle_status/")
-                      ? "active"
-                      : ""
+                    ? "active"
+                    : ""
                     }`}
                 >
                   รายงานรถ ม.79/ม.89
                 </Link>
               </li>
-                            <li>
+              <li>
                 <Link
                   to="/truck/PM_setting"
                   className={`nav-link ${location.pathname === "/truck/PM_setting" || location.pathname.startsWith("/truck/Vehicle_status/")
-                      ? "active"
-                      : ""
+                    ? "active"
+                    : ""
                     }`}
                 >
                   ตั้งค่าแผน PM
@@ -147,10 +147,10 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           )}
         </li>
 
-                {/* 📌 เมนูข้อมูลรถ */}
-                <li className="nav-item">
+        {/* 📌 เมนูข้อมูลรถ */}
+        <li className="nav-item">
           <button onClick={() => toggleDropdown("vender")} className="nav-link">
-          <i class="bi bi-handbag-fill"></i> ผู้จำหน่ายสินค้า/อู่ซ่อม
+            <i class="bi bi-handbag-fill"></i> ผู้จำหน่ายสินค้า/อู่ซ่อม
           </button>
           {activeDropdown === "vender" && (
             <ul className="list-unstyled ps-4">
@@ -205,6 +205,12 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 <Link to="/truck/MainternanceApprovalManager"
                   className={`nav-link ${["/truck/MainternanceApprovalManager"].includes(location.pathname) ? "active" : ""}`}>
                   อนุมัติงานซ่อมบำรุง
+                </Link>
+              </li>
+              <li>
+                <Link to="/truck/MainternanceApprovalManager"
+                  className={`nav-link ${["/truck/1"].includes(location.pathname) ? "active" : ""}`}>
+                  ปิดงานซ่อมบำรุง
                 </Link>
               </li>
             </ul>
