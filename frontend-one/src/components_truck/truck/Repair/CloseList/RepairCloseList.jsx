@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { apiUrl } from "../../../../config/apiConfig";
 import RepairCloseListTable from "./RepairCloseListTable";
+import { apiUrl } from "../../../../config/apiConfig";
 
 
 const RepairCloseList = () => {
   const [isPendingTable, setPendingTable] = useState([]);
-    const [filterType, setFilterType] = useState("pending");
+    const [filterType, setFilterType] = useState("closeList");
     const [loading, setLoading] = useState(false);
 
     const [startDate, setStartDate] = useState("");
@@ -20,12 +20,12 @@ const RepairCloseList = () => {
 
     const fetchPendingTable = async () => {
         let endpoint = "";
-        if (filterType === "pending") {
-            endpoint = "/api/planning_show";
+        if (filterType === "closeList") {
+            endpoint = "/api/waiting_closing_list_table";
         } else if (filterType === "approved") {
-            endpoint = "/api/RepairPlanningApproved";
+            endpoint = "/api/waiting_closing_list_table";
         } else if (filterType === "finished") {
-            endpoint = "/api/RepairPlanningFinished";
+            endpoint = "/api/waiting_closing_list_table";
         }
 
         setLoading(true);
@@ -102,8 +102,8 @@ const RepairCloseList = () => {
                     </div>
                     <div className="btn-group" role="group">
                         <button
-                            className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
-                            onClick={() => setFilterType("pending")}
+                            className={`btn btn-sm ${filterType === "closeList" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("closeList")}
                         >
                             <i className="bi bi-clock me-1"></i> รายการปิดงานซ่อม
                         </button>
@@ -167,7 +167,7 @@ const RepairCloseList = () => {
                     </div>
                 ) : (
                     <>
-                        <RepairCloseListTable PendingTable={filteredData} loading={loading} />
+                        <RepairCloseListTable dataCloseList={filteredData} loading={loading} />
                     </>
                 )}
 

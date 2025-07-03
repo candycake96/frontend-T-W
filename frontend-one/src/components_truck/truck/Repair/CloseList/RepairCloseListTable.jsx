@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Table, Button, Spinner } from "react-bootstrap";
 
-const RepairCloseListTable = ({ AnalysisTable = [], loading = false }) => {
+const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
      const formatDate = (dateString) => {
         const date = new Date(dateString);
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -28,8 +29,8 @@ const RepairCloseListTable = ({ AnalysisTable = [], loading = false }) => {
                                       กำลังโหลดข้อมูล...
                                   </td>
                               </tr>
-                          ) : AnalysisTable.length > 0 ? (
-                              AnalysisTable.map((data, index) => (
+                          ) : dataCloseList.length > 0 ? (
+                              dataCloseList.map((data, index) => (
                                   <tr key={index}>
                                       <td>{data.request_no}</td>
                                       <td>{formatDate(data.request_date)}</td>
@@ -41,6 +42,7 @@ const RepairCloseListTable = ({ AnalysisTable = [], loading = false }) => {
                                       </td>
                                       <td>{data.reg_number}</td>
                                       <td className="text-center">
+                                        <Button className="btn-sm me-1">ปิดงานซ่อม</Button>
                                           <Link
                                               to="/truck/MaintenanceJob"
                                               state={{ ...data, fromPage: 'SupervisorApprove' }}
