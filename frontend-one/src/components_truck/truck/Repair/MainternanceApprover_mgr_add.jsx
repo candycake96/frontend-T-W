@@ -315,36 +315,40 @@ const handaleCloseModalApprovalEdit = () => {
                     </div>
                     {/* Action Buttons */}
                     <div className="text-center mt-4 d-flex justify-content-center gap-3">
-                       {Array.isArray(dataRequest?.approval_status_end) && dataRequest.approval_status_end.length > 0 ? (
-                            <button
-                                className="btn btn-warning btn-lg px-5 shadow"
-                                onClick={() => handleOpenModaleApprovalEdit(dataRequest)}
-                                style={{ color: "#ffffff" }}
-                            >
-                                <i className="bi bi-check-circle me-2"></i>แก้ไข
-                            </button>
-                        ) : (
-                            <>
-                                <button
-                                    className="btn btn-danger btn-lg px-5 shadow"
-                                    onClick={() => handleApprovalAdd("ไม่อนุมัติ")}
-                                >
-                                    <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
-                                </button>
-                                <button
-                                    className="btn btn-primary btn-lg px-5 shadow"
-                                    onClick={() => handleApprovalAdd("อนุมัติ")}
-                                >
-                                    <i className="bi bi-check-circle me-2"></i>อนุมัติ
-                                </button>
-                            </>
-                        )}
+{dataRequest?.approval_status_end ? (
+    <button
+        className="btn btn-warning btn-lg px-5 shadow"
+        onClick={() => handleOpenModaleApprovalEdit(dataRequest)}
+        style={{ color: "#ffffff" }}
+    >
+        <i className="bi bi-check-circle me-2"></i>แก้ไข
+    </button>
+) : (
+    <>
+        <button
+            className="btn btn-danger btn-lg px-5 shadow"
+            onClick={() => handleApprovalAdd("ไม่อนุมัติ")}
+        >
+            <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
+        </button>
+        <button
+            className="btn btn-primary btn-lg px-5 shadow"
+            onClick={() => handleApprovalAdd("อนุมัติ")}
+        >
+            <i className="bi bi-check-circle me-2"></i>อนุมัติ
+        </button>
+    </>
+)}
+
+
 
 
                     </div>
 
                 </div>
             </div>
+
+            {/* button  ของ manager approval End  */}
             {isOpenModalApprovalEdit && (
                 <Modal_Edit_Approval_End isOpen={isOpenModalApprovalEdit} onClose={handaleCloseModalApprovalEdit} user={user} initialData={dataModalApprovalEdit} />
             )}
