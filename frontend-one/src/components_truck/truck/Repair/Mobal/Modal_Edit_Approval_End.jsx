@@ -37,7 +37,7 @@ const Modal_Edit_Approval_End = ({ isOpen, onClose, user, initialData }) => {
         try {
             console.log('ข้อมูล : ', dataApproval);
             const response = await axios.put(
-                `${apiUrl}/api/approval_update/${initialData?.approver_id}`, // สมมติคุณส่ง ID มาด้วย
+                `${apiUrl}/api/approval_update/${initialData?.approval_id}`, // สมมติคุณส่ง ID มาด้วย
                 dataApproval,
                 {
                     headers: {
