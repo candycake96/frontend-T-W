@@ -208,8 +208,8 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/truck/MainternanceApprovalManager"
-                  className={`nav-link ${["/truck/1"].includes(location.pathname) ? "active" : ""}`}>
+                <Link to="/truck/RepairCloseList"
+                  className={`nav-link ${["/truck/RepairCloseList"].includes(location.pathname) ? "active" : ""}`}>
                   ปิดงานซ่อมบำรุง
                 </Link>
               </li>
