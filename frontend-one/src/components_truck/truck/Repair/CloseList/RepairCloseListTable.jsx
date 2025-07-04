@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Table, Button, Spinner } from "react-bootstrap";
+import Modal_Closing from "./modal/Modal_Closing";
 
 const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
      const formatDate = (dateString) => {
@@ -9,6 +10,16 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
         return date.toLocaleDateString('th-TH', options);
     };
  
+    const [isOpenModolClosing, setOpenModolClosing] = useState(false);
+    const [dataOpenModolClosing, setDataOpenModolClosing] = useState(null);
+    const handleOpenModolClosing = (data) => {
+        setOpenModolClosing(true);
+        setDataOpenModolClosing(data);
+    };
+        const handleCloseModolClosing = () => {
+        setOpenModolClosing(false);
+        setDataOpenModolClosing(null);
+    };
     return (
        <div className="table-responsive">
                   <table className="table table-bordered table-hover align-middle">
@@ -42,7 +53,7 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
                                       </td>
                                       <td>{data.reg_number}</td>
                                       <td className="text-center">
-                                        <Button className="btn-sm me-1">ปิดงานซ่อม</Button>
+                                        <Button className="btn-sm me-1" onClick={()=>handleOpenModolClosing(data)}>ปิดงานซ่อม</Button>
                                           <Link
                                               to="/truck/MaintenanceJob"
                                               state={{ ...data, fromPage: 'SupervisorApprove' }}
@@ -62,6 +73,9 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
                           )}
                       </tbody>
                   </table>
+                  {isOpenModolClosing && (
+                    <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
+                  )}
               </div>
     );
 };
