@@ -11,6 +11,7 @@ import MainternanceAnalysisApprover from "./MainternanceAnalysisApprover";
 import MainternanceAnalysisApproverMain from "./MainternanceAnalysisApproverMain";
 import MainternanceApprover_mgr_add from "./MainternanceApprover_mgr_add";
 import { Table, Button, Spinner } from "react-bootstrap";
+import Modal_Closing from "./CloseList/modal/Modal_Closing";
 
 const MaintenanceJob = () => {
 
@@ -242,6 +243,17 @@ const MaintenanceJob = () => {
         fetchDataLogs();
     }, []);
 
+        const [isOpenModolClosing, setOpenModolClosing] = useState(false);
+        const [dataOpenModolClosing, setDataOpenModolClosing] = useState(null);
+        const handleOpenModolClosing = (data) => {
+            setOpenModolClosing(true);
+            setDataOpenModolClosing(data);
+        };
+            const handleCloseModolClosing = () => {
+            setOpenModolClosing(false);
+            setDataOpenModolClosing(null);
+        };
+
     return (
         <div className="p-1">
             <div className="container">
@@ -274,7 +286,7 @@ const MaintenanceJob = () => {
                     <div className="mb-2">
                         <div className="d-flex justify-content-end gap-2">
                            
-                            <Button className="btn-primary btn-sm">ปิดงานซ่อม</Button>
+                            <Button className="btn-primary btn-sm" onClick={()=>handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
                             <Button
                                 className="btn-primary  btn-sm"
                                 onClick={generateReport}
@@ -404,6 +416,10 @@ const MaintenanceJob = () => {
                     </div>
                 </div>
             </div>
+            {/* Modal */}
+                              {isOpenModolClosing && (
+                    <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
+                  )}
         </div>
     );
 };
