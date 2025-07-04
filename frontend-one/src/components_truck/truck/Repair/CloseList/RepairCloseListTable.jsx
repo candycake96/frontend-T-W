@@ -74,7 +74,7 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
                       </tbody>
                   </table>
                   {isOpenModolClosing && (
-                    <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
+                    <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} dataClosing={dataOpenModolClosing} />
                   )}
               </div>
     );

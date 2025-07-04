@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactModal from "react-modal";
 
-const Modal_Closing = ({isOpen, onClose}) => {
+const Modal_Closing = ({isOpen, onClose, dataClosing}) => {
     const [formData, setFormData] = useState({
     close_date: "",
     close_remark: "",
@@ -115,7 +115,6 @@ const handleSubmitClose = () => {
                         onChange={handleChange}
                     />
                 </div>
-
 
                 <div className="mb-3">
                     <label className="form-label fw-semibold">หมายเหตุ</label>

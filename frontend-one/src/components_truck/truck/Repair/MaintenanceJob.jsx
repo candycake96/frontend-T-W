@@ -16,7 +16,7 @@ import Modal_Closing from "./CloseList/modal/Modal_Closing";
 const MaintenanceJob = () => {
 
     const [loading, setLoading] = useState(false);
-        // ข้อมูลการปิดงานแจ้งซ่อม
+    // ข้อมูลการปิดงานแจ้งซ่อม
     const [dataClosingJob, setdataClosingJob] = useState([]);
     const [formData, setFormData] = useState({
         request_id: "",
@@ -29,17 +29,20 @@ const MaintenanceJob = () => {
         fname: "",
         lname: "",
         reg_number: "",
-    })
+    });
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
     const [fromPage] = useState(location.state?.fromPage || "");
     console.log(dataRepairID); // ✅ ตรวจสอบข้อมูลที่ถูกส่งมา
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const options = { year: "numeric", month: "numeric", day: "numeric", calendar: "gregory" };
-        return date.toLocaleDateString("th-TH-u-ca-gregory", options);
-    };
+
+    // แปลง วัน/เดือน/ปี
+   const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  return date.toLocaleDateString("th-TH", options); // แสดง 04/07/2025
+};
+
 
     const [requestParts, setRequestParts] = useState([]);
     // ดึงข้อมูลจาก API
@@ -259,7 +262,7 @@ const MaintenanceJob = () => {
 
 
     // ข้อมูลการปิดงานแจ้งซ่อม
-        const fetchDataClosingJob = async () => {
+    const fetchDataClosingJob = async () => {
         try {
             const response = await axios.get(`${apiUrl}/api/close_job_show_id/${dataRepairID?.request_id}`, {
                 headers: {
@@ -273,10 +276,11 @@ const MaintenanceJob = () => {
             console.error("Error fetching DataLogs:", error);
         }
     };
-    useEffect(()=>{
-fetchDataClosingJob()
+    useEffect(() => {
+        fetchDataClosingJob()
     }, []);
 
+    
     return (
         <div className="p-1">
             <div className="container">
@@ -309,33 +313,33 @@ fetchDataClosingJob()
                     <div className="mb-2">
 
                         <div className="d-flex justify-content-between align-items-center  flex-wrap gap-2" >
-                            
-{dataClosingJob.length > 0 ? (
-  dataClosingJob.map((data, ndx) => (
-    <div className="d-flex align-items-center gap-3 mb-2" role="alert" key={ndx}>
-      <i className="bi bi-check-circle-fill fs-5 text-danger"></i>
-      <div className="d-flex flex-wrap gap-3">
-        <span className="fw-semibold text-danger">ปิดงานซ่อมแล้ว</span>
-        <span>เลขที่: {data.request_no || "N/A"}</span>
-        <span>วันที่: {data.close_date || "N/A"}</span>
-        {data.close_file && (
-          <a
-            href={`/uploads/${data.close_file}`}
-            className="text-decoration-underline text-primary"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="bi bi-file-pdf-fill me-1"></i>เอกสารปิดงาน
-          </a>
-        )}
-      </div>
-    </div>
-  ))
-) : (
-      <p className="text-muted fst-italic"></p>
-)}
 
- 
+                            {dataClosingJob.length > 0 ? (
+                                dataClosingJob.map((data, ndx) => (
+                                    <div className="d-flex align-items-center gap-3 mb-2" role="alert" key={ndx}>
+                                        <i className="bi bi-check-circle-fill fs-5 text-danger"></i>
+                                        <div className="d-flex flex-wrap gap-3">
+                                            <span className="fw-semibold text-danger">ปิดงานซ่อมแล้ว</span>
+                                            <span>เลขที่: {data.request_no || "N/A"}</span>
+                                            <span>วันที่: {formatDate(data.close_date) || "N/A"}</span>
+                                            {data.close_file && (
+                                                <a
+                                                    href={`/uploads/${data.close_file}`}
+                                                    className="text-decoration-underline text-primary"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <i className="bi bi-file-pdf-fill me-1"></i>เอกสารปิดงาน
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-muted fst-italic"></p>
+                            )}
+
+
                             <div className=" gap-2">
                                 <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
                                 <Button
