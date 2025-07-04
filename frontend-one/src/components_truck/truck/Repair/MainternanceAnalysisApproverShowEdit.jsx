@@ -278,33 +278,33 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
     return (
         <>
             <div className="md-2">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                <p className="mb-0 fw-bold text-dark ">รายการตรวจสอบการแจ้งซ่อมและใบเสนอราคาเพื่ออนุมัติ</p>
-                                {!isEditing ? (
-                    <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
-                        <button
-                            type="button"
-                            className="btn btn-success btn-sm"
-                            onClick={() => setIsEditing(true)}
-                            style={{ whiteSpace: 'nowrap' }}
-                        >
-                           <i className="bi bi-pencil-fill me-1"></i> แก้ไข
-                        </button>
-                    </div>
-                ) : (
-                    <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
-                        <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                            onClick={() => setIsEditing(false)}
-                            style={{ whiteSpace: 'nowrap' }}
-                        >
-                            <i className="bi bi-pencil-square"></i> ยกเลิก
-                        </button>
-                    </div>
-                )}
-               
-            </div>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <p className="mb-0 fw-bold text-dark ">รายการตรวจสอบการแจ้งซ่อมและใบเสนอราคาเพื่ออนุมัติ</p>
+                    {!isEditing ? (
+                        <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+                            <button
+                                type="button"
+                                className="btn btn-success btn-sm"
+                                onClick={() => setIsEditing(true)}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
+                                <i className="bi bi-pencil-fill me-1"></i> แก้ไข
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+                            <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={() => setIsEditing(false)}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
+                                <i className="bi bi-pencil-square"></i> ยกเลิก
+                            </button>
+                        </div>
+                    )}
+
+                </div>
                 <div className="">
 
                     {message && (
@@ -346,19 +346,19 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 />
                                             </div>
                                         </div>
-                                         <div className="col-lg-6 mb-4">
-                                        <label className="form-label">หมายเหตุ</label>
-                                        <div className="input-group "     >
-                                            <textarea
-                                                type="date"
-                                                className="form-control"
-                                                value={isDataApprover?.remark}
-                                                onChange={e => handleDataApprover('remark', e.target.value)}
-                                            />
+                                        <div className="col-lg-6 mb-4">
+                                            <label className="form-label">หมายเหตุ</label>
+                                            <div className="input-group "     >
+                                                <textarea
+                                                    type="date"
+                                                    className="form-control"
+                                                    value={isDataApprover?.remark}
+                                                    onChange={e => handleDataApprover('remark', e.target.value)}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                    </div>
-                                   
+
                                 </div>
 
                                 {quotations.map((q, idx) => (

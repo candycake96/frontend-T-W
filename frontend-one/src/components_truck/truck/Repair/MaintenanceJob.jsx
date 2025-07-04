@@ -16,6 +16,8 @@ import Modal_Closing from "./CloseList/modal/Modal_Closing";
 const MaintenanceJob = () => {
 
     const [loading, setLoading] = useState(false);
+        // ข้อมูลการปิดงานแจ้งซ่อม
+    const [dataClosingJob, setdataClosingJob] = useState([]);
     const [formData, setFormData] = useState({
         request_id: "",
         request_informer_emp_id: "",
@@ -254,6 +256,27 @@ const MaintenanceJob = () => {
         setDataOpenModolClosing(null);
     };
 
+
+
+    // ข้อมูลการปิดงานแจ้งซ่อม
+        const fetchDataClosingJob = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/close_job_show_id/${dataRepairID?.request_id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+
+            // กรณีข้อมูลที่ได้คือ object เดียว
+            setdataClosingJob(response.data);
+        } catch (error) {
+            console.error("Error fetching DataLogs:", error);
+        }
+    };
+    useEffect(()=>{
+fetchDataClosingJob()
+    }, []);
+
     return (
         <div className="p-1">
             <div className="container">
@@ -284,36 +307,58 @@ const MaintenanceJob = () => {
                 <hr className="mb-3" />
                 <div className="mb-2">
                     <div className="mb-2">
-                        <div className="d-flex justify-content-end gap-2">
 
-                            <Button className="btn-primary btn-sm" onClick={() => handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
-                            <Button
-                                className="btn-primary  btn-sm"
-                                onClick={generateReport}
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        กำลังสร้างรายงาน...
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="bi bi-printer-fill me-1"></i> พิมพ์รายงาน
-                                    </>
-                                )}
-                            </Button>
-                            <Button className="btn-danger  btn-sm"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
-                            {/* {formData?.request_informer_emp_id === user?.id_emp && (
-                                <Link
-                                    to="/truck/RepairRequestFormEdit"
-                                    state={dataRepairID}
-                                    className="btn btn-success btn-sm"
+                        <div className="d-flex justify-content-between align-items-center  flex-wrap gap-2" >
+                            
+{dataClosingJob.length > 0 ? (
+  dataClosingJob.map((data, ndx) => (
+    <div className="d-flex align-items-center gap-3 mb-2" role="alert" key={ndx}>
+      <i className="bi bi-check-circle-fill fs-5 text-danger"></i>
+      <div className="d-flex flex-wrap gap-3">
+        <span className="fw-semibold text-danger">ปิดงานซ่อมแล้ว</span>
+        <span>เลขที่: {data.request_no || "N/A"}</span>
+        <span>วันที่: {data.close_date || "N/A"}</span>
+        {data.close_file && (
+          <a
+            href={`/uploads/${data.close_file}`}
+            className="text-decoration-underline text-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i className="bi bi-file-pdf-fill me-1"></i>เอกสารปิดงาน
+          </a>
+        )}
+      </div>
+    </div>
+  ))
+) : (
+      <p className="text-muted fst-italic"></p>
+)}
+
+ 
+                            <div className=" gap-2">
+                                <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
+                                <Button
+                                    className="btn-primary  btn-sm me-1"
+                                    onClick={generateReport}
+                                    disabled={loading}
                                 >
-                                    <i className="bi bi-pencil-fill me-1"></i> แก้ไข
-                                </Link>
-                            )} */}
+                                    {loading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            กำลังสร้างรายงาน...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="bi bi-printer-fill me-1"></i> พิมพ์รายงาน
+                                        </>
+                                    )}
+                                </Button>
+                                <Button className="btn-danger  btn-sm me-1"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
 
