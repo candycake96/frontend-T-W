@@ -10,6 +10,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import MainternanceAnalysisApprover from "./MainternanceAnalysisApprover";
 import MainternanceAnalysisApproverMain from "./MainternanceAnalysisApproverMain";
 import MainternanceApprover_mgr_add from "./MainternanceApprover_mgr_add";
+import { Table, Button, Spinner } from "react-bootstrap";
 
 const MaintenanceJob = () => {
 
@@ -251,7 +252,6 @@ const MaintenanceJob = () => {
                 <p className="fw-bolder fs-4 mb-0 d-flex align-items-end gap-2">
                     <i className="bi bi-tools me-2 text-primary"></i>
                     รายละเอียดการซ่อม
-
                     {dataLog.map((row, index) => (
                         <span
                             className="badge bg-warning"
@@ -267,18 +267,16 @@ const MaintenanceJob = () => {
                             <small>{row?.status || ''}</small>
                         </span>
                     ))}
-
                 </p>
 
                 <hr className="mb-3" />
                 <div className="mb-2">
                     <div className="mb-2">
                         <div className="d-flex justify-content-end gap-2">
-                            <button className="btn btn-danger">
-                                <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
-                            </button>
-                            <button
-                                className="btn btn-primary"
+                           
+                            <Button className="btn-primary btn-sm">ปิดงานซ่อม</Button>
+                            <Button
+                                className="btn-primary  btn-sm"
                                 onClick={generateReport}
                                 disabled={loading}
                             >
@@ -292,16 +290,17 @@ const MaintenanceJob = () => {
                                         <i className="bi bi-printer-fill me-1"></i> พิมพ์รายงาน
                                     </>
                                 )}
-                            </button>
-                            {formData?.request_informer_emp_id === user?.id_emp && (
+                            </Button>
+                             <Button className="btn-danger  btn-sm"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
+                            {/* {formData?.request_informer_emp_id === user?.id_emp && (
                                 <Link
                                     to="/truck/RepairRequestFormEdit"
                                     state={dataRepairID}
-                                    className="btn btn-success"
+                                    className="btn btn-success btn-sm"
                                 >
                                     <i className="bi bi-pencil-fill me-1"></i> แก้ไข
                                 </Link>
-                            )}
+                            )} */}
                         </div>
                     </div>
                 </div>
@@ -380,6 +379,7 @@ const MaintenanceJob = () => {
                                 parts={parts}
                                 handleChange={handleChange}
                                 formData={formData}
+                                user={user}
                             />
                         )}
 

@@ -27,7 +27,7 @@ const handleSubmitClose = () => {
                 content: {
                     width: "100%",
                     maxWidth: "700px",
-                    maxHeight: "100%",
+                    maxHeight: "600px",
                     margin: "auto",
                     padding: "0",
                     border: "none",

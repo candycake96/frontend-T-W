@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const MainternanceRepairRequestDetails = ({ parts, summary, formData }) => {
+const MainternanceRepairRequestDetails = ({ parts, summary, formData, user }) => {
     // ฟังก์ชันแปลงวันที่ให้อยู่ในรูปแบบ yyyy-mm-dd
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
@@ -11,10 +12,26 @@ const MainternanceRepairRequestDetails = ({ parts, summary, formData }) => {
         return `${year}-${month}-${day}`;
     };
 
+    const dataRepairID = formData;
+
     return (
         <>
             <div className=" mb-3">
                 <div className="">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+    <p className="mb-0 fw-bold text-dark ">รายการเปิดงานซ่อมบำรุง</p>
+
+    {formData?.request_informer_emp_id === user?.id_emp && (
+                                    <Link
+                                        to="/truck/RepairRequestFormEdit"
+                                        state={dataRepairID}
+                                        className="btn btn-success btn-sm"
+                                    >
+                                        <i className="bi bi-pencil-fill me-1"></i> แก้ไข
+                                    </Link>
+                                )}
+</div>
+
                     <form>
                         <div className="row">
                             <div className="col-lg-3 mb-3">
