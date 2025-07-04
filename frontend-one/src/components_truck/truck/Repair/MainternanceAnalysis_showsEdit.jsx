@@ -547,7 +547,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
     return (
         <div className=" mb-4 ">
-         
+
             {/* Display success or error message */}
             {message && (
                 <div
@@ -556,6 +556,22 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                     {message}
                 </div>
             )}
+
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <p className="mb-0 fw-bold text-dark ">รายการตรวจเช็ครถและใบเสนอราคารายการซ่อม</p>
+                {!isEditing && (
+                    <div className="">
+                        <button
+                            type="button"
+                            className="btn btn-success btn-sm"
+                            onClick={() => setIsEditing(true)}
+                            style={{ whiteSpace: 'nowrap' }}
+                        >
+                            <i className="bi bi-pencil-fill me-1"></i>  แก้ไข
+                        </button>
+                    </div>
+                )}
+            </div>
 
             <form onSubmit={handleSubmit} className="">
                 {/* <div className="card-header fw-bold fs-5">
@@ -622,18 +638,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {!isEditing && (
-                                    <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary w-lg-auto"
-                                            onClick={() => setIsEditing(true)}
-                                            style={{ whiteSpace: 'nowrap' }}
-                                        >
-                                            <i className="bi bi-pencil-square"></i> แก้ไข
-                                        </button>
-                                    </div>
-                                )}
+
                             </div>
 
                             <div className="row mb-4">

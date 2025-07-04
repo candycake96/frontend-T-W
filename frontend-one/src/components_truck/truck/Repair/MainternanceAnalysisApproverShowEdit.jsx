@@ -278,23 +278,24 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
     return (
         <>
             <div className="md-2">
-                แก้ไข {maintenanceJob?.request_id}
-                {!isEditing ? (
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                <p className="mb-0 fw-bold text-dark ">รายการตรวจสอบการแจ้งซ่อมและใบเสนอราคาเพื่ออนุมัติ</p>
+                                {!isEditing ? (
                     <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
                         <button
                             type="button"
-                            className="btn btn-primary w-lg-auto"
+                            className="btn btn-success btn-sm"
                             onClick={() => setIsEditing(true)}
                             style={{ whiteSpace: 'nowrap' }}
                         >
-                            <i className="bi bi-pencil-square"></i> แก้ไข
+                           <i className="bi bi-pencil-fill me-1"></i> แก้ไข
                         </button>
                     </div>
                 ) : (
                     <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
                         <button
                             type="button"
-                            className="btn btn-danger w-lg-auto"
+                            className="btn btn-danger btn-sm"
                             onClick={() => setIsEditing(false)}
                             style={{ whiteSpace: 'nowrap' }}
                         >
@@ -302,6 +303,8 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                         </button>
                     </div>
                 )}
+               
+            </div>
                 <div className="">
 
                     {message && (
