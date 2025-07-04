@@ -1,73 +1,82 @@
 import React from "react";
 import ReactModal from "react-modal";
 
-const Modal_Check_PM = ({isOpen, onClose}) => {
-    return (
-        <ReactModal
-        isOpen={isOpen}
-        onRequestClose={onClose} // ป้องกันปิด Modal ขณะกำลังบันทึก
-        ariaHideApp={false}
-        contentLabel="Manage Vehicle Status"
-        style={{
-            content: {
-                width: "100%",
-                maxWidth: "1100px",
-                maxHeight: "100%",
-                height: "auto",
-                margin: "auto",
-                padding: "0",
-                border: "none",
-                borderRadius: "0.5rem",
-                overflowY: "auto",
-            },
-            overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                zIndex: 9999,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            },
-        }}
-        >
-
-             {/* Header: ค้างด้านบน */}
-  <div
-    className="modal-header"
-    style={{
-      padding: "1rem",
-      backgroundColor: "#f8f9fa",
-      borderTopLeftRadius: "0.5rem",
-      borderTopRightRadius: "0.5rem",
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-    }}
-  >
-    <button
-      onClick={onClose}
+const Modal_Check_PM = ({ isOpen, onClose }) => {
+  return (
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      ariaHideApp={false}
+      contentLabel="ตรวจสอบ PM"
       style={{
-        background: "transparent",
-        border: "none",
-        fontSize: "1.5rem",
-        fontWeight: "bold",
-        position: "absolute",
-        top: "1rem",
-        right: "1rem",
-        cursor: "pointer",
+        content: {
+          width: "100%",
+          maxWidth: "1100px",
+          maxHeight: "90vh",
+          margin: "auto",
+          padding: "0",
+          border: "none",
+          borderRadius: "0.5rem",
+          overflow: "hidden",
+        },
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
       }}
     >
-                    ×
-                </button>
-                <h5 className="modal-title text-center fw-bolder">
-                ตรวจสอบ PM
-                </h5>
-            </div>
-{/* body */}
-            <div className="p-3">
-              
-            </div>
-        </ReactModal>
-    )
+      {/* Header */}
+      <div
+        className="modal-header bg-light border-bottom"
+        style={{
+          padding: "1rem",
+          position: "sticky",
+          top: 0,
+          zIndex: 2,
+        }}
+      >
+        <h5 className="modal-title fw-bold m-0">🔍 ตรวจสอบ PM รถยนต์</h5>
+        <button
+          onClick={onClose}
+          className="btn-close"
+          style={{ marginLeft: "auto" }}
+        ></button>
+      </div>
+
+      {/* Body */}
+      <div className="modal-body p-4" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+        <div className="mb-3">
+          <label className="form-label fw-bold">เลขทะเบียนรถ:</label>
+          <div className="form-control-plaintext">XX-1234</div>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label fw-bold">วันที่ PM ล่าสุด:</label>
+          <div className="form-control-plaintext">01/07/2025</div>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label fw-bold">สถานะ PM:</label>
+          <span className="badge bg-success ms-2">ผ่านการตรวจสอบ</span>
+        </div>
+
+        {/* 🛠️ เพิ่มข้อมูลตรวจเช็คอื่น ๆ ได้ที่นี่ */}
+      </div>
+
+      {/* Footer */}
+      <div className="modal-footer bg-light border-top d-flex justify-content-end p-3">
+        <button className="btn btn-secondary me-2" onClick={onClose}>
+          ปิดหน้าต่าง
+        </button>
+        <button className="btn btn-primary">
+          บันทึกการตรวจสอบ
+        </button>
+      </div>
+    </ReactModal>
+  )
 }
 
 
