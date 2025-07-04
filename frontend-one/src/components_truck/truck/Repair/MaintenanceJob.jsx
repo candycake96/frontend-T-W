@@ -243,16 +243,16 @@ const MaintenanceJob = () => {
         fetchDataLogs();
     }, []);
 
-        const [isOpenModolClosing, setOpenModolClosing] = useState(false);
-        const [dataOpenModolClosing, setDataOpenModolClosing] = useState(null);
-        const handleOpenModolClosing = (data) => {
-            setOpenModolClosing(true);
-            setDataOpenModolClosing(data);
-        };
-            const handleCloseModolClosing = () => {
-            setOpenModolClosing(false);
-            setDataOpenModolClosing(null);
-        };
+    const [isOpenModolClosing, setOpenModolClosing] = useState(false);
+    const [dataOpenModolClosing, setDataOpenModolClosing] = useState(null);
+    const handleOpenModolClosing = (data) => {
+        setOpenModolClosing(true);
+        setDataOpenModolClosing(data);
+    };
+    const handleCloseModolClosing = () => {
+        setOpenModolClosing(false);
+        setDataOpenModolClosing(null);
+    };
 
     return (
         <div className="p-1">
@@ -285,8 +285,8 @@ const MaintenanceJob = () => {
                 <div className="mb-2">
                     <div className="mb-2">
                         <div className="d-flex justify-content-end gap-2">
-                           
-                            <Button className="btn-primary btn-sm" onClick={()=>handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
+
+                            <Button className="btn-primary btn-sm" onClick={() => handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
                             <Button
                                 className="btn-primary  btn-sm"
                                 onClick={generateReport}
@@ -303,7 +303,7 @@ const MaintenanceJob = () => {
                                     </>
                                 )}
                             </Button>
-                             <Button className="btn-danger  btn-sm"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
+                            <Button className="btn-danger  btn-sm"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
                             {/* {formData?.request_informer_emp_id === user?.id_emp && (
                                 <Link
                                     to="/truck/RepairRequestFormEdit"
@@ -417,9 +417,9 @@ const MaintenanceJob = () => {
                 </div>
             </div>
             {/* Modal */}
-                              {isOpenModolClosing && (
-                    <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
-                  )}
+            {isOpenModolClosing && (
+                <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
+            )}
         </div>
     );
 };
