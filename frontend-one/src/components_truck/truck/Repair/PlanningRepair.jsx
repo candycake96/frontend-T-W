@@ -260,8 +260,21 @@ const PlanningRepair = ({ maintenanceJob }) => {
                     <div className=" mb-3">
                         <div className="">
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
-                            <div className="fw-bolder mb-3">
-                                <p>ความเห็นของแผนกจัดรถ</p>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <p className="mb-0 fw-bold text-dark ">ความเห็นของแผนกจัดรถ</p>
+{/* สิทธ์เข้าถึงแก้ไขผู้ตรวจสอบ */}
+                                        {Array.isArray(detailPlanning) &&
+                                            detailPlanning.length > 0 &&
+                                            detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-success btn-sm"
+                                                    onClick={() => setIsEditing(true)}
+                                                    style={{ whiteSpace: 'nowrap' }}
+                                                >
+                                                   <i className="bi bi-pencil-fill me-1"></i> แก้ไข
+                                                </button>
+                                            )}
                             </div>
                                 
                             <form action="" onSubmit={handleSubmitEdit}>
@@ -283,19 +296,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                                 />
                                             </div>
                                         </div>
-                                        {/* สิทธ์เข้าถึงแก้ไขผู้ตรวจสอบ */}
-                                        {Array.isArray(detailPlanning) &&
-                                            detailPlanning.length > 0 &&
-                                            detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary"
-                                                    onClick={() => setIsEditing(true)}
-                                                    style={{ whiteSpace: 'nowrap' }}
-                                                >
-                                                    <i class="bi bi-pencil-square"></i> แก้ไข
-                                                </button>
-                                            )}
+                                        
                                     </div>
 
                                     <div className="row ">
