@@ -62,6 +62,12 @@ const Modal_Closing = ({isOpen, onClose}) => {
                 ตรวจสอบ PM
                 </h5>
             </div>
+{/*  */}
+        <div className="p-3">
+            <div className="mb-3 col-lg-6">
+                <input type="text" name="" id="" />
+            </div>
+            </div>    
         
         </ReactModal>
     )
