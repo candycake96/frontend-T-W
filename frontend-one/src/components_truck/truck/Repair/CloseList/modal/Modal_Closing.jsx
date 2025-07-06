@@ -1,24 +1,63 @@
+import axios from "axios";
 import React, { useState } from "react";
 import ReactModal from "react-modal";
+import { apiUrl } from "../../../../../config/apiConfig";
 
-const Modal_Closing = ({isOpen, onClose, dataClosing}) => {
+const Modal_Closing = ({ isOpen, onClose, dataClosing, user }) => {
     const [formData, setFormData] = useState({
-    close_date: "",
-    close_remark: "",
-    status_after_close: ""
-});
-
-const handleSubmitClose = () => {
-    // ตัวอย่างส่งข้อมูล
-    console.log("กำลังส่งข้อมูล:", formData);
-};
+        close_date: "",
+        close_remark: "",
+        status_after_close: ""
+    });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === "close_file") {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: files[0], // เก็บเป็นไฟล์
+            }));
+        } else {
+            setFormData((prev) => ({ ...prev, [name]: value }));
+        }
     };
+
+    const handleSubmitClose = async () => {
+        try {
+            const form = new FormData();
+            form.append("request_id", dataClosing?.request_id);
+            form.append("close_date", formData.close_date);
+            form.append("close_remark", formData.close_remark);
+            form.append("status_after_close", formData.status_after_close);
+            if (formData.close_file) {
+                form.append("close_file", formData.close_file);
+            }
+
+           console.log("ข้อมูลที่แนบ:");
+for (let [key, value] of form.entries()) {
+  console.log(`${key}:`, value);
+}
+
+            const response = await axios.post(
+                `${apiUrl}/api/close_list_add/${user?.id_emp}`,
+                form,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            console.log("✅ ส่งข้อมูลสำเร็จ:", response.data);
+            onClose(); // ปิด modal หลังส่งสำเร็จ
+        } catch (error) {
+            console.error("❌ ส่งข้อมูลไม่สำเร็จ:", error);
+        }
+    };
+
     return (
-      <ReactModal
+        <ReactModal
             isOpen={isOpen}
             onRequestClose={onClose}
             ariaHideApp={false}
@@ -56,7 +95,7 @@ const handleSubmitClose = () => {
                     zIndex: 2,
                 }}
             >
-                <h5 className="modal-title fw-bold">ปิดงานซ่อม</h5>
+                <h5 className="modal-title fw-bold">ปิดงานซ่อม {dataClosing?.request_id}</h5>
                 <button
                     onClick={onClose}
                     style={{
@@ -105,15 +144,15 @@ const handleSubmitClose = () => {
                 </div>
 
 
-                  <div className="mb-3">
+                <div className="mb-3">
                     <label className="form-label fw-semibold">เอกสารกาารปิดงานซ่อม</label>
                     <input
                         type="file"
                         className="form-control"
                         name="close_file"
-                        value={formData.close_file}
                         onChange={handleChange}
                     />
+
                 </div>
 
                 <div className="mb-3">

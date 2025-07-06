@@ -467,7 +467,7 @@ const MaintenanceJob = () => {
             </div>
             {/* Modal */}
             {isOpenModolClosing && (
-                <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} />
+                <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} user={user} dataClosing={dataOpenModolClosing}/>
             )}
         </div>
     );
