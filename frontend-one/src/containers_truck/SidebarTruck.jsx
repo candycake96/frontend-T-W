@@ -1,238 +1,125 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./SidebarTruck.css";
 
 const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const location = useLocation(); // ดึงค่า URL ปัจจุบัน
+  const location = useLocation();
+  const [user, setUser] = useState(null);
 
   const toggleDropdown = (menu) => {
     setActiveDropdown((prev) => (prev === menu ? null : menu));
   };
 
-  return (
-    <div className={`d-flex flex-column p-3 position-fixed ${isSidebarOpen ? "w-64" : "w-0"}`}
-      style={{ height: "100%", zIndex: 1050, transition: "width 0.3s", overflowY: "auto" }}>
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        // ตรวจสอบว่ามี key 'user' อยู่ไหม ถ้าไม่มี ให้ใช้ parsed ตรง ๆ เลย
+        const parsedUser = parsed.user ? parsed.user : parsed;
 
+        console.log("parsedUser:", parsedUser); // ตรวจสอบข้อมูลที่ได้
+
+        const permissionMap = {
+          1: [
+            { submenu_id: 1, submenu_name: "เพิ่มข้อมูลพนักงาน", path: "/truck/employeesadddata", code: "EMP_ADD" },
+            { submenu_id: 2, submenu_name: "ข้อมูลพนักงาน (แก้ไข)", path: "/truck/employeesshowtable", code: "EMP_DETAILS_EDIT" },
+            { submenu_id: 3, submenu_name: "ข้อมูลพนักงานลาออก", path: "/truck/employeesresing", code: "EMP_RESIGN" }
+          ],
+          2: [
+            { submenu_id: 4, submenu_name: "องค์กร / สาขา / แผนก", path: "/truck/organizationmanagment", code: "ORG_COMPANY" },
+            { submenu_id: 5, submenu_name: "เพิ่มข้อมูลจัดการองค์กร", path: "/truck/companymanagement", code: "COMPANY_ADD" }
+          ],
+          3: [
+            { submenu_id: 6, submenu_name: "ข้อมูลรถ", path: "/truck/vehiclemanagement", code: "" },
+            { submenu_id: 7, submenu_name: "ข้อมูลรถต่อ ภาษี", path: "/truck/CarTaxRenewal_Main", code: "" },
+            { submenu_id: 8, submenu_name: "ข้อมูลรถต่อ พรบ.", path: "/truck/CarCMI_Main", code: "" },
+            { submenu_id: 9, submenu_name: "ข้อมูลรถต่อ ประกัน", path: "/truck/CarInsurance_Main", code: "" },
+            { submenu_id: 10, submenu_name: "รายงานเลขไมล์รถ", path: "/truck/CarMileageShow", code: "" },
+            { submenu_id: 11, submenu_name: "รายงานรถ ม.79/ม.89", path: "/truck/CarStopTaxRemittanc", code: "" },
+            { submenu_id: 12, submenu_name: "ตั้งค่าแผน PM", path: "/truck/PM_setting", code: "" }
+          ],
+          4: [
+            { submenu_id: 13, submenu_name: "ผู้จำหน่ายสินค้า/อู่ซ่อม", path: "/truck/Vendor", code: "" },
+            { submenu_id: 14, submenu_name: "ราคากลางอะไหล่รถ", path: "/truck/Vehicle_parts_details", code: "" }
+          ],
+          5: [
+            { submenu_id: 15, submenu_name: "แจ้งซ่อม / งานซ่อม", path: "/truck/MaintenanceRequest", code: "" },
+            { submenu_id: 16, submenu_name: "ตรวจสอบความพร้อม", path: "/truck/MaintenancPlanning", code: "" },
+            { submenu_id: 17, submenu_name: "วิเคราะห์แผนซ่อมบำรุง", path: "/truck/MainternanceAnalysisRequestJob", code: "" },
+            { submenu_id: 18, submenu_name: "ตรวจสอบแผนซ่อมบำรุง", path: "/truck/MainternanceAnalysisApprover_table_main", code: "" },
+            { submenu_id: 19, submenu_name: "อนุมัติงานซ่อมบำรุง", path: "/truck/MainternanceApprovalManager", code: "" },
+            { submenu_id: 20, submenu_name: "ปิดงานซ่อมบำรุง", path: "/truck/RepairCloseList", code: "" }
+          ],
+          6: [
+            { submenu_id: 21, submenu_name: "ข้อมูลคนขับ", path: "/truck/driver", code: "" }
+          ]
+        };
+
+        // กรอง submenu ตาม permission_codes ที่ user มี
+        const modulesWithAllowedSubmenus = parsedUser.module_name?.map((mod) => {
+          const perms = permissionMap[mod.module_id] || [];
+          const allowedSubmenus = perms.filter(
+            (submenu) => !submenu.code || parsedUser.permission_codes?.includes(submenu.code)
+          );
+          return { ...mod, submenus: allowedSubmenus };
+        }) || [];
+
+        setUser({ ...parsedUser, module_name: modulesWithAllowedSubmenus });
+      } catch (err) {
+        console.error("Error parsing user data:", err);
+      }
+    }
+  }, []);
+
+  return (
+    <div
+      className={`d-flex flex-column p-3 position-fixed ${isSidebarOpen ? "w-64" : "w-0"}`}
+      style={{ height: "100%", zIndex: 1050, transition: "width 0.3s", overflowY: "auto" }}
+    >
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <Link to="/truck" className="navbar-brand text-decoration-none fw-bolder" style={{ color: "#083b72" }}>NCL Thailand (TMS)</Link>
+        <Link to="/truck" className="navbar-brand text-decoration-none fw-bolder" style={{ color: "#083b72" }}>
+          NCL Thailand (TMS)
+        </Link>
         <i
           onClick={toggleSidebar}
           className={`bi bi-chevron-double-left sidebar-toggle-icon ${isSidebarOpen ? "" : "collapsed"}`}
         ></i>
-
       </div>
 
       <ul className="nav flex-column mb-auto sidebar-nav">
-        {/* 📌 เมนูพนักงาน */}
         <li className="nav-item">
-          <Link to="/truck"
-            className={`nav-link ${location.pathname === "/truck" ? "active" : ""}`}>
-            <i class="bi bi-robot"></i> หน้าแรก
+          <Link to="/truck" className={`nav-link ${location.pathname === "/truck" ? "active" : ""}`}>
+            <i className="bi bi-robot"></i> หน้าแรก
           </Link>
         </li>
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("employee")} className="nav-link">
-            <i class="bi bi-person-fill-gear"></i> จัดการข้อมูลพนักงาน
-          </button>
-          {activeDropdown === "employee" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/employeesadddata"
-                  className={`nav-link ${location.pathname === "/truck/employeesadddata" ? "active" : ""}`}>
-                  เพิ่มข้อมูลพนักงาน
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/employeesshowtable"
-                  className={`nav-link ${location.pathname === "/truck/employeesshowtable" ? "active" : ""}`}>
-                  ข้อมูลพนักงาน (แก้ไข)
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/employeesresing"
-                  className={`nav-link ${location.pathname === "/truck/employeesresing" ? "active" : ""}`}>
-                  ข้อมูลพนักงานลาออก
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
 
-        {/* 📌 เมนูผังองค์กร */}
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("organization")} className="nav-link">
-            <i class="bi bi-building-fill-gear"></i> จัดการข้อมูลผังองค์กร
-          </button>
-          {activeDropdown === "organization" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/organizationmanagment"
-                  className={`nav-link ${location.pathname === "/truck/organizationmanagment" ? "active" : ""}`}>
-                  องค์กร / สาขา / แผนก
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/companymanagement"
-                  className={`nav-link ${location.pathname === "/truck/companymanagement" ? "active" : ""}`}>
-                  เพิ่มข้อมูลจัดการองค์กร
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-
-        {/* 📌 เมนูข้อมูลรถ */}
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("truck")} className="nav-link">
-            <i class="bi bi-car-front-fill"></i>  ระบบจัดการข้อมูลรถ
-          </button>
-          {activeDropdown === "truck" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/vehiclemanagement"
-                  className={`nav-link ${["/truck/vehiclemanagement", "/truck/vehicleaddform"].includes(location.pathname) ? "active" : ""}`}>
-                  ข้อมูลรถ
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/CarTaxRenewal_Main"
-                  className={`nav-link ${["/truck/CarTaxRenewal_Main"].includes(location.pathname) ? "active" : ""}`}>
-                  ข้อมูลรถต่อ ภาษี
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/CarCMI_Main"
-                  className={`nav-link ${["/truck/CarCMI_Main"].includes(location.pathname) ? "active" : ""}`}>
-                  ข้อมูลรถต่อ พรบ.
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/CarInsurance_Main"
-                  className={`nav-link ${["/truck/CarInsurance_Main", "/truck/Insurance_Details", "/truck/insuranceDataComparison"].includes(location.pathname) ? "active" : ""}`}>
-                  ข้อมูลรถต่อ ประกัน
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/truck/CarMileageShow"
-                  className={`nav-link ${["/truck/CarMileageShow", "/truck/CarMileageDetails"].includes(location.pathname) ? "active" : ""}`}
-                >
-                  รายงานเลขไมล์รถ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/truck/CarStopTaxRemittanc"
-                  className={`nav-link ${location.pathname === "/truck/CarStopTaxRemittanc" || location.pathname.startsWith("/truck/Vehicle_status/")
-                    ? "active"
-                    : ""
-                    }`}
-                >
-                  รายงานรถ ม.79/ม.89
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/truck/PM_setting"
-                  className={`nav-link ${location.pathname === "/truck/PM_setting" || location.pathname.startsWith("/truck/Vehicle_status/")
-                    ? "active"
-                    : ""
-                    }`}
-                >
-                  ตั้งค่าแผน PM
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-
-        {/* 📌 เมนูข้อมูลรถ */}
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("vender")} className="nav-link">
-            <i class="bi bi-handbag-fill"></i> ผู้จำหน่ายสินค้า/อู่ซ่อม
-          </button>
-          {activeDropdown === "vender" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/Vendor"
-                  className={`nav-link ${["/truck/Vendor", "/truck/VendorInfo", "/truck/Vendor_add"].includes(location.pathname) ? "active" : ""}`}>
-                  ผู้จำหน่ายสินค้า/อู่ซ่อม
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/Vehicle_parts_details"
-                  className={`nav-link ${["/truck/Vehicle_parts_details", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  ราคากลางอะไหล่รถ
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-
-        {/* 📌 เมนูข้อมูลรถ */}
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("CaeRepai")} className="nav-link">
-            <i class="bi bi-tools"></i>  ระบบแจ้งซ่อมรถ
-          </button>
-          {activeDropdown === "CaeRepai" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/MaintenanceRequest"
-                  className={`nav-link ${["/truck/MaintenanceRequest", "/truck/RepairRequestForm", "/truck/2"].includes(location.pathname) ? "active" : ""}`}>
-                  แจ้งซ่อม / งานซ่อม
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/MaintenancPlanning"
-                  className={`nav-link ${["/truck/MaintenancPlanning"].includes(location.pathname) ? "active" : ""}`}>
-                  ตรวจสอบความพร้อม
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/MainternanceAnalysisRequestJob"
-                  className={`nav-link ${["/truck/MainternanceAnalysisRequestJob"].includes(location.pathname) ? "active" : ""}`}>
-                  วิเคราะห์แผนซ่อมบำรุง
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/MainternanceAnalysisApprover_table_main"
-                  className={`nav-link ${["/truck/MainternanceAnalysisApprover_table_main"].includes(location.pathname) ? "active" : ""}`}>
-                  ตรวจสอบแผนซ่อมบำรุง
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/MainternanceApprovalManager"
-                  className={`nav-link ${["/truck/MainternanceApprovalManager"].includes(location.pathname) ? "active" : ""}`}>
-                  อนุมัติงานซ่อมบำรุง
-                </Link>
-              </li>
-              <li>
-                <Link to="/truck/RepairCloseList"
-                  className={`nav-link ${["/truck/RepairCloseList"].includes(location.pathname) ? "active" : ""}`}>
-                  ปิดงานซ่อมบำรุง
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-
-        {/* 📌 เมนูข้อมูลคนขับ */}
-        <li className="nav-item">
-          <button onClick={() => toggleDropdown("driver")} className="nav-link">
-            <i class="bi bi-person-vcard-fill"></i> ระบบจัดการข้อมูลคนขับ
-          </button>
-          {activeDropdown === "driver" && (
-            <ul className="list-unstyled ps-4">
-              <li>
-                <Link to="/truck/driver"
-                  className={`nav-link ${location.pathname === "/truck/driver" ? "active" : ""}`}>
-                  ข้อมูลคนขับ
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
+        {user?.module_name?.map((module) => (
+          <li key={module.module_id} className="nav-item">
+            <button onClick={() => toggleDropdown(module.module_id)} className="nav-link">
+              <i className="bi bi-folder-fill"></i> {module.module_name}
+            </button>
+            {activeDropdown === module.module_id && (
+              <ul className="list-unstyled ps-4">
+                {module.submenus.length > 0 ? (
+                  module.submenus.map((submenu) => (
+                    <li key={submenu.submenu_id}>
+                      <Link
+                        to={submenu.path}
+                        className={`nav-link ${location.pathname === submenu.path ? "active" : ""}`}
+                      >
+                        {submenu.submenu_name}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-muted ps-3">ไม่มีเมนูย่อยที่อนุญาต</li>
+                )}
+              </ul>
+            )}
+          </li>
+        ))}
       </ul>
     </div>
   );
