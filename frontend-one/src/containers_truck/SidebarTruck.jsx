@@ -44,7 +44,7 @@ console.log("parsedUser:", parsedUser);
           { submenu_id: 14, submenu_name: "ราคากลางอะไหล่รถ", path: "/truck/Vehicle_parts_details", code: "" }
         ],
         5: [
-          { submenu_id: 15, submenu_name: "แจ้งซ่อม / งานซ่อม", path: "/truck/MaintenanceRequest", code: "" },
+          { submenu_id: 15, submenu_name: "แจ้งซ่อม/งานซ่อม", path: "/truck/MaintenanceRequest", code: "" },
           { submenu_id: 16, submenu_name: "ตรวจสอบความพร้อม", path: "/truck/MaintenancPlanning", code: "" },
           { submenu_id: 17, submenu_name: "วิเคราะห์แผนซ่อมบำรุง", path: "/truck/MainternanceAnalysisRequestJob", code: "" },
           { submenu_id: 18, submenu_name: "ตรวจสอบแผนซ่อมบำรุง", path: "/truck/MainternanceAnalysisApprover_table_main", code: "" },
