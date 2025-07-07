@@ -25,7 +25,7 @@ const RepairCloseList = () => {
         } else if (filterType === "approved") {
             endpoint = "/api/waiting_closing_list_table";
         } else if (filterType === "finished") {
-            endpoint = "/api/waiting_closing_list_table";
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);

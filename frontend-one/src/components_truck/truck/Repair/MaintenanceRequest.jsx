@@ -27,7 +27,7 @@ const MaintenanceRequest = () => {
         } else if (filterType === "approved") {
             endpoint = "/api/repair_requests_detail";
         } else if (filterType === "finished") {
-            endpoint = "/api/RepairAnalysisFinished";
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);
