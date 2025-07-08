@@ -21,7 +21,7 @@ const MainternanceAnalysisRequestJob = () => {
     const fetchPendingTable = async () => {
         let endpoint = "";
         if (filterType === "analysis") {
-            endpoint = "/api/planning_show";
+            endpoint = "/api/analysis_details";
         } else if (filterType === "activeAnalysis") {
             endpoint = "/api/RepairPlanningApproved";
         } else if (filterType === "editAnalysis") {

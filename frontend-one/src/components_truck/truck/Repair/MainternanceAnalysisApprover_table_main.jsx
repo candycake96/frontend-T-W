@@ -44,10 +44,12 @@ const MainternanceAnalysisApprover_table_main = () => {
         }
     };
 
+
     useEffect(() => {
         fetchAnalysisTable();
     }, [filterType]);
 
+    
     const filterByDateRange = (data) => {
         if (!appliedStartDate && !appliedEndDate) return data;
 
