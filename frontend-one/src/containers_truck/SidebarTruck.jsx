@@ -56,6 +56,9 @@ console.log("parsedUser:", parsedUser);
         ]
       };
 
+;
+
+
       parsedUser.module_name = parsedUser.module_name.map((mod) => {
         const perms = permissionMap[mod.module_id] || [];
         const allowed = perms.filter(
@@ -71,7 +74,22 @@ console.log("parsedUser:", parsedUser);
   }
 }, []);
 
-
+      const getModuleIcon = (moduleId) => {
+  switch (moduleId) {
+    case 1:
+      return <i className="bi bi-person-fill"></i>; // ข้อมูลพนักงาน
+    case 2:
+      return <i className="bi bi-building"></i>; // ข้อมูลองค์กร
+    case 3:
+      return <i className="bi bi-truck"></i>; // จัดการรถ
+    case 4:
+      return <i className="bi bi-shop"></i>; // ผู้จำหน่าย
+    case 5:
+      return <i className="bi bi-tools"></i>; // ซ่อมบำรุง
+    default:
+      return <i className="bi bi-folder-fill"></i>; // default
+  }
+}
   return (
     <div className={`d-flex flex-column p-3 position-fixed ${isSidebarOpen ? "w-64" : "w-0"}`}
       style={{ height: "100%", zIndex: 1050, transition: "width 0.3s", overflowY: "auto" }}>
@@ -89,9 +107,12 @@ console.log("parsedUser:", parsedUser);
 
         {user?.module_name?.map((module, index) => (
           <li key={index} className="nav-item">
-            <button onClick={() => toggleDropdown(module.module_id)} className="nav-link">
-              <i className="bi bi-folder-fill"></i> {module.module_name}
-            </button>
+
+<button onClick={() => toggleDropdown(module.module_id)} className="nav-link">
+  {getModuleIcon(module.module_id)} {module.module_name}
+</button>
+
+
             {activeDropdown === module.module_id && (
               <ul className="list-unstyled ps-4">
                 {module.submenus.map((submenu) => (
