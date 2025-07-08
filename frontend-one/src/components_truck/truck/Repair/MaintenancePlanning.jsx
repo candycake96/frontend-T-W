@@ -22,9 +22,9 @@ const MaintenancPlanning = () => {
         if (filterType === "pending") {
             endpoint = "/api/planning_show";
         } else if (filterType === "approved") {
-            endpoint = "/api/RepairPlanningApproved";
+            endpoint = "/api/planning_table_submit";
         } else if (filterType === "finished") {
-            endpoint = "/api/RepairPlanningFinished";
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);

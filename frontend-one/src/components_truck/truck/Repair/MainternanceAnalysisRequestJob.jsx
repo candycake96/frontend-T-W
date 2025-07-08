@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { apiUrl } from "../../../config/apiConfig";
 import { Link } from "react-router-dom";
 import MainternanceAnalysisRequestJob_table from "./MainternanceAnalysisRequestJob_table";
+import { apiUrl } from "../../../config/apiConfig";
 
 const MainternanceAnalysisRequestJob = () => {
     const [isPendingTable, setPendingTable] = useState([]);
-    const [filterType, setFilterType] = useState("pending");
+    const [filterType, setFilterType] = useState("analysis");
     const [loading, setLoading] = useState(false);
 
     const [startDate, setStartDate] = useState("");
@@ -20,12 +20,14 @@ const MainternanceAnalysisRequestJob = () => {
 
     const fetchPendingTable = async () => {
         let endpoint = "";
-        if (filterType === "pending") {
+        if (filterType === "analysis") {
             endpoint = "/api/planning_show";
-        } else if (filterType === "approved") {
+        } else if (filterType === "activeAnalysis") {
             endpoint = "/api/RepairPlanningApproved";
-        } else if (filterType === "finished") {
-            endpoint = "/api/RepairPlanningFinished";
+        } else if (filterType === "editAnalysis") {
+            endpoint = "/api/closing_list_table";
+        }else if (filterType === "finished") {
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);
@@ -101,20 +103,20 @@ const MainternanceAnalysisRequestJob = () => {
                     </div>
                     <div className="btn-group" role="group">
                         <button
-                            className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
-                            onClick={() => setFilterType("pending")}
+                            className={`btn btn-sm ${filterType === "analysis" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("analysis")}
                         >
                             <i className="bi bi-clock me-1"></i> รอวิเคราะห์
                         </button>
                         <button
-                            className={`btn btn-sm ${filterType === "approved" ? "btn-success" : "btn-outline-success"}`}
-                            onClick={() => setFilterType("approved")}
+                            className={`btn btn-sm ${filterType === "activeAnalysis" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("activeAnalysis")}
                         >
                             <i className="bi bi-check2-circle me-1"></i> วิเคราะห์แล้ว
                         </button>
                         <button
-                            className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
-                            onClick={() => setFilterType("finished")}
+                            className={`btn btn-sm ${filterType === "editAnalysis" ? "btn-success" : "btn-outline-success"}`}
+                            onClick={() => setFilterType("editAnalysis")}
                         >
                             <i class="bi bi-send-arrow-up"></i> รอแก้ไข
                         </button>
@@ -172,7 +174,7 @@ const MainternanceAnalysisRequestJob = () => {
                     </div>
                 ) : (
                     <>
-                        <MainternanceAnalysisRequestJob_table PendingTable={filteredData} loading={loading} />
+                        <MainternanceAnalysisRequestJob_table AnalysisTable={filteredData} loading={loading} />
                     </>
                 )}
 
