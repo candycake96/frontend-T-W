@@ -24,7 +24,7 @@ const MainternanceAnalysisApprover_table_main = () => {
         } else if (filterType === "approved") {
             endpoint = "/api/RepairAnalysisApproved";
         } else if (filterType === "finished") {
-            endpoint = "/api/RepairAnalysisFinished";
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);

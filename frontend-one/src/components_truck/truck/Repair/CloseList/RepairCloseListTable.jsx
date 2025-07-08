@@ -47,9 +47,25 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
                                       <td>{formatDate(data.request_date)}</td>
                                       <td>{data.job_type || '-'}</td>
                                       <td>
-                                          <span className="badge bg-warning text-dark">
-                                              {data.status}
-                                          </span>
+                                          <span className={`badge ${
+                                                  data.status === "ปิดงานซ่อม"
+                                                ? "bg-danger"
+                                                : data.status === "แจ้งซ่อม"
+                                                ? "bg-primary"
+                                                : data.status === "แผนกจัดรถตรวจสอบ"
+                                                ? "bg-warning"
+                                                : data.status === "วิเคราะห์แผนกซ่อมบำรุง"
+                                                ? "bg-info"
+                                                : data.status === "ผ่านอนุมัตผลตรวจหัวหน้าแผนกช่าง"
+                                                ? "bg-secondary"
+                                                : data.status === "ผู้จัดการฝ่ายขนส่งและคลังสินค้า"
+                                                ? "bg-success"
+                                                : data.status === "ยกเลิกงานซ่อม"
+                                                ? "bg-danger"
+                                                : "bg-success"
+                                        }`}>
+                                        {data.status}
+                                    </span>
                                       </td>
                                       <td>{data.reg_number}</td>
                                       <td className="text-center">

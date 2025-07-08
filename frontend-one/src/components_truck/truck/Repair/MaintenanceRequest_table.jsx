@@ -38,14 +38,22 @@ const MainternanceRequest_table = ({ analysisData = [], loading = false }) => {
                                 <td>
                                     <span className={`badge ${data.status === "ปิดงานซ่อม"
                                             ? "bg-danger"
-                                            : data.status === "กำลังซ่อม"
-                                                ? "bg-warning text-dark"
+                                            : data.status === "แจ้งซ่อม"
+                                                ? "bg-primary"
+                                                : data.status === "แผนกจัดรถตรวจสอบ"
+                                                ? "bg-warning"
+                                                : data.status === "วิเคราะห์แผนกซ่อมบำรุง"
+                                                ? "bg-info"
+                                                : data.status === "ผ่านอนุมัตผลตรวจหัวหน้าแผนกช่าง"
+                                                ? "bg-secondary"
+                                                : data.status === "ผู้จัดการฝ่ายขนส่งและคลังสินค้า"
+                                                ? "bg-success"
+                                                : data.status === "ยกเลิกงานซ่อม"
+                                                ? "bg-danger"
                                                 : "bg-success"
                                         }`}>
                                         {data.status}
                                     </span>
-
-
                                 </td>
 
                                 <td className="text-center">

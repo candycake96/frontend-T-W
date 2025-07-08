@@ -23,9 +23,9 @@ const MainternanceAnalysisRequestJob = () => {
         if (filterType === "analysis") {
             endpoint = "/api/analysis_details";
         } else if (filterType === "activeAnalysis") {
-            endpoint = "/api/RepairPlanningApproved";
+            endpoint = "/api/analysis_details_table_active";
         } else if (filterType === "editAnalysis") {
-            endpoint = "/api/closing_list_table";
+            endpoint = "/api/analysis_details_table_active";
         }else if (filterType === "finished") {
             endpoint = "/api/closing_list_table";
         }

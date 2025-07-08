@@ -20,11 +20,11 @@ const MainternanceApprovalManager = () => {
     const fetchAnalysisTable = async () => {
         let endpoint = "";
         if (filterType === "pending") {
-            endpoint = "/api/RepairAnalysisPending";
+            endpoint = "/api/maintenance_approval_how_table";
         } else if (filterType === "approved") {
-            endpoint = "/api/RepairAnalysisApproved";
+            endpoint = "/api/maintenance_approval_show_table";
         } else if (filterType === "finished") {
-            endpoint = "/api/RepairAnalysisFinished";
+            endpoint = "/api/closing_list_table";
         }
 
         setLoading(true);
