@@ -31,7 +31,7 @@ console.log("parsedUser:", parsedUser);
           { submenu_id: 5, submenu_name: "เพิ่มข้อมูลจัดการองค์กร", path: "/truck/companymanagement", code: "COMPANY_ADD" }
         ],
         3: [
-          { submenu_id: 6, submenu_name: "ข้อมูลรถ", path: "/truck/vehiclemanagement", code: "" },
+          { submenu_id: 6, submenu_name: "ข้อมูลรถ", path: "/truck/vehiclemanagement", code: "VEHICLE_VIEW" },
           { submenu_id: 7, submenu_name: "ข้อมูลรถต่อ ภาษี", path: "/truck/CarTaxRenewal_Main", code: "" },
           { submenu_id: 8, submenu_name: "ข้อมูลรถต่อ พรบ.", path: "/truck/CarCMI_Main", code: "" },
           { submenu_id: 9, submenu_name: "ข้อมูลรถต่อ ประกัน", path: "/truck/CarInsurance_Main", code: "" },
