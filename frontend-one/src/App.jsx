@@ -81,13 +81,14 @@ function App() {
       <Router>
         <Routes>
           {/* เข้าสู่ระบบ Truck */}
-        <Route path="logintruck" element={<LoginTruck/>} />
+        <Route index element={<LoginTruck/>} />
+        <Route path="LoginTruck" element={<LoginTruck/>} />
 
 
           <Route path="/" element={<Layout />}>
             {" "}
             {/*  //เว็บเพจแรกเข้า */}
-            <Route index element={<Home />} />
+            {/* <Route index element={<Home />} /> */}
             <Route path="about" element={<About />} />
             <Route path="loginpage" element={<LoginPage />} />
             <Route path="newspage" element={<NewsPage />} />

@@ -5,7 +5,7 @@ import ReactModal from "react-modal";
 import { apiUrl } from "../../../config/apiConfig";
 
 
-const EditPermission = ({ isOpen, onClose, emp }) => {
+const EditPermission = ({ isOpen, onClose, emp, user }) => {
 
     const [permissionAccess, setPermissionAccess] = useState([]);
     const [submenuData, setSubmenueData] = useState([]);

@@ -9,6 +9,15 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
   const [empRoles, setEmpRoles] = useState([]);
   const id = emp.id_emp;
 
+    // ดึงข้อมูลผู้ใช้จาก localStorage
+      const [user, setUser] = useState(null);  //token
+      useEffect(() => {
+          const userData = localStorage.getItem('user');
+          if (userData) {
+              setUser(JSON.parse(userData));
+          }
+      }, []);
+
     const [isModalEditPermission, setModalEditPermission] = useState(false);
     const [dataModalPermission, setDataModalPermission] = useState(null);
   const handleOpenModalPermission = (data) => {
@@ -45,9 +54,13 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
     }
   }, [id]); // Depend on employee ID to fetch roles
 
+
+
   return (
     <div className="p-3">
       {/* Header Section */}
+      {user?.permission_codes.includes("EMP_PERMISSION") &&  (
+      <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div className="col-4 fw-bold">สิทธิ์การใช้งาน</div>
         <button
@@ -89,6 +102,7 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
       <hr className="mb-3" />
       <div className="mb-3">
         {/* Header Section */}
+
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div className="col-4 fw-bold">สิทธิ์การเข้าถึง</div>
           <button
@@ -102,12 +116,16 @@ const ShowDetailRoles = ({ onEdit, emp, onUpdateRoles }) => {
             <i className="bi bi-pencil-square"></i> แก้ไข
           </button>
         </div>
+        
         <div className="">
             
         </div>
       </div>
+
+      </>
+   )}   
             {isModalEditPermission && (
-              <EditPermission isOpen={isModalEditPermission} onClose={handleClossModalEditPermission} emp={dataModalPermission} />
+              <EditPermission isOpen={isModalEditPermission} onClose={handleClossModalEditPermission} emp={dataModalPermission} user={user}/>
             )}
     </div>
   );

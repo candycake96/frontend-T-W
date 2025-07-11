@@ -120,6 +120,7 @@ const EmployeesResing = () => {
                     <tr>
                       <th>รหัสพนักงาน</th>
                       <th>ชื่อ-นามสกุล</th>
+                      <th>อีเมล์</th>
                       <th>แผนก</th>
                       <th></th>
                     </tr>
@@ -130,6 +131,9 @@ const EmployeesResing = () => {
                         <td>{employee.code}</td>
                         <td>
                           {employee.fname} {employee.lname}
+                        </td>
+                        <td>
+                          {employee.email}
                         </td>
                         <td>{employee.name_department}</td>
                         <td>
