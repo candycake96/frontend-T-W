@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
+import Modal_vehicle_madels_add from "./modal/modal_vehicle_models_add";
 
 const Vehicle_models = () => {
+
+    const [isOpenModalModelAdd, setOpenModalModelAdd] = useState(false);
+    const handleOpenModalModelAdd = () => {
+        setOpenModalModelAdd(true);
+    }
+    const handleClosModalModelAdd = () => {
+        setOpenModalModelAdd(false);
+    }
+
     return (
         <>
         <div className="container py-3">
@@ -21,7 +31,7 @@ const Vehicle_models = () => {
             <hr className="mb-3" />
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                 <p>ข้อมูลยี่ห้อ/รุ่นรถ</p>
-                <Button className="btn-sm">เพิ่มข้อมูล</Button>
+                <Button className="btn-sm" onClick={()=>handleOpenModalModelAdd()}>เพิ่มข้อมูล</Button>
             </div>
             <div className="">
                 <table className="table">
@@ -44,6 +54,9 @@ const Vehicle_models = () => {
                 </table>
             </div>
         </div>
+        {isOpenModalModelAdd && (
+            <Modal_vehicle_madels_add isOpen={isOpenModalModelAdd} onClose={handleClosModalModelAdd} />
+        )}
         </>
     )
 };
