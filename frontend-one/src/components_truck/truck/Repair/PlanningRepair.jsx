@@ -552,11 +552,11 @@ const PlanningRepair = ({ maintenanceJob }) => {
                     </>
                 ) : (
                     <>
-                        <div className="text-center alert alert-warning md-3" role="alert">
+                        {/* <div className="text-center alert alert-warning md-3" role="alert">
                             <strong>
                                 <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
                             </strong>
-                        </div>
+                        </div> */}
                     </>
                 )}
 
