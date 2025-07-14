@@ -72,6 +72,7 @@ import MainternanceAnalysisApprover_table_main from "./components_truck/truck/Re
 import MainternanceApprovalManager from "./components_truck/truck/Repair/MainternanceApprovalManager";
 import PM_setting from "./components_truck/truck/PreventiveMaintenance/PM_setting";
 import RepairCloseList from "./components_truck/truck/Repair/CloseList/RepairCloseList";
+import Vehicle_models from "./components_truck/truck/Vehicle/setting_vehicle/vehicle_models/vehicle_models";
 
 Modal.setAppElement("#root");
 
@@ -84,7 +85,7 @@ function App() {
         <Route index element={<LoginTruck/>} />
         <Route path="LoginTruck" element={<LoginTruck/>} />
 
-
+ 
           <Route path="/" element={<Layout />}>
             {" "}
             {/*  //เว็บเพจแรกเข้า */}
@@ -159,6 +160,8 @@ function App() {
           <Route path="MainternanceApprovalManager" element={<MainternanceApprovalManager/>} />{/*  หน้า Manager อนุมัติวิเคราะจากแผนกซ่อมบำรุง */} 
           <Route path="PM_setting" element={<PM_setting/>} />{/*  หน้า PM */} 
           <Route path="RepairCloseList" element={<RepairCloseList/>} /> {/* ปิดงานซ่อม */}
+          <Route path="Vehicle_models" element={<Vehicle_models/>} /> {/* ปิดงานซ่อม */}
+          
           </Route> 
         </Routes> 
       </Router> 
