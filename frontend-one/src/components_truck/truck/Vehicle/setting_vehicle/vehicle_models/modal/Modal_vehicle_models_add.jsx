@@ -16,11 +16,18 @@ const Modal_vehicle_models_add = ({ isOpen, onClose, onSaved }) => {
 
     try {
       setLoading(true);
-      // 👇 เปลี่ยน URL ให้ตรงกับ API ของคุณ
-      await axios.post("/api/vehicle-models/add", {
+
+      console.log()
+      await axios.post(`http://localhost:3333/api/setting_models_add`, {
         brand,
-        model,
-      });
+        model
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
 
       alert("บันทึกสำเร็จ");
       setBrand("");

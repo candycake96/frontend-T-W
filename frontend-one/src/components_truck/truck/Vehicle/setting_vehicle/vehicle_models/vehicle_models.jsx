@@ -1,64 +1,110 @@
-import React, { useState } from "react";
-import { Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Table } from "react-bootstrap";
 import Modal_vehicle_madels_add from "./modal/modal_vehicle_models_add";
+import { apiUrl } from "../../../../../config/apiConfig";
+import axios from "axios";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const Vehicle_models = () => {
+    const [dataModels, setDataModel] = useState([]);
+
+
+    const fetchDataModel = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/setting_models_show`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            setDataModel(response.data);
+        } catch (error) {
+            console.error("Error fetching vehicle models:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataModel();
+    }, []);
 
     const [isOpenModalModelAdd, setOpenModalModelAdd] = useState(false);
     const handleOpenModalModelAdd = () => {
         setOpenModalModelAdd(true);
-    }
+    };
     const handleClosModalModelAdd = () => {
         setOpenModalModelAdd(false);
+    };
+
+    const [isOpenModalModelEdit, setOpenModalModelEdit] = useState(false);
+    const handleOpenModalModelEdit = () => {
+        setOpenModalModelEdit(true);
     }
 
     return (
         <>
-        <div className="container py-3">
-            <div className="mb-4">
-                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div>
-                        <h5 className="fw-bold text-primary mb-1">ตั้งค่าข้อมูลรถ</h5>
-                        <p className="text-muted mb-0">
-                            รายงานการตั้งค่าข้อมูลรถเพื่อใช้ในการเพิ่มข้อมูลรถ
-                        </p>
-                    </div>
-                    <div className="btn-group" role="group">
-                       
+            <div className="container py-4">
+                <div className="mb-4">
+                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h4 className="fw-bold text-primary">ตั้งค่าข้อมูลรถ</h4>
+                            <small className="text-muted">
+                                จัดการยี่ห้อและรุ่นรถเพื่อนำไปใช้ในระบบลงทะเบียนรถ
+                            </small>
+                        </div>
+                        <Button variant="primary" onClick={handleOpenModalModelAdd}>
+                            <i className="bi bi-plus-circle me-2"></i>เพิ่มข้อมูล
+                        </Button>
                     </div>
                 </div>
+
+                <Card className="shadow-sm">
+                    <Card.Body>
+                        <h6 className="mb-3 fw-bold text-secondary">ข้อมูลยี่ห้อ/รุ่นรถ</h6>
+                        <div className="table-responsive">
+                            <Table hover bordered>
+                                <thead className="table-light">
+                                    <tr className="text-center">
+                                        <th style={{ width: "5%" }}>#</th>
+                                        <th>ยี่ห้อ</th>
+                                        <th>รุ่น</th>
+                                        <th style={{ width: "10%" }}>จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dataModels.length > 0 ? (
+                                        dataModels.map((data, ndx) => (
+                                            <tr key={ndx}>
+                                                <td className="text-center">{ndx + 1}</td>
+                                                <td>{data.brand}</td>
+                                                <td>{data.model}</td>
+                                                <td className="text-center">
+                                                    <Button variant="outline-primary" size="sm">
+                                                        <i className="bi bi-pencil-square"></i>
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="4" className="text-center text-muted">
+                                                ไม่มีข้อมูล
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </Table>
+                        </div>
+                    </Card.Body>
+                </Card>
             </div>
-            <hr className="mb-3" />
-            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                <p>ข้อมูลยี่ห้อ/รุ่นรถ</p>
-                <Button className="btn-sm" onClick={()=>handleOpenModalModelAdd()}>เพิ่มข้อมูล</Button>
-            </div>
-            <div className="">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>ยี่ห้อ</th>
-                            <th>รุ่น</th>
-                            <th>*</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>aaa</td>
-                            <td>aaa</td>
-                            <td>aaa</td>
-                            <td><Button className=""><i class="bi bi-feather"></i></Button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {isOpenModalModelAdd && (
-            <Modal_vehicle_madels_add isOpen={isOpenModalModelAdd} onClose={handleClosModalModelAdd} />
-        )}
+
+            {isOpenModalModelAdd && (
+                <Modal_vehicle_madels_add
+                    isOpen={isOpenModalModelAdd}
+                    onClose={handleClosModalModelAdd}
+                />
+            )}
         </>
-    )
+    );
 };
 
 export default Vehicle_models;
