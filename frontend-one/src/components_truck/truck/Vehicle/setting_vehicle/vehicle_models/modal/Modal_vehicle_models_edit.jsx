@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { Button, Form } from "react-bootstrap";
+import axios from "axios";
+import { apiUrl } from "../../../../../../config/apiConfig";
 
 const Modal_vehicle_madels_edit = ({ isOpen, onClose, dataModels, onSave }) => {
     const [brand, setBrand] = useState("");
@@ -13,15 +15,43 @@ const Modal_vehicle_madels_edit = ({ isOpen, onClose, dataModels, onSave }) => {
         }
     }, [dataModels]);
 
-    const handleSave = () => {
+   const handleSave = async () => {
+    const trimmedBrand = brand.trim();
+    const trimmedModel = model.trim();
+
+    if (!trimmedBrand || !trimmedModel) {
+        alert("กรุณากรอกยี่ห้อและรุ่นรถให้ครบถ้วน");
+        return;
+    }
+
+    try {
         const updatedData = {
             ...dataModels,
-            brand: brand.trim(),
-            model: model.trim(),
+            brand: trimmedBrand,
+            model: trimmedModel,
         };
+
+        await axios.put(
+  `${apiUrl}/api/setting_models_update/${dataModels?.model_id}`,
+  updatedData,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  }
+);
+
+
         onSave(updatedData);
         onClose();
-    };
+
+        alert("บันทึกข้อมูลสำเร็จ");
+    } catch (error) {
+        console.error("Error updating model:", error);
+        alert("เกิดข้อผิดพลาด ไม่สามารถบันทึกข้อมูลได้");
+    }
+};
+
 
     return (
         <ReactModal
@@ -51,7 +81,7 @@ const Modal_vehicle_madels_edit = ({ isOpen, onClose, dataModels, onSave }) => {
         >
             {/* Header */}
             <div className="modal-header bg-primary text-white">
-                <h5 className="modal-title m-0">🛠️ แก้ไขยี่ห้อ / รุ่นรถ</h5>
+                <h5 className="modal-title m-0"> แก้ไขยี่ห้อ / รุ่นรถ {dataModels?.model_id}</h5>
                 <button onClick={onClose} className="btn-close btn-close-white"></button>
             </div>
 

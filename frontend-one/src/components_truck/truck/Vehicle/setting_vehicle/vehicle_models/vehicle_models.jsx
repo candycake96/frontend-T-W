@@ -41,10 +41,32 @@ const Vehicle_models = () => {
         setOpenModalModelEdit(true);
         setDataModalModelEdit(data);
     };
-       const handleClosModalModelEdit = () => {
-        setOpenModalModelEdit(true);
+    const handleClosModalModelEdit = () => {
+        setOpenModalModelEdit(false);
     };
 
+    const handleDeleteModel = async (id) => {
+  const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลยี่ห้อ/รุ่นรถนี้?");
+  if (!confirmDelete) return;
+
+  try {
+    const response = await axios.delete(
+      `${apiUrl}/api/setting_models_delete/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+
+    // แจ้งลบสำเร็จ
+    alert("ลบข้อมูลสำเร็จ");
+    fetchDataModel(); // รีเฟรชรายการ
+  } catch (error) {
+    console.error("Error:", error);
+    alert("เกิดข้อผิดพลาด ไม่สามารถลบข้อมูลได้");
+  }
+};
 
     return (
         <>
@@ -84,8 +106,11 @@ const Vehicle_models = () => {
                                                 <td>{data.brand}</td>
                                                 <td>{data.model}</td>
                                                 <td className="text-center">
-                                                    <Button variant="outline-primary" size="sm" onClick={()=>handleOpenModalModelEdit(data)}>
+                                                    <Button variant="outline-primary me-1" size="sm" onClick={() => handleOpenModalModelEdit(data)}>
                                                         <i className="bi bi-pencil-square"></i>
+                                                    </Button>
+                                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteModel(data.model_id)}>
+                                                        <i class="bi bi-trash"></i>
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -108,14 +133,22 @@ const Vehicle_models = () => {
                 <Modal_vehicle_madels_add
                     isOpen={isOpenModalModelAdd}
                     onClose={handleClosModalModelAdd}
+                    onSave={(updatedModel) => {
+                        // ทำการอัปเดตใน frontend หรือเรียก fetch ใหม่
+                        fetchDataModel(); // หรืออัปเดต state
+                    }}
                 />
             )}
 
             {isOpenModalModelEdit && (
-                <Modal_vehicle_madels_edit 
+                <Modal_vehicle_madels_edit
                     isOpen={isOpenModalModelEdit}
                     onClose={handleClosModalModelEdit}
-                    dataModels = {dataModalModelEdit}
+                    dataModels={dataModalModelEdit}
+                    onSave={(updatedModel) => {
+                        // ทำการอัปเดตใน frontend หรือเรียก fetch ใหม่
+                        fetchDataModel(); // หรืออัปเดต state
+                    }}
                 />
             )}
 

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import ReactModal from "react-modal";
 import axios from "axios";
+import { apiUrl } from "../../../../../../config/apiConfig";
 
-const Modal_vehicle_models_add = ({ isOpen, onClose, onSaved }) => {
+const Modal_vehicle_models_add = ({ isOpen, onClose, onSave }) => {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ const Modal_vehicle_models_add = ({ isOpen, onClose, onSaved }) => {
       setLoading(true);
 
       console.log()
-      await axios.post(`http://localhost:3333/api/setting_models_add`, {
+      await axios.post(`${apiUrl}/api/setting_models_add`, {
         brand,
         model
       },
@@ -28,11 +29,12 @@ const Modal_vehicle_models_add = ({ isOpen, onClose, onSaved }) => {
           },
         }
       );
-
+      // ✅ สร้างข้อมูลที่ส่งกลับให้ parent
+      const updatedData = { brand, model };
       alert("บันทึกสำเร็จ");
       setBrand("");
       setModel("");
-      onSaved && onSaved(); // สำหรับ refresh ข้อมูลใน parent ถ้ามี
+      onSave(updatedData);
       onClose();
     } catch (err) {
       console.error("Save error:", err);
