@@ -4,6 +4,7 @@ import Modal_vehicle_madels_add from "./modal/modal_vehicle_models_add";
 import { apiUrl } from "../../../../../config/apiConfig";
 import axios from "axios";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Modal_vehicle_madels_edit from "./modal/Modal_vehicle_models_edit";
 
 const Vehicle_models = () => {
     const [dataModels, setDataModel] = useState([]);
@@ -35,9 +36,15 @@ const Vehicle_models = () => {
     };
 
     const [isOpenModalModelEdit, setOpenModalModelEdit] = useState(false);
-    const handleOpenModalModelEdit = () => {
+    const [dataModalModelEdit, setDataModalModelEdit] = useState(null);
+    const handleOpenModalModelEdit = (data) => {
         setOpenModalModelEdit(true);
-    }
+        setDataModalModelEdit(data);
+    };
+       const handleClosModalModelEdit = () => {
+        setOpenModalModelEdit(true);
+    };
+
 
     return (
         <>
@@ -77,7 +84,7 @@ const Vehicle_models = () => {
                                                 <td>{data.brand}</td>
                                                 <td>{data.model}</td>
                                                 <td className="text-center">
-                                                    <Button variant="outline-primary" size="sm">
+                                                    <Button variant="outline-primary" size="sm" onClick={()=>handleOpenModalModelEdit(data)}>
                                                         <i className="bi bi-pencil-square"></i>
                                                     </Button>
                                                 </td>
@@ -103,6 +110,16 @@ const Vehicle_models = () => {
                     onClose={handleClosModalModelAdd}
                 />
             )}
+
+            {isOpenModalModelEdit && (
+                <Modal_vehicle_madels_edit 
+                    isOpen={isOpenModalModelEdit}
+                    onClose={handleClosModalModelEdit}
+                    dataModels = {dataModalModelEdit}
+                />
+            )}
+
+
         </>
     );
 };
