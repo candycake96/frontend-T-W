@@ -38,7 +38,7 @@ console.log("parsedUser:", parsedUser);
           { submenu_id: 10, submenu_name: "รายงานเลขไมล์รถ", path: "/truck/CarMileageShow", code: "MILEAGES_VIEW" },
           { submenu_id: 11, submenu_name: "รายงานรถ ม.79/ม.89", path: "/truck/CarStopTaxRemittanc", code: "CAR_STOP_VIEW" },
           { submenu_id: 12, submenu_name: "ตั้งค่าข้อมูลรถ", path: "/truck/Vehicle_models", code: "" }, // รอ
-          { submenu_id: 12, submenu_name: "ตั้งค่าแผน PM", path: "/truck/PM_setting", code: "" } // รอ
+          // { submenu_id: 12, submenu_name: "ตั้งค่าแผน PM", path: "/truck/PM_setting", code: "" } // รอ
         ],
         4: [
           { submenu_id: 13, submenu_name: "ผู้จำหน่ายสินค้า/อู่ซ่อม", path: "/truck/Vendor", code: "VENDER_VIEW" },
@@ -57,6 +57,7 @@ console.log("parsedUser:", parsedUser);
         ]
       };
 ;
+
 
       parsedUser.module_name = parsedUser.module_name.map((mod) => {
         const perms = permissionMap[mod.module_id] || [];

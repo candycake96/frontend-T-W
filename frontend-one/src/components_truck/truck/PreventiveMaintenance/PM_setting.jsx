@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const PM_setting = () => {
+  // ข้อมูลส่งมาจากหน้า Vehicle_models
+    const location = useLocation();
+    const isRowModelsData = location.state || {};
 
 const distances = [1000, 2000, 3000, 4000];
   const maintenanceTypes = ["ถ่ายน้ำมันเครื่อง", "เปลี่ยนยาง", "อัดจาราบี"];
@@ -29,6 +33,10 @@ const distances = [1000, 2000, 3000, 4000];
 
     return (
           <div className="container mt-4">
+            <div className="">
+             <p> <strong>รุ่น : </strong>{isRowModelsData?.model}</p>
+              <p> <strong>ยี่ห้อ : </strong>{isRowModelsData?.brand}</p>
+            </div>
       <h4>ตั้งค่าตาราง PM ตามระยะ</h4>
       <table className="table table-bordered text-center">
         <thead className="table-light">

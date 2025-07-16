@@ -158,7 +158,7 @@ function App() {
           <Route path="MainternanceAnalysisRequestJob" element={<MainternanceAnalysisRequestJob/>} /> {/*  หน้า วิเคราะจากแผนกซ่อมบำรุง */} 
           <Route path="MainternanceAnalysisApprover_table_main" element={<MainternanceAnalysisApprover_table_main/>} />{/*  หน้า อนุมัติวิเคราะจากแผนกซ่อมบำรุง */} 
           <Route path="MainternanceApprovalManager" element={<MainternanceApprovalManager/>} />{/*  หน้า Manager อนุมัติวิเคราะจากแผนกซ่อมบำรุง */} 
-          <Route path="PM_setting" element={<PM_setting/>} />{/*  หน้า PM */} 
+          <Route path="PM_setting" element={<PM_setting/>} />{/*  หน้า PM  setting*/} 
           <Route path="RepairCloseList" element={<RepairCloseList/>} /> {/* ปิดงานซ่อม */}
           <Route path="Vehicle_models" element={<Vehicle_models/>} /> {/* ปิดงานซ่อม */}
           

@@ -5,6 +5,7 @@ import { apiUrl } from "../../../../../config/apiConfig";
 import axios from "axios";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Modal_vehicle_madels_edit from "./modal/Modal_vehicle_models_edit";
+import { Link } from "react-router-dom";
 
 const Vehicle_models = () => {
     const [dataModels, setDataModel] = useState([]);
@@ -95,7 +96,7 @@ const Vehicle_models = () => {
                                         <th style={{ width: "5%" }}>#</th>
                                         <th>ยี่ห้อ</th>
                                         <th>รุ่น</th>
-                                        <th style={{ width: "10%" }}>จัดการ</th>
+                                        <th style={{ width: "15%" }}>จัดการ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -109,9 +110,12 @@ const Vehicle_models = () => {
                                                     <Button variant="outline-primary me-1" size="sm" onClick={() => handleOpenModalModelEdit(data)}>
                                                         <i className="bi bi-pencil-square"></i>
                                                     </Button>
-                                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteModel(data.model_id)}>
+                                                    <Button variant="outline-danger me-1" size="sm" onClick={() => handleDeleteModel(data.model_id)}>
                                                         <i class="bi bi-trash"></i>
                                                     </Button>
+                                                    <Link to="/truck/PM_setting" state={data} className="btn btn-outline-secondary btn-sm"   >
+                                                    <i class="bi bi-gear"></i>
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         ))
