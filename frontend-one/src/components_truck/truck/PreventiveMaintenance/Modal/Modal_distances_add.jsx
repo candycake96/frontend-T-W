@@ -7,6 +7,8 @@ import { Button } from "react-bootstrap";
 const Modal_distances_add = ({ isOpen, onClose, onKmAdded }) => {
     const [distanceKm, setDistanceKm] = useState("");
     const [loading, setLoading] = useState(false);
+    const [editId, setEditId] = useState(null); // 🆕 สำหรับตรวจสอบว่าอยู่ในโหมดแก้ไข
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -115,6 +117,7 @@ const Modal_distances_add = ({ isOpen, onClose, onKmAdded }) => {
             </form>
 
             <div className="p-3">
+
                 <table className="table">
                     <thead>
                         <tr>
@@ -136,8 +139,8 @@ const Modal_distances_add = ({ isOpen, onClose, onKmAdded }) => {
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
+
             </div>
         </ReactModal>
     );

@@ -69,6 +69,7 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
       setLoading(false);
     }
   };
+  
 
   const handleEdit = (item) => {
     setItemName(item.item_name);

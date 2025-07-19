@@ -3,9 +3,13 @@ import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_Edit_Approval_End from "./Mobal/Modal_Edit_Approval_End";
 
-const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], user }) => {
+const MainternanceApprover_mgr_add = ({ maintenanceJob, user }) => {
 
     const [isDataRequestAll, setDataRequestAll] = useState([]);
+    const [quotations, setQuotations] = useState([]);
+
+
+
     const fetchDataRequestAll = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -90,15 +94,45 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, quotations = [], user })
         }
     };
 
-const [isOpenModalApprovalEdit, setOpenModalApprovalEdit] = useState(false);
-const [dataModalApprovalEdit, setModalApprovalEdit] = useState(null);
-const handleOpenModaleApprovalEdit = (data) => {
-    setOpenModalApprovalEdit(true);
-    setModalApprovalEdit(data);
-};
-const handaleCloseModalApprovalEdit = () => {
-    setOpenModalApprovalEdit(false);
-}
+    const [isOpenModalApprovalEdit, setOpenModalApprovalEdit] = useState(false);
+    const [dataModalApprovalEdit, setModalApprovalEdit] = useState(null);
+    const handleOpenModaleApprovalEdit = (data) => {
+        setOpenModalApprovalEdit(true);
+        setModalApprovalEdit(data);
+    };
+    const handaleCloseModalApprovalEdit = () => {
+        setOpenModalApprovalEdit(false);
+    }
+
+
+    const fetchDataQuotationsAll = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            const response = await axios.get(`${apiUrl}/api/quotation_show_analysis_id/${dataRequest?.analysis_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setQuotations(response.data);
+        } catch (error) {
+            console.error("Error fetching detailscartype:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (dataRequest?.analysis_id) {
+            fetchDataQuotationsAll();
+        }
+    }, [dataRequest]);
+
     return (
         <div className="container my-4">
             <div className="row justify-content-center">
@@ -193,7 +227,7 @@ const handaleCloseModalApprovalEdit = () => {
                             </div>
                             <div className="row mb-2">
                                 <div className="col-md"><strong>อู่ / บริษัท:</strong> {dataRequest?.vendor_names_all || '-'} </div>
-                             </div>   
+                            </div>
                             <div className="row mb-2">
                                 <div className="col-md-4"><strong>ผู้ตรวจสอบ:</strong> {dataRequest?.analysis_emp_name || '-'}  </div>
                                 <div className="col-md-4"><strong>วันที่:</strong> {formatDateDMY(dataRequest?.analysis_date) || '-'} </div>
@@ -249,56 +283,112 @@ const handaleCloseModalApprovalEdit = () => {
 
                     {/* Quotation Section */}
                     <h5 className="mb-3 text-primary"><i className="bi bi-file-earmark-text me-2"></i>ใบเสนอราคา</h5>
-                    {quotations.map((q, idx) => (
-                        <div key={q.quotation_id || idx} className="card mb-4 border-0 shadow-sm">
-                            <div className="card-header bg-light d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i className="bi bi-shop me-2"></i>
-                                    <span className="fw-bold">{q.vendor_name}</span>
-                                </div>
-                                <div>
-                                    <i className="bi bi-calendar-event me-1"></i>
-                                    <span>{q.quotation_date}</span>
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                <div className="mb-2 text-secondary"><i className="bi bi-chat-left-text me-1"></i> <strong>หมายเหตุ:</strong> {q.note || "-"}</div>
-                                <div className="table-responsive">
-                                    <table className="table table-hover table-bordered align-middle mb-0">
-                                        <thead className="table-primary">
-                                            <tr>
-                                                <th>ชื่ออะไหล่</th>
-                                                <th className="text-center">จำนวน</th>
-                                                <th className="text-center">หน่วย</th>
-                                                <th className="text-end">ราคา/หน่วย</th>
-                                                <th className="text-center">สถานะอนุมัติ</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {q.parts?.map((part, pidx) => (
-                                                <tr key={part.part_id || pidx}>
-                                                    <td>{part.part_name}</td>
-                                                    <td className="text-center">{part.qty}</td>
-                                                    <td className="text-center">{part.unit}</td>
-                                                    <td className="text-end">{part.price} บาท</td>
-                                                    <td className="text-center">
-                                                        {part.is_approved_part !== null && (
-                                                            <span className={`badge rounded-pill px-3 py-2 ${part.is_approved_part ? "bg-success" : "bg-danger"}`}>
-                                                                {part.is_approved_part
-                                                                    ? <><i className="bi bi-check-circle me-1"></i>อนุมัติ</>
-                                                                    : <><i className="bi bi-x-circle me-1"></i>ไม่อนุมัติ</>
-                                                                }
-                                                            </span>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+{quotations.map((q, idx) => (
+  <div key={q.quotation_id || idx} className="card mb-4 border-0 shadow-sm">
+    {/* Header */}
+    <div className="card-header  d-flex justify-content-between align-items-center "  style={{
+      backgroundColor: '#CCCCFF', // #9FE2BF + transparency
+      color: '#000',
+    }}>
+      <div>
+        <i className="bi bi-shop me-2"></i>
+        <span className="fw-bold">{q.vendor_name}</span>
+      </div>
+      <div>
+        <i className="bi bi-calendar-event me-1"></i>
+        <span>{formatDateDMY(q.quotation_date)}</span>
+      </div>
+    </div>
+
+    <div className="card-body">
+      {/* Note */}
+      <div className="mb-3 text-secondary">
+        <i className="bi bi-chat-left-text me-1"></i>
+        <strong>หมายเหตุ:</strong> {q.note || "-"}
+      </div>
+
+      {/* Table */}
+      <div className="table-responsive">
+        <table className="table table-hover table-bordered align-middle mb-0">
+          <thead className="table-primary">
+            <tr>
+              <th>ชื่ออะไหล่</th>
+              <th>ประเภท</th>
+              <th className="text-center">จำนวน</th>
+              <th className="text-center">หน่วย</th>
+              <th className="text-end">ราคา/หน่วย</th>
+              <th className="text-end">ส่วนลด</th>
+              <th className="text-end">VAT%</th>
+              <th className="text-end">ราคารวม</th>
+              <th className="text-center">สถานะอนุมัติ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {q.parts?.map((part, pidx) => (
+              <tr key={part.part_id || pidx}>
+                <td>{part.part_name}</td>
+                <td>{part.maintenance_type}</td>
+                <td className="text-center">{part.part_qty}</td>
+                <td className="text-center">{part.part_unit}</td>
+                <td className="text-end">{part.part_price.toLocaleString()} บาท</td>
+                <td className="text-end">{part.part_discount.toLocaleString()} บาท</td>
+                <td className="text-end">{part.part_vat} %</td>
+                <td className="text-end">{part.total_price_with_vat.toLocaleString()} บาท</td>
+                <td className="text-center">
+                  {part.is_approved_part !== null && (
+                    <span
+                      className={`badge rounded-pill px-3 py-2 ${
+                        part.is_approved_part ? "bg-success" : "bg-danger"
+                      }`}
+                    >
+                      {part.is_approved_part ? (
+                        <>
+                          <i className="bi bi-check-circle me-1"></i>อนุมัติ
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-x-circle me-1"></i>ไม่อนุมัติ
+                        </>
+                      )}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Summary Section */}
+<div className="mt-2 p-3 rounded shadow-sm text-end" style={{ maxWidth: '280px', fontSize: '0.875rem', marginLeft: 'auto' }}>
+    <div className="d-flex justify-content-between mb-1">
+        <span className="text-muted">ราคารวม:</span>
+        <strong>{q.subtotal.toLocaleString()} บาท</strong>
+    </div>
+    <div className="d-flex justify-content-between mb-1 text-primary align-items-center">
+        <span className="text-muted">
+            <i className="bi bi-receipt me-1"></i>
+            VAT {q.quotation_vat ? <span>({q.quotation_vat}%)</span> : null}:
+        </span>
+        <strong>{q.total_part_vat.toLocaleString()} บาท</strong>
+    </div>
+    <hr className="my-2" />
+    <div className="d-flex flex-column text-success fw-semibold">
+        <div className="d-flex justify-content-between">
+            <span>ราคารวมสุทธิ :</span>
+            <span>{q.total_price_with_vat_per_parts.toLocaleString()} บาท</span>
+        </div>
+        <small className="text-end text-muted">(รวมภาษีแล้ว)</small>
+    </div>
+</div>
+
+
+
+    </div>
+  </div>
+))}
+
+
 
                     <div className="my-4">
                         <div className="card border-0 shadow-sm bg-light">
@@ -315,30 +405,30 @@ const handaleCloseModalApprovalEdit = () => {
                     </div>
                     {/* Action Buttons */}
                     <div className="text-center mt-4 d-flex justify-content-center gap-3">
-{dataRequest?.approval_status_end ? (
-    <button
-        className="btn btn-warning btn-lg px-5 shadow"
-        onClick={() => handleOpenModaleApprovalEdit(dataRequest)}
-        style={{ color: "#ffffff" }}
-    >
-        <i className="bi bi-check-circle me-2"></i>แก้ไข
-    </button>
-) : (
-    <>
-        <button
-            className="btn btn-danger btn-lg px-5 shadow"
-            onClick={() => handleApprovalAdd("ไม่อนุมัติ")}
-        >
-            <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
-        </button>
-        <button
-            className="btn btn-primary btn-lg px-5 shadow"
-            onClick={() => handleApprovalAdd("อนุมัติ")}
-        >
-            <i className="bi bi-check-circle me-2"></i>อนุมัติ
-        </button>
-    </>
-)}
+                        {dataRequest?.approval_status_end ? (
+                            <button
+                                className="btn btn-warning btn-lg px-5 shadow"
+                                onClick={() => handleOpenModaleApprovalEdit(dataRequest)}
+                                style={{ color: "#ffffff" }}
+                            >
+                                <i className="bi bi-check-circle me-2"></i>แก้ไข
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    className="btn btn-danger btn-lg px-5 shadow"
+                                    onClick={() => handleApprovalAdd("ไม่อนุมัติ")}
+                                >
+                                    <i className="bi bi-x-circle me-2"></i>ไม่อนุมัติ
+                                </button>
+                                <button
+                                    className="btn btn-primary btn-lg px-5 shadow"
+                                    onClick={() => handleApprovalAdd("อนุมัติ")}
+                                >
+                                    <i className="bi bi-check-circle me-2"></i>อนุมัติ
+                                </button>
+                            </>
+                        )}
 
                     </div>
 
