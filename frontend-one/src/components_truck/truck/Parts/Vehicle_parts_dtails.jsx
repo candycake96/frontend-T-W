@@ -116,7 +116,7 @@ const Vehicle_parts_details = () => {
                     <div className="mb-2 d-flex justify-content-between align-items-center">
                         <p className="fw-bolder fs-5">ข้อมูลราคากลางอะไหล่</p>
                         <button className="btn btn-primary" onClick={handleOpenModalVehicleSystems}>
-                            เพิ่มข้อมูลระบบ
+                            เพิ่มข้อมูลระบบ 
                         </button>
                     </div>
 

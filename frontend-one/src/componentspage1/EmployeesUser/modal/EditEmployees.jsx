@@ -22,6 +22,7 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
         id_branch: "",
         // ...other default fields
     };
+    
     const [formData, setFormData] = useState(emp || initialFormData);
     const [isSaving, setIsSaving] = useState(false); // To show loading indicator or prevent multiple submissions
     const [errors, setErrors] = useState({});

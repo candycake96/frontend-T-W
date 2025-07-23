@@ -66,7 +66,6 @@ const Modal_service_type = ({ isOpen, onClose }) => {
                     }
                 );
             }
-
             setMessage(response.data.message || "สำเร็จแล้ว");
             setServiceName("");
             setEditId(null);

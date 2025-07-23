@@ -207,7 +207,7 @@ const MaintenanceJob = () => {
         setLoading(true); // เริ่มโหลด
         try {
             const response = await axios.post(
-                'http://localhost:3333/api/report-createRepair',
+                `http://localhost:3333/api/report-createRepair/${dataRepairID?.request_id}`,
                 {},
                 { responseType: 'blob' }
             );
