@@ -502,6 +502,12 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                 formData.append(`quotations[${index}][note]`, quotation.note);
                 formData.append(`quotations[${index}][is_selected]`, quotation.is_selected ? 1 : 0);
                 formData.append(`quotations[${index}][quotation_vat]`, quotation.quotation_vat || "");
+                const vendorName =
+                    Array.isArray(quotation.vendor_name)
+                        ? quotation.vendor_name.find(name => name.trim() !== "") || ""
+                        : quotation.vendor_name || "";
+
+                formData.append(`quotations[${index}][vendor_name]`, vendorName);
 
                 if (quotation.quotation_file instanceof File) {
                     formData.append(`quotations[${index}][quotation_file]`, quotation.quotation_file);
@@ -519,7 +525,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
             // ดูค่าทั้งหมดใน formData
             for (let pair of formData.entries()) {
-                console.log('',pair[0], pair[1]);
+                console.log('', pair[0], pair[1]);
             }
 
             const response = await axios.put(
@@ -550,21 +556,21 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         <div className=" mb-4 ">
 
             {/* Display success or error message */}
-          {message && (
-    <div
-        className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"} alert-dismissible fade show`}
-        role="alert"
-    >
-        {message}
-        {/* กากะบาทปิด */}
-        <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={() => setMessage("")}
-        ></button>
-    </div>
-)}
+            {message && (
+                <div
+                    className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"} alert-dismissible fade show`}
+                    role="alert"
+                >
+                    {message}
+                    {/* กากระบาทปิด */}
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={() => setMessage("")}
+                    ></button>
+                </div>
+            )}
 
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <p className="mb-0 fw-bold text-dark ">รายการตรวจเช็ครถและใบเสนอราคารายการซ่อม</p>

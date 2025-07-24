@@ -87,7 +87,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
             const mapped = isApproverShowData.quotations.map(q => ({
                 quotation_id: q.quotation_id,
                 vendor_id: q.vendor_id,
-                garage_name: q.garage_name || "",
+                garage_name: q.garage_name,
                 quotation_date: q.quotation_date ? q.quotation_date.slice(0, 10) : "",
                 quotation_file: q.quotation_file ? fileBaseUrl + q.quotation_file : "",
                 note: q.note || "",
@@ -396,7 +396,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                         <div className="row">
                                             <div className="col-lg-3 mb-3">
                                                 <label className="form-label">ชื่ออู่/ร้านค้า</label>
-                                                <div className="input-group input-group-sm"     >
+                                                <div className="input-group input-group-sm">
                                                     <input
                                                         type="text"
                                                         className="form-control"
