@@ -519,7 +519,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
             // ดูค่าทั้งหมดใน formData
             for (let pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
+                console.log('',pair[0], pair[1]);
             }
 
             const response = await axios.put(
@@ -536,6 +536,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
             console.log("บันทึกข้อมูลสำเร็จ:", response.data);
             setMessage(response.data.message);
             setMessageType("success");
+            setIsEditing(false);
 
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", error);
@@ -549,13 +550,21 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
         <div className=" mb-4 ">
 
             {/* Display success or error message */}
-            {message && (
-                <div
-                    className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"}`}
-                >
-                    {message}
-                </div>
-            )}
+          {message && (
+    <div
+        className={`alert ${messageType === "success" ? "alert-success" : "alert-danger"} alert-dismissible fade show`}
+        role="alert"
+    >
+        {message}
+        {/* กากะบาทปิด */}
+        <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => setMessage("")}
+        ></button>
+    </div>
+)}
 
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <p className="mb-0 fw-bold text-dark ">รายการตรวจเช็ครถและใบเสนอราคารายการซ่อม</p>

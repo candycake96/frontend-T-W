@@ -259,6 +259,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                 setMessage(response.data.message);
                 setMessageType("success");
                 setIsEditing(false);
+                setIsEditing(false);
             } else {
                 alert("❌ ไม่สามารถอนุมัติได้");
             }
@@ -354,6 +355,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                     className="form-control"
                                                     value={isDataApprover?.remark}
                                                     onChange={e => handleDataApprover('remark', e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                             </div>
                                         </div>
@@ -694,6 +696,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="approved"
                                                 checked={isDataApprover.approval_status === "approved"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                                disabled = {!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="approved">อนุมัติ</label>
                                         </div>
@@ -706,6 +709,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="rejected"
                                                 checked={isDataApprover.approval_status === "rejected"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                                disabled = {!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="rejected">ไม่อนุมัติ</label>
                                         </div>
@@ -718,12 +722,14 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="revise"
                                                 checked={isDataApprover.approval_status === "revise"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
+                                                disabled = {!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="revise">ส่งกลับแก้ไข</label>
                                         </div>
                                     </div>
                                 </div>
                                 {/* // ...existing code... */}
+                               {isEditing && (
                                 <div className="text-center">
                                     <button
                                         className="btn btn-primary w-25"
@@ -733,6 +739,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                         อนุมัติ
                                     </button>
                                 </div>
+                                )} 
                             </div>
                         </form>
                     </div>
