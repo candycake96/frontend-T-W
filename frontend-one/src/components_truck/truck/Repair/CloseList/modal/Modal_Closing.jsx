@@ -138,8 +138,7 @@ for (let [key, value] of form.entries()) {
                         <option value="">-- เลือกสถานะ --</option>
                         <option value="ซ่อมสำเร็จ">ซ่อมสำเร็จ</option>
                         <option value="ยกเลิกงาน">ยกเลิกงาน</option>
-                        <option value="ซ่อมชั่วคราว">ซ่อมชั่วคราว</option>
-                        <option value="ส่งซ่อมภายนอก">ส่งซ่อมภายนอก</option>
+                        <option value="ซ่อมชั่วคราว">หยุดซ่อมชั่วคราว</option>
                     </select>
                 </div>
 

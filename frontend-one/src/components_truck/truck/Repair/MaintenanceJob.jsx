@@ -16,6 +16,7 @@ import Modal_repair_cancel_ganaral from "./Cancel/Modal/Modal_repair_canael_gena
 
 const MaintenanceJob = () => {
 
+
     const [loading, setLoading] = useState(false);
     // ข้อมูลการปิดงานแจ้งซ่อม
     const [dataClosingJob, setdataClosingJob] = useState([]);
@@ -31,6 +32,8 @@ const MaintenanceJob = () => {
         lname: "",
         reg_number: "",
     });
+
+
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
@@ -69,13 +72,21 @@ const MaintenanceJob = () => {
         }
     }, [dataRepairID]);
 
-    const [user, setUser] = useState(null);  //token
-    useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
-    }, []);
+const [user, setUser] = useState(null);
+
+// โหลดข้อมูลจาก localStorage
+useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+        const parsed = JSON.parse(userData);
+        setUser(parsed); // เซ็ต user
+    }
+}, []);
+
+// ฟังก์ชันเช็คสิทธิ์
+const permissions = user?.permission_codes || [];
+const hasPermission = (code) => permissions.includes(code);
+
 
     // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
     useEffect(() => {
@@ -292,6 +303,8 @@ const MaintenanceJob = () => {
     }, []);
 
 
+
+
     return (
         <div className="p-1">
             <div className="container">
@@ -352,12 +365,20 @@ const MaintenanceJob = () => {
 
 
                             <div className=" gap-2">
-                                <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>ปิดงานซ่อม</Button>
+
+                                {hasPermission("ACCESS_BRANCH_BUTTON") &&  (
+                                    <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>
+                                        ปิดงานซ่อม
+                                    </Button>
+                                )}
+
+
                                 <Button
                                     className="btn-primary  btn-sm me-1"
                                     onClick={generateReport}
                                     disabled={loading}
                                 >
+
                                     {loading ? (
                                         <>
                                             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

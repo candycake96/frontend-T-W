@@ -1,14 +1,22 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import { apiUrl } from "../../../../../config/apiConfig";
 
-const Modal_repair_cancel_ganaral = ({isOpen, onClose, dataClosing, user }) => {
-     const [formData, setFormData] = useState({
+const Modal_repair_cancel_ganaral = ({ isOpen, onClose, dataClosing, user }) => {
+    const [formData, setFormData] = useState({
         close_date: "",
         close_remark: "",
         status_after_close: ""
     });
+
+
+    useEffect(() => {
+    if (!formData.close_date) {
+        const today = new Date().toISOString().split("T")[0];
+        setFormData(prev => ({ ...prev, close_date: today }));
+    }
+}, [dataClosing]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -33,10 +41,10 @@ const Modal_repair_cancel_ganaral = ({isOpen, onClose, dataClosing, user }) => {
                 form.append("close_file", formData.close_file);
             }
 
-           console.log("ข้อมูลที่แนบ:");
-for (let [key, value] of form.entries()) {
-  console.log(`${key}:`, value);
-}
+            console.log("ข้อมูลที่แนบ:");
+            for (let [key, value] of form.entries()) {
+                console.log(`${key}:`, value);
+            }
 
             const response = await axios.post(
                 `${apiUrl}/api/close_list_add/${user?.id_emp}`,
@@ -55,6 +63,10 @@ for (let [key, value] of form.entries()) {
             console.error("❌ ส่งข้อมูลไม่สำเร็จ:", error);
         }
     };
+
+
+
+
     return (
         <ReactModal
             isOpen={isOpen}
@@ -121,6 +133,7 @@ for (let [key, value] of form.entries()) {
                         name="close_date"
                         value={formData.close_date}
                         onChange={handleChange}
+                        disabled
                     />
                 </div>
 
@@ -134,7 +147,7 @@ for (let [key, value] of form.entries()) {
                         onChange={handleChange}
                     >
                         <option value="">-- เลือกสถานะ --</option>
-                        <option value="ยกเลิกงาน">ยกเลิกงาน</option>
+                        <option value="ยกเลิกงาน">ยกเลิกงานซ่อม</option>
                     </select>
                 </div>
 

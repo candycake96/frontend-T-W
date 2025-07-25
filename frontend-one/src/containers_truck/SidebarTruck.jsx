@@ -17,8 +17,8 @@ useEffect(() => {
     try {
       const parsed = JSON.parse(userData);
       const parsedUser = parsed; // << ใช้ parsed ตรง ๆ เพราะไม่มี .user ซ้อนอยู่
-console.log("parsed:", parsed);
-console.log("parsedUser:", parsedUser);
+// console.log("parsed:", parsed);
+// console.log("parsedUser:", parsedUser);
 
       const permissionMap = {
         1: [
@@ -56,7 +56,6 @@ console.log("parsedUser:", parsedUser);
           { submenu_id: 21, submenu_name: "ข้อมูลคนขับ", path: "/truck/driver", code: "VEHICLE_PAIR_DRIVER" }
         ]
       };
-;
 
 
       parsedUser.module_name = parsedUser.module_name.map((mod) => {
