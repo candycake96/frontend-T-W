@@ -72,20 +72,20 @@ const MaintenanceJob = () => {
         }
     }, [dataRepairID]);
 
-const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
 
-// โหลดข้อมูลจาก localStorage
-useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-        const parsed = JSON.parse(userData);
-        setUser(parsed); // เซ็ต user
-    }
-}, []);
+    // โหลดข้อมูลจาก localStorage
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            const parsed = JSON.parse(userData);
+            setUser(parsed); // เซ็ต user
+        }
+    }, []);
 
-// ฟังก์ชันเช็คสิทธิ์
-const permissions = user?.permission_codes || [];
-const hasPermission = (code) => permissions.includes(code);
+    // ฟังก์ชันเช็คสิทธิ์
+    const permissions = user?.permission_codes || [];
+    const hasPermission = (code) => permissions.includes(code);
 
 
     // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
@@ -302,7 +302,9 @@ const hasPermission = (code) => permissions.includes(code);
         fetchDataClosingJob()
     }, []);
 
-
+useEffect(() => {
+  console.log("dataClosingJob:", dataClosingJob);
+}, [dataClosingJob]);
 
 
     return (
@@ -366,12 +368,11 @@ const hasPermission = (code) => permissions.includes(code);
 
                             <div className=" gap-2">
 
-                                {hasPermission("ACCESS_BRANCH_BUTTON") &&  (
+                                {hasPermission("ACCESS_BRANCH_BUTTON") && (
                                     <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>
                                         ปิดงานซ่อม
                                     </Button>
                                 )}
-
 
                                 <Button
                                     className="btn-primary  btn-sm me-1"
@@ -390,9 +391,18 @@ const hasPermission = (code) => permissions.includes(code);
                                         </>
                                     )}
                                 </Button>
-                                <Button className="btn-danger  btn-sm me-1" onClick={() => handleOpenModalCancelgenaral(dataRepairID)}>
-                                    <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
-                                </Button>
+
+                                {dataClosingJob.length <= 0 ? (
+                                    <Button
+                                        className="btn-danger btn-sm me-1"
+                                        onClick={() => handleOpenModalCancelgenaral(dataRepairID)}
+                                    >
+                                        <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
+                                    </Button>
+                                ) : (
+                                    <></>
+                                )}
+
                             </div>
 
                         </div>
@@ -475,15 +485,19 @@ const hasPermission = (code) => permissions.includes(code);
                                 handleChange={handleChange}
                                 formData={formData}
                                 user={user}
+                                permissions={permissions}
                             />
                         )}
 
                         {activeForm === 'PlanningForm' && (
-                            <PlanningRepair maintenanceJob={formData} />
+                            <PlanningRepair 
+                            maintenanceJob={formData} 
+                           
+                            />
                         )}
 
                         {activeForm === 'AnanlysisForm' && (
-                            <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} />
+                            <MainternanceAnanlysis_ShowDetails maintenanceJob={formData} hasPermission={hasPermission} />
                         )}
 
                         {activeForm === 'MainternanceAnalysisApprover' && (

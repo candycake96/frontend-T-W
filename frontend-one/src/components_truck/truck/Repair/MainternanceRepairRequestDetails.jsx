@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const MainternanceRepairRequestDetails = ({ parts, summary, formData, user }) => {
+const MainternanceRepairRequestDetails = ({ parts, summary, formData, user, permissions }) => {
     // ฟังก์ชันแปลงวันที่ให้อยู่ในรูปแบบ yyyy-mm-dd
     const formatDate = (dateStr) => {
         if (!dateStr) return "";

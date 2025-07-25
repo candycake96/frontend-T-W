@@ -4,7 +4,7 @@ import MainternanceAnalysis_showEdit from "./MainternanceAnalysis_showsEdit";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
 
-const MainternanceAnanlysis_ShowDetails = ({ maintenanceJob }) => {
+const MainternanceAnanlysis_ShowDetails = ({ maintenanceJob, hasPermission }) => {
     const [dataAnanlysis, setDataAnanlysis] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -45,7 +45,7 @@ const MainternanceAnanlysis_ShowDetails = ({ maintenanceJob }) => {
     return (
         <div>
             {hasAnalysis ? (
-                <MainternanceAnalysis_showEdit maintenanceJob={maintenanceJob} data={dataAnanlysis} />
+                <MainternanceAnalysis_showEdit maintenanceJob={maintenanceJob} data={dataAnanlysis} hasPermission={hasPermission} />
             ) : (
                 <MainternanceAnanlysis_Add maintenanceJob={maintenanceJob} />
             )}

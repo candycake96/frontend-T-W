@@ -250,7 +250,8 @@ const PlanningRepair = ({ maintenanceJob }) => {
     };
 
 
-
+    const permissions = user?.permission_codes || [];
+    const hasPermission = (code) => permissions.includes(code);
 
     return (
         <>
@@ -262,21 +263,24 @@ const PlanningRepair = ({ maintenanceJob }) => {
                             {console.log("✅ มีข้อมูล detailPlanning:", detailPlanning)}
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <p className="mb-0 fw-bold text-dark ">ความเห็นของแผนกจัดรถ</p>
-{/* สิทธ์เข้าถึงแก้ไขผู้ตรวจสอบ */}
-                                        {Array.isArray(detailPlanning) &&
-                                            detailPlanning.length > 0 &&
-                                            detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-success btn-sm"
-                                                    onClick={() => setIsEditing(true)}
-                                                    style={{ whiteSpace: 'nowrap' }}
-                                                >
-                                                   <i className="bi bi-pencil-fill me-1"></i> แก้ไข
-                                                </button>
-                                            )}
+                                {/* สิทธ์เข้าถึงแก้ไขผู้ตรวจสอบ */}
+
+                                {hasPermission("VEHICLE_PAIR_DRIVER_SETTING") && (
+                                    Array.isArray(detailPlanning) &&
+                                    detailPlanning.length > 0 &&
+                                    detailPlanning[0].planning_emp_id === user.id_emp && !isEditing && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-success btn-sm"
+                                            onClick={() => setIsEditing(true)}
+                                            style={{ whiteSpace: 'nowrap' }}
+                                        >
+                                            <i className="bi bi-pencil-fill me-1"></i> แก้ไข
+                                        </button>
+                                    )
+                                )}
                             </div>
-                                
+
                             <form action="" onSubmit={handleSubmitEdit}>
                                 <div className="mb-3">
                                     <div className="d-flex align-items-center justify-content-between mb-3">
@@ -296,7 +300,7 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
                                     <div className="row ">
@@ -525,40 +529,23 @@ const PlanningRepair = ({ maintenanceJob }) => {
                                         </div>
                                     </div>
 
-                                    <div className="text-center">
-                                        <button className="btn btn-primary" type="submit">
-                                            ยืนยันการจัดรถ
-                                        </button>
-                                    </div>
+                                    {hasPermission("ADD_READY_CHECK") && (
+                                        <div className="text-center">
+                                            <button className="btn btn-primary" type="submit">
+                                                ยืนยันการจัดรถ
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    
+
                 </>
             ) : (
                 null
             )}
-
-
-                    {maintenanceJob?.status === "แจ้งซ่อม" ? (
-                    <>
-                        <div className="text-center alert alert-warning" role="alert">
-                            <strong>
-                                <p className="text-danger fw-bolder">อยู่ระหว่างการตรวจสอบความพร้อม</p>
-                            </strong>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        {/* <div className="text-center alert alert-warning md-3" role="alert">
-                            <strong>
-                                <p className="text-danger fw-bolder">อยู่ระหว่างการวิเคราะห์จากแผนกซ่อมบำรุง</p>
-                            </strong>
-                        </div> */}
-                    </>
-                )}
 
 
         </>

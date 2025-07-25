@@ -10,7 +10,7 @@ import '../Repair/MainternanceAnalysis_showsEdit.css'
 // import { data } from "autoprefixer";
 
 
-const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
+const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
@@ -574,7 +574,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
 
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <p className="mb-0 fw-bold text-dark ">รายการตรวจเช็ครถและใบเสนอราคารายการซ่อม</p>
-                {!isEditing && (
+                 {hasPermission("EDIT_CAR_CHECK") && (
+                !isEditing && (
                     <div className="">
                         <button
                             type="button"
@@ -585,7 +586,8 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data }) => {
                             <i className="bi bi-pencil-fill me-1"></i>  แก้ไข
                         </button>
                     </div>
-                )}
+                )
+                 )}
             </div>
 
             <form onSubmit={handleSubmit} className="">
