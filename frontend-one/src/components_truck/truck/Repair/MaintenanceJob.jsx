@@ -12,6 +12,7 @@ import MainternanceAnalysisApproverMain from "./MainternanceAnalysisApproverMain
 import MainternanceApprover_mgr_add from "./MainternanceApprover_mgr_add";
 import { Table, Button, Spinner } from "react-bootstrap";
 import Modal_Closing from "./CloseList/modal/Modal_Closing";
+import Modal_repair_cancel_ganaral from "./Cancel/Modal/Modal_repair_canael_genaral";
 
 const MaintenanceJob = () => {
 
@@ -37,11 +38,11 @@ const MaintenanceJob = () => {
     console.log(dataRepairID); // ✅ ตรวจสอบข้อมูลที่ถูกส่งมา
 
     // แปลง วัน/เดือน/ปี
-   const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  return date.toLocaleDateString("th-TH", options); // แสดง 04/07/2025
-};
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+        return date.toLocaleDateString("th-TH", options); // แสดง 04/07/2025
+    };
 
 
     const [requestParts, setRequestParts] = useState([]);
@@ -259,6 +260,16 @@ const MaintenanceJob = () => {
         setDataOpenModolClosing(null);
     };
 
+    const [isOpenModalCancelgenaral, setOpenModalCancelgenaral] = useState(false);
+    const [dataOpenModalCancelgenaral, setDataOpenModalCancelgenaral] = useState(null);
+    const handleOpenModalCancelgenaral = (data) => {
+        setOpenModalCancelgenaral(true);
+        setDataOpenModalCancelgenaral(data);
+    };
+    const handleClosModalCancelgenaral = (data) => {
+        setOpenModalCancelgenaral(false);
+        setDataOpenModalCancelgenaral(null);
+    };
 
 
     // ข้อมูลการปิดงานแจ้งซ่อม
@@ -280,7 +291,7 @@ const MaintenanceJob = () => {
         fetchDataClosingJob()
     }, []);
 
-    
+
     return (
         <div className="p-1">
             <div className="container">
@@ -358,7 +369,9 @@ const MaintenanceJob = () => {
                                         </>
                                     )}
                                 </Button>
-                                <Button className="btn-danger  btn-sm me-1"><i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก </Button>
+                                <Button className="btn-danger  btn-sm me-1" onClick={() => handleOpenModalCancelgenaral(dataRepairID)}>
+                                    <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
+                                </Button>
                             </div>
 
                         </div>
@@ -468,9 +481,15 @@ const MaintenanceJob = () => {
             </div>
             {/* Modal */}
             {isOpenModolClosing && (
-                <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} user={user} dataClosing={dataOpenModolClosing}/>
+                <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} user={user} dataClosing={dataOpenModolClosing} />
+            )}
+
+            {isOpenModalCancelgenaral && (
+                <Modal_repair_cancel_ganaral isOpen={isOpenModalCancelgenaral} onClose={handleClosModalCancelgenaral} user={user} dataClosing={dataOpenModalCancelgenaral} />
             )}
         </div>
+
+
     );
 };
 
