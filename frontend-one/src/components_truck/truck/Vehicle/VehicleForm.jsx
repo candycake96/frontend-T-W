@@ -559,6 +559,44 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                                     placeholder="" />
                                 {errors.engine_power && <p className="text-danger">{errors.engine_power}</p>}
                             </div>
+                                                          <div className="col-lg-2">
+                                <label htmlFor="input_axle_count" className="form-label fw-medium">เพลา</label>
+                                <input
+                                    type="text"
+                                    name="axle_count"
+                                    id="input_axle_count"
+                                    className="form-control"
+                                    value={formData.axle_count}
+                                    onChange={(e) => setFormdata({ ...formData, axle_count: e.target.value })}
+                                    placeholder="" />
+                                {errors.axle_count && <p className="text-danger">{errors.axle_count}</p>}
+                            </div>
+                            <div className="col-lg-2">
+                                <label htmlFor="input_wheel_count" className="form-label fw-medium">ล้อ</label>
+                                <input
+                                    type="text"
+                                    name="wheel_count"
+                                    id="input_wheel_count"
+                                    className="form-control"
+                                    value={formData.wheel_count}
+                                    onChange={(e) => setFormdata({ ...formData, wheel_count: e.target.value })}
+                                    placeholder="" />
+                                {errors.wheel_count && <p className="text-danger">{errors.wheel_count}</p>}
+                            </div>
+                              <div className="col-lg-2">
+                                <label htmlFor="input_tire_count" className="form-label fw-medium">ยาง</label>
+                                <input
+                                    type="text"
+                                    name="tire_count"
+                                    id="input_tire_count"
+                                    className="form-control"
+                                    value={formData.tire_count}
+                                    onChange={(e) => setFormdata({ ...formData, tire_count: e.target.value })}
+                                    placeholder="" />
+                                {errors.tire_count && <p className="text-danger">{errors.tire_count}</p>}
+                            </div>
+
+
                             <div className="col-lg-2">
                                 <label htmlFor="input_veh_weight" className="form-label fw-medium">น้ำหนักรถ  <span style={{ color: "red" }}> *</span></label>
                                 <input

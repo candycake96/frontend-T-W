@@ -49,6 +49,9 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
         document_order: "",
         reg_doc_number: "",
         inspection_code: "",
+        axle_count: "",
+        wheel_count: "",
+        tire_count: ""
     }
 
     const fuelOptions = [
@@ -105,6 +108,9 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                 document_order: dataVehicle.document_order || "",
                 reg_doc_number: dataVehicle.reg_doc_number || "",
                 inspection_code: dataVehicle.inspection_code || "",
+                axle_count: dataVehicle.axle_count || "",
+                wheel_count: dataVehicle.wheel_count || "",
+                tire_count: dataVehicle.tire_count || ""
             })
         } else {
             console.warn("User data not available or incomplete");
@@ -441,7 +447,7 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                                             // {(e) => setFormdata({ ...formData, engine_brand: e.target.value })}
                                             placeholder="ยี่ห้อรถ" />
                                     </div>
-                                    
+
                                     <div className="col-lg-4">
                                         <label htmlFor="input_engine_no" className="form-label fw-medium">เลขเครื่องยนต์</label>
                                         <input
@@ -497,6 +503,46 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                                             // {(e) => setFormdata({ ...formData, engine_power: e.target.value })}
                                             placeholder="" />
                                     </div>
+
+
+                                    <div className="col-lg-2">
+                                        <label htmlFor="input_axle_count" className="form-label fw-medium">เพลา</label>
+                                        <input
+                                            type="number"
+                                            name="axle_count"
+                                            id="input_axle_count"
+                                            className="form-control"
+                                            value={formData.axle_count}
+                                            onChange={handleChangeInputUpDate}
+                                            // {(e) => setFormdata({ ...formData, axle_count: e.target.value })}
+                                            placeholder="" />
+                                    </div>
+                                    <div className="col-lg-2">
+                                        <label htmlFor="input_wheel_count" className="form-label fw-medium">ล้อ</label>
+                                        <input
+                                            type="number"
+                                            name="wheel_count"
+                                            id="input_wheel_count"
+                                            className="form-control"
+                                            value={formData.wheel_count}
+                                            onChange={handleChangeInputUpDate}
+                                            // {(e) => setFormdata({ ...formData, wheel_count: e.target.value })}
+                                            placeholder="" />
+                                    </div>
+                                    <div className="col-lg-2">
+                                        <label htmlFor="input_tire_count" className="form-label fw-medium">ยาง</label>
+                                        <input
+                                            type="number"
+                                            name="tire_count"
+                                            id="input_tire_count"
+                                            className="form-control"
+                                            value={formData.tire_count}
+                                            onChange={handleChangeInputUpDate}
+                                            // {(e) => setFormdata({ ...formData, tire_count: e.target.value })}
+                                            placeholder="" />
+                                    </div>
+
+
                                     <div className="col-lg-2">
                                         <label htmlFor="input_veh_weight" className="form-label fw-medium">น้ำหนักรถ</label>
                                         <input
