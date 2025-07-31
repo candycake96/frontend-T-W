@@ -201,7 +201,7 @@ const toggleCheckbox = (itemId, distanceId) => {
           <div className="mb-3">
             <p><strong>รุ่น :</strong> {isRowModelsData?.model}</p>
             <p><strong>ยี่ห้อ :</strong> {isRowModelsData?.brand}</p>
-            <p><strong>ทะเบียนรถที่เกี่ยวข้อง :</strong> {isRowModelsData?.brand}</p>
+            <p><strong>ทะเบียนรถที่เกี่ยวข้อง :</strong> {isRowModelsData?.reg_numbers}</p>
           </div>
 
           <div className="table-responsive">
