@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import Modal_vehicle_madel_show from "./setting_vehicle/vehicle_models/modal/Modal_vehicle_model_show";
+import { Button } from "react-bootstrap";
 
 const VehicleForm = ({ formData, setFormdata, errors }) => {
 
@@ -16,6 +18,29 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
         setSelectedCarType(value); // อัปเดตค่าที่เลือก
         setFormdata({ ...formData, car_type_id: value });
     };
+
+    const [isOpenModalModels, setOpenModalModels] = useState(false);
+    const handleOpenModalModels = () => {
+        setOpenModalModels(true);
+    };
+    const handleCloseModleModels = () => {
+        setOpenModalModels(false);
+    };
+
+    // สร้างฟังก์ชัน handleModelSelected เพื่อรับข้อมูล:
+    const handleModelSelected = (selectedModel) => {
+        console.log("Model selected:", selectedModel);
+
+        setFormdata({
+            ...formData,
+            car_brand: selectedModel.brand,
+            model_no: selectedModel.model,
+            model_id: selectedModel.model_id,
+        });
+
+        handleCloseModleModels(); // ← ปิด Modal
+    };
+
 
     const fetchCarType = async () => {
         try {
@@ -141,6 +166,7 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
     const handleFileChange = (e) => {
         setFormdata({ ...formData, file_download: e.target.files[0] });
     };
+
 
 
 
@@ -429,17 +455,33 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
 
                         <div className="row mb-3">
                             <div className="col-lg-4">
-                                <label htmlFor="input_car_brand" className="form-label fw-medium">ยี่ห้อรถ  </label>
-                                <input
-                                    type="text"
-                                    name="car_brand"
-                                    id="input_car_brand"
-                                    className="form-control"
-                                    value={formData.car_brand}
-                                    onChange={(e) => setFormdata({ ...formData, car_brand: e.target.value })}
-                                    placeholder="ยี่ห้อรถ" />
-                                {errors.car_brand && <p className="text-danger">{errors.car_brand}</p>}
+                                <label htmlFor="input_car_brand" className="form-label fw-medium">
+                                    ยี่ห้อรถ
+                                </label>
+                                <div className="input-group">
+                                    <input
+                                        type="text"
+                                        name="car_brand"
+                                        id="input_car_brand"
+                                        className="form-control"
+                                        value={formData.car_brand}
+                                        onChange={(e) => setFormdata({ ...formData, car_brand: e.target.value })}
+                                        placeholder="ยี่ห้อรถ"
+                                        disabled
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline-secondary"
+                                        onClick={handleOpenModalModels}
+                                    >
+                                        ค้นหา
+                                    </button>
+                                </div>
+                                {errors.car_brand && (
+                                    <div className="form-text text-danger">{errors.car_brand}</div>
+                                )}
                             </div>
+
                             <div className="col-lg-4">
                                 <label htmlFor="input_model_no" className="form-label fw-medium">แบบ / รุ่น  <span style={{ color: "red" }}> *</span></label>
                                 <input
@@ -449,7 +491,9 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                                     className="form-control"
                                     value={formData.model_no}
                                     onChange={(e) => setFormdata({ ...formData, model_no: e.target.value })}
-                                    placeholder="" />
+                                    placeholder=""
+                                    disabled
+                                     />
                                 {errors.model_no && <p className="text-danger">{errors.model_no}</p>}
                             </div>
                             <div className="col-lg-4">
@@ -559,7 +603,7 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                                     placeholder="" />
                                 {errors.engine_power && <p className="text-danger">{errors.engine_power}</p>}
                             </div>
-                                                          <div className="col-lg-2">
+                            <div className="col-lg-2">
                                 <label htmlFor="input_axle_count" className="form-label fw-medium">เพลา</label>
                                 <input
                                     type="text"
@@ -583,7 +627,7 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                                     placeholder="" />
                                 {errors.wheel_count && <p className="text-danger">{errors.wheel_count}</p>}
                             </div>
-                              <div className="col-lg-2">
+                            <div className="col-lg-2">
                                 <label htmlFor="input_tire_count" className="form-label fw-medium">ยาง</label>
                                 <input
                                     type="text"
@@ -821,6 +865,14 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                     </div>
                 </div>
             </div>
+
+            {isOpenModalModels && (
+                <Modal_vehicle_madel_show
+                    isOpen={isOpenModalModels}
+                    onClose={handleCloseModleModels}
+                    onSelectModel={handleModelSelected}  // ✅ callback ที่จะรับข้อมูลกลับ
+                />
+            )}
         </>
     );
 }

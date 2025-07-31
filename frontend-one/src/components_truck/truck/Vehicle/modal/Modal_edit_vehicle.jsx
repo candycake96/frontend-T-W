@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { apiUrl } from "../../../../config/apiConfig";
+import Modal_vehicle_madel_show from "../setting_vehicle/vehicle_models/modal/Modal_vehicle_model_show";
 
 const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
     const [user, setUser] = useState(null);
@@ -14,6 +15,34 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
             setUser(JSON.parse(userData)); // แปลง JSON เป็น Object แล้วเก็บใน state
         }
     }, []);
+
+
+
+    const [isOpenModalModels, setOpenModalModels] = useState(false);
+    const handleOpenModalModels = () => {
+        setOpenModalModels(true);
+    };
+    const handleCloseModleModels = () => {
+        setOpenModalModels(false);
+    };
+
+    // สร้างฟังก์ชัน handleModelSelected เพื่อรับข้อมูล:
+const handleModelSelected = (selectedModel) => {
+    console.log("Model selected:", selectedModel);
+
+    setFormdata({
+        ...formData, // ✅ ใช้ค่าปัจจุบัน ไม่ใช่ค่าเริ่มต้น
+        car_brand: selectedModel.brand,
+        model_no: selectedModel.model,
+        model_id: selectedModel.model_id,
+    });
+
+    handleCloseModleModels(); // ✅ ปิด Modal
+};
+
+
+
+
 
     const VehicleFormData = {
         reg_date: "",
@@ -51,7 +80,8 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
         inspection_code: "",
         axle_count: "",
         wheel_count: "",
-        tire_count: ""
+        tire_count: "",
+        model_id:"",
     }
 
     const fuelOptions = [
@@ -110,7 +140,8 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                 inspection_code: dataVehicle.inspection_code || "",
                 axle_count: dataVehicle.axle_count || "",
                 wheel_count: dataVehicle.wheel_count || "",
-                tire_count: dataVehicle.tire_count || ""
+                tire_count: dataVehicle.tire_count || "",
+                model_id: dataVehicle.model_id || "",
             })
         } else {
             console.warn("User data not available or incomplete");
@@ -368,7 +399,7 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                                 </div>
 
                                 <div className="row mb-3">
-                                    <div className="col-lg-4">
+                                    {/* <div className="col-lg-4">
                                         <label htmlFor="input_car_brand" className="form-label fw-medium">ยี่ห้อรถ</label>
                                         <input
                                             type="text"
@@ -379,7 +410,36 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                                             onChange={handleChangeInputUpDate}
                                             // {(e) => setFormdata({ ...formData, car_brand: e.target.value })}
                                             placeholder="ยี่ห้อรถ" />
+                                    </div> */}
+                                    <div className="col-lg-4">
+                                        <label htmlFor="input_car_brand" className="form-label fw-medium">
+                                            ยี่ห้อรถ
+                                        </label>
+                                        <div className="input-group">
+                                            <input
+                                                type="text"
+                                                name="car_brand"
+                                                id="input_car_brand"
+                                                className="form-control"
+                                                value={formData.car_brand}
+                                                onChange={handleChangeInputUpDate}
+                                                // onChange={(e) => setFormdata({ ...formData, car_brand: e.target.value })}
+                                                placeholder="ยี่ห้อรถ"
+                                                disabled
+                                            />
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-secondary"
+                                                onClick={handleOpenModalModels}
+                                            >
+                                                ค้นหา
+                                            </button>
+                                        </div>
+                                        {/* {errors.car_brand && (
+                                            <div className="form-text text-danger">{errors.car_brand}</div>
+                                        )} */}
                                     </div>
+
                                     <div className="col-lg-4">
                                         <label htmlFor="input_model_no" className="form-label fw-medium">แบบ / รุ่น</label>
                                         <input
@@ -771,8 +831,16 @@ const Modal_edit_vehicle = ({ isOpen, onClose, dataVehicle }) => {
                             </form>
                         </div>
                     </div>
-                </div>
-            </ReactModal>
+                </div >
+            </ReactModal >
+
+            {isOpenModalModels && (
+                <Modal_vehicle_madel_show
+                    isOpen={isOpenModalModels}
+                    onClose={handleCloseModleModels}
+                    onSelectModel={handleModelSelected}  // ✅ callback ที่จะรับข้อมูลกลับ
+                />
+            )}
         </>
     )
 }

@@ -90,6 +90,7 @@ const VehicleAddForm = () => {
         axle_count: "",
         wheel_count: "",
         tire_count: "",
+        model_id: "",
         // insurance_start: "",
         // insurance_end: "",
         // insurance_name: "",
