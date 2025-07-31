@@ -107,6 +107,7 @@ const MaintenanceRequest = () => {
                             >
                                 <i className="bi bi-clock me-1"></i> รายการแจ้งซ่อม
                             </button>
+                            
                             <button
                                 className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
                                 onClick={() => setFilterType("finished")}
@@ -114,7 +115,9 @@ const MaintenanceRequest = () => {
                                 <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
                             </button>
                         </div>
-                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm me-1"> <i className="bi bi-plus-circle me-1"></i> แจ้งซ่อม</Link>
+                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm "> <i className="bi bi-plus-circle me-1"></i> แจ้งซ่อม</Link>
+                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm me-1"> <i className="bi bi-plus-circle me-1"></i> PM </Link>
+
                         <button className="btn btn-secondary btn-sm" onClick={handleOpenModalSetting}> <i class="bi bi-gear"></i> ตั้งค่า</button>
                     </div>
                 </div>
