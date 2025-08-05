@@ -295,10 +295,10 @@ const EditEmployees = ({ isOpen, onClose, emp }) => {
                             <input
                                 type="text"
                                 name="email"
-                                value={formData.email}
+                                value={formData.identification_number}
                                 onChange={handleChange}
                             />
-                            {errors.email && <p className="error">{errors.email}</p>}
+                            {errors.identification_number && <p className="error">{errors.identification_number}</p>}
                         </div>
                         <div className="col-lg-6">
                             <label>เบอร์โทรติดต่อ</label>
