@@ -195,10 +195,17 @@ const VehicleTable = () => {
                                     <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span>
                                     xxxxx
                                 </td> */}
-                                <td className="col-lg-1">
+                                <td className="col-lg-2 ">
+                                    <Link 
+                                    to={`/truck/VehicleShowDataDetails`}
+                                    state={rowVD}
+                                    className="btn btn-primary me-1"
+                                    >
+                                       <i class="bi bi-car-front-fill"></i> 
+                                    </Link>
                                     <button
-                                        className="btn col-lg-6"
-                                        style={{ color: '#2980b9' }}
+                                        className="btn btn-primary"
+                                        // style={{ color: '#2980b9' }}
                                         onClick={() => toggleRow(rowVD.reg_id)}
                                     >
                                         {expandedRow === rowVD.reg_id ? (

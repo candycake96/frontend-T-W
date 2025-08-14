@@ -11,10 +11,12 @@ import Modal_status_update from "../modal/Modal_status_update";
 
 const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     if (!dataVehicle) return null;
+
     const [isOpenModalRepairRequest, setOpenModalRepairRequest] = useState(false);
     const handleOpenModalRepairRequest = () => {
         setOpenModalRepairRequest(true);
     }
+
     const handleCloseModalRepairRequest = () => {
         setOpenModalRepairRequest(false);
     }
@@ -23,6 +25,7 @@ const ShowVhicleDetailsExpanded = ({ dataVehicle }) => {
     const handleOpenModalCarMileageForm = () => {
         setOpenModalCarMileageForm(true);
     }
+    
     const handleCloseModalCarMileageForm = () => {
         setOpenModalCarMileageForm(false);
     }

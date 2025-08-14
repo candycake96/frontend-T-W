@@ -5,7 +5,7 @@ import { apiUrl } from "../../../config/apiConfig";
 import Modal_vehicle_parts_details from "../Parts/Modal/Modal_vehicle_parts_details";
 import { useNavigate } from 'react-router-dom';
 
-const RepairRequestFormEdit = () => { 
+const RepairRequestFormEdit = () => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("success");
@@ -59,6 +59,30 @@ const RepairRequestFormEdit = () => {
         }
     }, [dataRepairID]);
 
+
+    const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
+
     // เมื่อ requestParts มีข้อมูลแล้ว ค่อย setFormData
     useEffect(() => {
         if (requestParts?.request_id) {
@@ -82,6 +106,7 @@ const RepairRequestFormEdit = () => {
                     const subtotal = price * qty;
                     const total = subtotal + (subtotal * vat / 100);
                     return {
+                        item_id: item.item_id || "",
                         request_id: item.request_id || "",
                         parts_used_id: item.parts_used_id || "",
                         part_id: item.part_id || "",
@@ -114,12 +139,14 @@ const RepairRequestFormEdit = () => {
     const [selectedPartIndex, setSelectedPartIndex] = useState(null);
 
     const [parts, setParts] = useState([
-        { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
+        { item_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
+        setParts([...parts, { item_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
     };
+
+
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
     const handleDataFromAddModal = (data) => {
@@ -164,14 +191,14 @@ const RepairRequestFormEdit = () => {
 
     };
 
-// Modal
-const handleOpenModalVehicleParteDtails = (index) => {
-    setSelectedPartIndex(index);
-    setOpenModalVehicleParteDtails(true);
-}
-const handleClossModalVehicleParteDtails = () => {
-    setOpenModalVehicleParteDtails(false);
-}
+    // Modal
+    const handleOpenModalVehicleParteDtails = (index) => {
+        setSelectedPartIndex(index);
+        setOpenModalVehicleParteDtails(true);
+    }
+    const handleClossModalVehicleParteDtails = () => {
+        setOpenModalVehicleParteDtails(false);
+    }
 
 
 
@@ -218,7 +245,7 @@ const handleClossModalVehicleParteDtails = () => {
             setErrorMessage("Access token is missing. Please log in again.");
             return;
         }
-    
+
         try {
             const response = await axios.put(
                 `${apiUrl}/api/repair_requests_edit/${formData.request_id}`,
@@ -242,8 +269,8 @@ const handleClossModalVehicleParteDtails = () => {
             setMessageType("error");
         }
     };
-    
-    
+
+
 
 
     return (
@@ -363,7 +390,7 @@ const handleClossModalVehicleParteDtails = () => {
 
                                     <div className="row  mb-3" key={index}>
                                         <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
-                                        <div className="col-lg-2">
+                                        <div className="col-lg-1">
                                             <label className="form-label text-sm">ระบบ</label>
                                             <input
                                                 type="text"
@@ -407,6 +434,22 @@ const handleClossModalVehicleParteDtails = () => {
                                             </select>
                                         </div>
 
+                                        <div className="col-lg-2">
+                                            <label className="form-label text-sm">ตัดรอบ PM <span className="" style={{ color: "red" }}>*</span></label>
+                                            <select
+                                                className="form-select  mb-3  form-select-sm"
+                                                aria-label="Large select example"
+                                                value={part.item_id}
+                                                onChange={(e) => handleChange(index, "item_id", e.target.value)}
+                                            >
+                                                <option value=""></option>
+                                                {dataItem.map((row, ndx) => (
+                                                    <option value={row.item_id} key={ndx}> {row.item_name}</option>
+                                                ))}
+                                                <option value="อื่นๆ">อื่นๆ</option>
+                                            </select>
+                                        </div>
+
                                         <div className="col-lg-1">
                                             <label className="form-label text-sm">ราคา <span className="" style={{ color: "red" }}>*</span></label>
                                             <input
@@ -445,24 +488,25 @@ const handleClossModalVehicleParteDtails = () => {
                                         </div>
                                         <div className="col-lg-2">
                                             <label className="form-label text-sm">ราคารวม</label>
-                                            <input
-                                                type="number"
-                                                className="form-control form-control-sm"
-                                                value={part.total || ""}
-                                                onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
-                                                disabled
-                                            />
 
+                                            <div className=" d-flex justify-content-center align-items-center">
+                                                <input
+                                                    type="number"
+                                                    className="form-control form-control-sm me-1"
+                                                    value={part.total || ""}
+                                                    onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
+                                                    disabled
+                                                />
+                                                <button
+                                                    className="btn btn-sm btn-danger"
+                                                    type="button"
+                                                    onClick={() => handleRemovePart(index)}
+                                                >
+                                                    <i className="bi bi-trash3-fill"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
-                                            <button
-                                                className="btn btn-sm btn-danger"
-                                                type="button"
-                                                onClick={() => handleRemovePart(index)}
-                                            >
-                                                <i className="bi bi-trash3-fill"></i>
-                                            </button>
-                                        </div>
+
 
                                     </div>
 
@@ -499,8 +543,8 @@ const handleClossModalVehicleParteDtails = () => {
                             <div className="text-center">
                                 <button type="submit" className="btn btn-primary me-1">บันทึก</button>
                                 <Link to="/truck/MaintenanceJob" state={dataRepairID} className="btn btn-secondary">
-        ยกเลิก
-      </Link>
+                                    ยกเลิก
+                                </Link>
                             </div>
                         </form>
 

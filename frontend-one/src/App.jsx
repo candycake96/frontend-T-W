@@ -73,6 +73,8 @@ import MainternanceApprovalManager from "./components_truck/truck/Repair/Mainter
 import PM_setting from "./components_truck/truck/PreventiveMaintenance/PM_setting";
 import RepairCloseList from "./components_truck/truck/Repair/CloseList/RepairCloseList";
 import Vehicle_models from "./components_truck/truck/Vehicle/setting_vehicle/vehicle_models/vehicle_models";
+import Vehicle_pm_start from "./components_truck/truck/PreventiveMaintenance/Vehicle_pm/Vehicle_pm_start";
+import VehicleShowDataDetails from "./components_truck/truck/Vehicle/vehicle_details/VehicleShowDataDetails";
 
 Modal.setAppElement("#root");
 
@@ -161,6 +163,8 @@ function App() {
           <Route path="PM_setting" element={<PM_setting/>} />{/*  หน้า PM  setting*/} 
           <Route path="RepairCloseList" element={<RepairCloseList/>} /> {/* ปิดงานซ่อม */}
           <Route path="Vehicle_models" element={<Vehicle_models/>} /> {/* ปิดงานซ่อม */}
+          <Route path="Vehicle_pm_start" element={<Vehicle_pm_start/>} /> {/* เพิ่มข้อมูลรถ PM  */}
+          <Route path="VehicleShowDataDetails" element={<VehicleShowDataDetails/>} /> {/* แสดงข้อมูลรถทั้งหมด รายละเอียดรถ */}
           
           </Route> 
         </Routes> 

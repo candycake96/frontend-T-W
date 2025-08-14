@@ -1,5 +1,7 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiUrl } from "../../../config/apiConfig";
 
 const MainternanceRepairRequestDetails = ({ parts, summary, formData, user, permissions }) => {
     // ฟังก์ชันแปลงวันที่ให้อยู่ในรูปแบบ yyyy-mm-dd
@@ -14,29 +16,54 @@ const MainternanceRepairRequestDetails = ({ parts, summary, formData, user, perm
 
     const dataRepairID = formData;
 
+    const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
+
+
+
     return (
         <>
             <div className=" mb-3">
                 <div className="">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-    <p className="mb-0 fw-bold text-dark ">รายการเปิดงานซ่อมบำรุง</p>
+                        <p className="mb-0 fw-bold text-dark ">รายการเปิดงานซ่อมบำรุง</p>
 
-    {formData?.request_informer_emp_id === user?.id_emp && (
-                                    <Link
-                                        to="/truck/RepairRequestFormEdit"
-                                        state={dataRepairID}
-                                        className="btn btn-success btn-sm"
-                                    >
-                                        <i className="bi bi-pencil-fill me-1"></i> แก้ไข
-                                    </Link>
-                                )}
-</div>
+                        {formData?.request_informer_emp_id === user?.id_emp && (
+                            <Link
+                                to="/truck/RepairRequestFormEdit"
+                                state={dataRepairID}
+                                className="btn btn-success btn-sm"
+                            >
+                                <i className="bi bi-pencil-fill me-1"></i> แก้ไข
+                            </Link>
+                        )}
+                    </div>
 
                     <form>
                         <div className="row">
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">เลขที่ใบแจ้งซ่อม</label>
-                                <input type="text" className="form-control" value={formData?.request_no || ""} disabled />
+                                <input type="text" className="form-control" valulabele={formData?.request_no || ""} disabled />
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">วันที่แจ้ง</label>
@@ -76,7 +103,7 @@ const MainternanceRepairRequestDetails = ({ parts, summary, formData, user, perm
                             {parts.map((part, index) => (
                                 <div className="row g-2 align-items-center mb-3" key={index}>
                                     <input type="hidden" value={part.part_id} readOnly />
-                                    <div className="col-lg-2">
+                                    <div className="col-lg-1">
                                         <label className="form-label text-sm mb-0">ระบบ</label>
                                         <input
                                             type="text"
@@ -116,6 +143,26 @@ const MainternanceRepairRequestDetails = ({ parts, summary, formData, user, perm
                                             <option value="PM">PM</option>
                                         </select>
                                     </div>
+
+                                    
+
+                                    <div className="col-lg-2">
+                                        <label className="form-label text-sm">ตัดรอบ PM <span className="" style={{ color: "red" }}>*</span></label>
+                                        <select
+                                            className="form-select  mb-3  form-select-sm"
+                                            aria-label="Large select example"
+                                            value={part.item_id || ''}
+                                            disabled
+                                        // onChange={(e) => handleChange(index, "item_id", e.target.value)}
+                                        >
+                                            <option value=""></option>
+                                            {dataItem.map((row, ndx) => (
+                                                <option value={row.item_id} key={ndx}> {row.item_name}</option>
+                                            ))}
+                                            <option value="อื่นๆ">อื่นๆ</option>
+                                        </select>
+                                    </div>
+
                                     <div className="col-lg-1">
                                         <label className="form-label text-sm mb-0">ราคา <span style={{ color: "red" }}>*</span></label>
                                         <input

@@ -3,13 +3,16 @@ import ReactModal from "react-modal";
 import axios from "axios";
 import { apiUrl } from "../../../../config/apiConfig";
 import { Button } from "react-bootstrap";
+import Modal_vehicle_parts_details from "../../Parts/Modal/Modal_vehicle_parts_details";
 
 const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
   const [itemName, setItemName] = useState("");
   const [loading, setLoading] = useState(false);
   const [isItemData, setItemData] = useState([]);
   const [editId, setEditId] = useState(null); // 🆕 สำหรับตรวจสอบว่าอยู่ในโหมดแก้ไข
-    
+  const [part, setPart] = useState({ part_id: "", part_name: "" });
+
+
   const fetchItemList = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/setting_mainternance_item_show`, {
@@ -38,7 +41,7 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
         // โหมดแก้ไข
         await axios.put(
           `${apiUrl}/api/setting_mainternance_item_update/${editId}`,
-          { item_name: itemName },
+          { item_name: itemName, part_id: part.part_id },
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -49,7 +52,7 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
         // โหมดเพิ่ม
         await axios.post(
           `${apiUrl}/api/setting_mainternance_item_add`,
-          { item_name: itemName },
+          { item_name: itemName, part_id: part.part_id  },
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -69,17 +72,42 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
       setLoading(false);
     }
   };
-  
+
 
   const handleEdit = (item) => {
     setItemName(item.item_name);
     setEditId(item.item_id);
+    setPart({
+       part_id: item.part_id, 
+       part_name:  item.part_name
+    })
   };
 
   const cancelEdit = () => {
     setItemName("");
     setEditId(null);
   };
+
+  const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
+  const [selectedPartIndex, setSelectedPartIndex] = useState(null);
+  // Modal
+  const handleOpenModalVehicleParteDtails = (index) => {
+    setSelectedPartIndex(index);
+    setOpenModalVehicleParteDtails(true);
+  }
+  const handleClossModalVehicleParteDtails = () => {
+    setOpenModalVehicleParteDtails(false);
+  }
+
+  // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
+  const handleDataFromAddModal = (data) => {
+    setPart({
+      part_id: data.part_id,
+      part_name: data.part_name
+    });
+    setSelectedPartIndex(null); // reset
+  };
+
 
   return (
     <ReactModal
@@ -117,7 +145,7 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
 
       <form onSubmit={handleSubmit} className="p-4">
         <div className="mb-3">
-          <label className="form-label fw-semibold">ชื่อรายการซ่อม</label>
+          <label className="form-label fw-semibold">ชื่อรายการซ่อม <span className="" style={{ color: "red" }}>*</span></label>
           <input
             type="text"
             className="form-control"
@@ -126,6 +154,26 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
             placeholder="เช่น เปลี่ยนน้ำมันเครื่อง"
             required
           />
+        </div>
+        <div className="mb-3">
+          <label htmlFor={`partSearch`} className="form-label text-sm">อะไหล่ <span className="" style={{ color: "red" }}>*</span></label>
+          <div className="input-group input-group-sm">
+            <input
+              type="text"
+              className="form-control"
+              id="partSearch"
+              value={part.part_name}
+              placeholder="เลือกอะไหล่..."
+              readOnly
+            />
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              type="button"
+              onClick={() => handleOpenModalVehicleParteDtails()}
+            >
+              <i className="bi bi-search"></i>
+            </button>
+          </div>
         </div>
 
         <div className="text-end">
@@ -148,6 +196,7 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
               <tr>
                 <th>ลำดับ</th>
                 <th>รายการ</th>
+                <th>อะไหล่</th>
                 <th className="text-end">แก้ไข</th>
               </tr>
             </thead>
@@ -156,13 +205,14 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
                 <tr key={data.item_id}>
                   <td>{index + 1}</td>
                   <td>{data.item_name}</td>
-                  <td className="text-end">
+                  <td>{data.part_name}</td>
+                  <td className="text-end">                   
                     <Button
                       variant="outline-primary"
                       size="sm"
                       onClick={() => handleEdit(data)}
                     >
-                      <i className="bi bi-pencil-square"></i>
+                      <i className="bi bi-pencil-square"></i>  {/* แก้ไข */}
                     </Button>
                   </td>
                 </tr>
@@ -178,6 +228,12 @@ const Modal_item_add = ({ isOpen, onClose, onItemAdded }) => {
           </table>
         </div>
       </div>
+
+      {isOpenModalVehicleParteDtails && (
+        <Modal_vehicle_parts_details
+          isOpen={isOpenModalVehicleParteDtails} onClose={handleClossModalVehicleParteDtails} onSubmit={handleDataFromAddModal} />
+      )}
+
     </ReactModal>
   );
 };

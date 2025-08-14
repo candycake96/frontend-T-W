@@ -47,27 +47,27 @@ const Vehicle_models = () => {
     };
 
     const handleDeleteModel = async (id) => {
-  const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลยี่ห้อ/รุ่นรถนี้?");
-  if (!confirmDelete) return;
+        const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลยี่ห้อ/รุ่นรถนี้?");
+        if (!confirmDelete) return;
 
-  try {
-    const response = await axios.delete(
-      `${apiUrl}/api/setting_models_delete/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+        try {
+            const response = await axios.delete(
+                `${apiUrl}/api/setting_models_delete/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
 
-    // แจ้งลบสำเร็จ
-    alert("ลบข้อมูลสำเร็จ");
-    fetchDataModel(); // รีเฟรชรายการ
-  } catch (error) {
-    console.error("Error:", error);
-    alert("เกิดข้อผิดพลาด ไม่สามารถลบข้อมูลได้");
-  }
-};
+            // แจ้งลบสำเร็จ
+            alert("ลบข้อมูลสำเร็จ");
+            fetchDataModel(); // รีเฟรชรายการ
+        } catch (error) {
+            console.error("Error:", error);
+            alert("เกิดข้อผิดพลาด ไม่สามารถลบข้อมูลได้");
+        }
+    };
 
     return (
         <>
@@ -80,9 +80,16 @@ const Vehicle_models = () => {
                                 จัดการยี่ห้อและรุ่นรถเพื่อนำไปใช้ในระบบลงทะเบียนรถ
                             </small>
                         </div>
+                        <div className="">
+                            <Button as={Link} to="/Truck/Vehicle_pm_start" className="me-1">ลงทะเบียนรถเพื่อเริ่มต้น PM</Button>
+                        <Button variant="primary" onClick={handleOpenModalModelAdd} className="me-1">
+                            <i className="bi bi-plus-circle me-2"></i> ตั้งค่าแจ้งเตือน PM
+                        </Button>
                         <Button variant="primary" onClick={handleOpenModalModelAdd}>
                             <i className="bi bi-plus-circle me-2"></i>เพิ่มข้อมูล
-                        </Button>
+                        </Button>                            
+                        </div>
+
                     </div>
                 </div>
 
@@ -114,7 +121,7 @@ const Vehicle_models = () => {
                                                         <i class="bi bi-trash"></i>
                                                     </Button>
                                                     <Link to="/truck/PM_setting" state={data} className="btn btn-outline-secondary btn-sm"   >
-                                                    <i class="bi bi-gear"></i>
+                                                        <i class="bi bi-gear"></i>
                                                     </Link>
                                                 </td>
                                             </tr>

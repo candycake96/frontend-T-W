@@ -111,6 +111,7 @@ const MaintenanceJob = () => {
                     const subtotal = price * qty;
                     const total = subtotal + (subtotal * vat / 100);
                     return {
+                        item_id: item.item_id || "",
                         part_id: item.part_id || "",
                         system_name: item.system_name || "",
                         part_name: item.repair_part_name || "",
@@ -138,11 +139,11 @@ const MaintenanceJob = () => {
 
 
     const [parts, setParts] = useState([
-        { part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
+        { item_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" },
     ]);
 
     const handleAddPart = () => {
-        setParts([...parts, { part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
+        setParts([...parts, { item_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
     };
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add

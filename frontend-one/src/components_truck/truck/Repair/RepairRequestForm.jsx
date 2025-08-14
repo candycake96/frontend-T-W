@@ -17,6 +17,8 @@ const RepairRequestForm = () => {
         odometer: "",
     });
 
+
+
     const [user, setUser] = useState(null);
     const [date, setDate] = useState(() => {
         const today = new Date();
@@ -62,6 +64,29 @@ const RepairRequestForm = () => {
     const handleAddPart = () => {
         setParts([...parts, { part_id: "", system: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }]);
     };
+
+    const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
 
     // ฟังก์ชันรับข้อมูลจาก Modal_vehicle_parts_add
     const handleDataFromAddModal = (data) => {
@@ -183,8 +208,12 @@ const RepairRequestForm = () => {
             setMessage("เกิดข้อผิดพลาด");
             setMessageType("error");
         }
-    }
-    
+    };
+
+
+
+
+
 
     return (
         <div className=" p-3">
@@ -280,7 +309,7 @@ const RepairRequestForm = () => {
 
                                 <div className="row  mb-3" key={index}>
                                     <input type="hidden" value={part.part_id} onChange={(e) => handleChange(index, "part_id", e.target.value)} /> {/* part_id */}
-                                    <div className="col-lg-2">
+                                    <div className="col-lg-1">
                                         <label className="form-label text-sm">ระบบ</label>
                                         <input
                                             type="text"
@@ -319,7 +348,24 @@ const RepairRequestForm = () => {
                                         >
                                             <option value=""></option>
                                             <option value="CM">CM</option>
-                                            <option value="PM">PM</option>
+                                            <option value="PM">PM </option>
+
+                                        </select>
+                                    </div>
+
+                                    <div className="col-lg-2">
+                                        <label className="form-label text-sm">ข้อมูลเชิงวิเคราะห์ <span className="" style={{ color: "red" }}>*</span></label>
+                                        <select
+                                            className="form-select  mb-3  form-select-sm"
+                                            aria-label="Large select example"
+                                            value={part.item_id}
+                                            onChange={(e) => handleChange(index, "item_id", e.target.value)}
+                                        >
+                                            <option value=""></option>
+                                            {dataItem.map((row, ndx) => (
+                                                <option value={row.item_id} key={ndx}> {row.item_name}</option>
+                                            ))}
+                                            <option value="อื่นๆ">อื่นๆ</option>
                                         </select>
                                     </div>
 
@@ -361,24 +407,26 @@ const RepairRequestForm = () => {
                                     </div>
                                     <div className="col-lg-2">
                                         <label className="form-label text-sm">ราคารวม</label>
-                                        <input
-                                            type="number"
-                                            className="form-control form-control-sm"
-                                            value={part.total}
-                                            onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
-                                            disabled
-                                        />
 
+                                        <div className=" d-flex justify-content-center align-items-center ">
+                                            <input
+                                                type="number"
+                                                className="form-control form-control-sm me-2"
+                                                value={part.total}
+                                                onChange={(e) => handleChange(index, "total", e.target.value)} // REMOVE THIS
+                                                disabled
+
+                                            />
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                type="button"
+                                                onClick={() => handleRemovePart(index)}
+                                            >
+                                                <i className="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="col-lg-1 d-flex justify-content-center align-items-center mt-3">
-                                        <button
-                                            className="btn btn-sm btn-danger"
-                                            type="button"
-                                            onClick={() => handleRemovePart(index)}
-                                        >
-                                            <i className="bi bi-trash3-fill"></i>
-                                        </button>
-                                    </div>
+
 
                                 </div>
 

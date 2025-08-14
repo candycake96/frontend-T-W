@@ -85,7 +85,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
             quotation_vat: "",
             vendor_name: "",
             parts: [
-                { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+                { item_id: "", quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
             ],
         }
     ]);
@@ -104,7 +104,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                 quotation_vat: "",
                 vendor_name: "",
                 parts: [
-                    { quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
+                    { item_id: "", quotation_parts_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "" }
                 ]
             }
         ]);
@@ -121,7 +121,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
     const handleAddPart = (quotationIndex) => {
         const updatedQuotations = [...quotations];
         updatedQuotations[quotationIndex].parts.push({
-            request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: ""
+           item_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: ""
         });
         setQuotations(updatedQuotations);
     };
@@ -194,18 +194,18 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
             const vatVal = subtotal * vat / 100;
 
             total += subtotal;
-            vatAmountPerItem += vatVal;
+            vatAmountPerItem += vatVal; 
         });
 
-        const vatRate = parseFloat(quotation_vat) || 0;
-        const extraVat = total * vatRate / 100;
+        const vatRate = parseFloat(quotation_vat) || 0; 
+        const extraVat = total * vatRate / 100; 
 
-        const vatAmount = vatAmountPerItem + extraVat;
+        const vatAmount = vatAmountPerItem + extraVat; 
 
         return {
-            total: total.toFixed(2),
-            vat: vatAmount.toFixed(2),
-            grandTotal: (total + vatAmount).toFixed(2),
+            total: total.toFixed(2), 
+            vat: vatAmount.toFixed(2), 
+            grandTotal: (total + vatAmount).toFixed(2), 
         };
     };
 
@@ -250,6 +250,29 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
         }
     }, [maintenanceJob]);
 
+        const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
+
     // ฟังก์ชันดึงข้อมูลอะไหล่จาก requestParts และอัปเดตใบเสนอราคา 
     const handleInputChangeImportParts = (quotationIndex) => {
         if (requestParts?.request_id && Array.isArray(requestParts.parts_used)) {
@@ -260,6 +283,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                 const subtotal = price * qty;
                 const total = subtotal + (subtotal * vat / 100);
                 return {
+                    item_id: item.item_id || "",
                     part_id: item.part_id || "",
                     system_name: item.system_name || "",
                     part_name: item.repair_part_name || "",
@@ -393,6 +417,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                                 const vatVal = subtotal * vat / 100;
                                 const total = subtotal + vatVal;
                                 return {
+                                    item_id: part.item_id || "",
                                     quotation_parts_id: part.quotation_parts_id || "",
                                     part_id: part.part_id || "",
                                     system_name: part.system_name || "",
@@ -455,6 +480,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                                 const vatVal = subtotal * vat / 100;
                                 const total = subtotal + vatVal;
                                 return {
+                                    item_id: part.item_id || "",
                                     part_id: part.part_id || "",
                                     system_name: part.system_name || "",
                                     part_name: part.part_name || "",
@@ -916,7 +942,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                                     {q.parts.map((part, partIdx) => (
                                         <div className="row mb-3" key={partIdx}>
                                             <input type="hidden" value={part.part_id} readOnly />
-                                            <div className="col-lg-2">
+                                            <div className="col-lg-1">
                                                 <label className="form-label text-sm">ระบบ</label>
                                                 <input
                                                     type="text"
@@ -961,6 +987,25 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                                                     <option value="PM">PM</option>
                                                 </select>
                                             </div>
+
+                                            
+                                        <div className="col-lg-1">
+                                            <label className="form-label text-sm">ตัดรอบ PM <span className="" style={{ color: "red" }}>*</span></label>
+                                            <select
+                                                className="form-select  mb-3  form-select-sm"
+                                                aria-label="Large select example"
+                                                value={part.item_id}
+                                                onChange={e => handleChange(idx, partIdx, "item_id", e.target.value)}
+                                                disabled={!isEditing}
+                                            >
+                                                <option value=""></option>
+                                                {dataItem.map((row, ndx) => (
+                                                    <option value={row.item_id} key={ndx}> {row.item_name}</option>
+                                                ))}
+                                                <option value="อื่นๆ">อื่นๆ</option>
+                                            </select>
+                                        </div>
+
                                             <div className="col-lg-1">
                                                 <label className="form-label text-sm">ราคา <span style={{ color: "red" }}>*</span></label>
                                                 <input
