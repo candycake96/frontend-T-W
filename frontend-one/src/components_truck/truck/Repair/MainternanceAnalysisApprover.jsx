@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
+import '../Repair/MainternanceAnalysisApprover.css';
 
-const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
+const MainternanceAnalysisApprover = ({ maintenanceJob, onSaved }) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
@@ -43,7 +44,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
             quotation_vat: "",
             vendor_name: "",
             parts: [
-                { request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "", is_approved_part: false }
+                { item_id: "", request_id: "", parts_used_id: "", part_id: "", system_name: "", part_name: "", price: "", unit: "", maintenance_type: "", qty: "", discount: "", vat: "", total: "", is_approved_part: false }
             ],
         }
     ]);
@@ -79,6 +80,29 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
     },
         []);
 
+    const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
+
     useEffect(() => {
         if (isAnalysisApprover?.quotations) {
             // สมมติ apiUrl คือ base url ของไฟล์
@@ -95,6 +119,7 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                 quotation_vat: q.quotation_vat ?? "",
                 vendor_name: q.vendor_name || "",
                 parts: (q.parts || []).map(p => ({
+                    item_id: p.item_id,
                     quotation_parts_id: p.quotation_parts_id,
                     request_id: p.request_id || "",
                     parts_used_id: p.parts_used_id || "",
@@ -245,6 +270,9 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                 console.log("Response:", response.data);
                 setMessage(response.data.message);
                 setMessageType("success");
+                 if (onSaved) {
+                                onSaved(response.data.data); // API ควรส่งข้อมูลใหม่ของ analysis
+                            }
             } else {
                 alert("❌ ไม่สามารถอนุมัติได้");
             }
@@ -430,152 +458,168 @@ const MainternanceAnalysisApprover = ({ maintenanceJob }) => {
                                                 placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"
                                             ></textarea>
                                         </div>
-                                        <div className="mb-3" style={{ overflowX: "auto" }}>
-                                            {q.parts.map((part, partIdx) => (
-                                                <div className="row mb-3" key={partIdx}>
-                                                    <input type="hidden" value={part.part_id} readOnly />
-                                                    <div className="col-lg-2">
-                                                        <label className="form-label text-sm">ระบบ</label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control form-control-sm"
-                                                            value={part.system_name}
-                                                            onChange={e => handleChange(idx, partIdx, "system_name", e.target.value)}
-                                                            disabled
-                                                        />
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <label className="form-label text-sm">อะไหล่ <span style={{ color: "red" }}>*</span></label>
-                                                        <div className="input-group input-group-sm">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                value={part.part_name}
-                                                                onChange={e => handleChange(idx, partIdx, "part_name", e.target.value)}
-                                                                disabled={!isEditing}
-                                                                placeholder="ค้นหาอะไหล่..."
-                                                            />
-                                                            <button
-                                                                className="btn btn-outline-secondary btn-sm"
-                                                                type="button"
-                                                                // onClick={() => handleOpenModalVehicleParteDtails(idx, partIdx)}
-                                                                disabled={!isEditing}
-                                                            >
-                                                                <i className="bi bi-search"></i>
-                                                            </button>
+<div style={{ overflowX: "auto" }}>
+  {q.parts.map((part, partIdx) => (
+    <div className="part-row mb-2" key={partIdx}>
+      <input type="hidden" value={part.part_id} readOnly />
 
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-1">
-                                                        <label className="form-label text-sm">ประเภท <span style={{ color: "red" }}>*</span></label>
-                                                        <select
-                                                            className="form-select mb-3 form-select-sm"
-                                                            value={part.maintenance_type}
-                                                            onChange={e => handleChange(idx, partIdx, "maintenance_type", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        >
-                                                            <option value=""></option>
-                                                            <option value="CM">CM</option>
-                                                            <option value="PM">PM</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-lg-1">
-                                                        <label className="form-label text-sm">ราคา <span style={{ color: "red" }}>*</span></label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control form-control-sm"
-                                                            value={part.price}
-                                                            onChange={e => handleChange(idx, partIdx, "price", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        />
-                                                    </div>
-                                                    <div className="col-lg-1">
-                                                        <label className="form-label text-sm">หน่วย <span style={{ color: "red" }}>*</span></label>
-                                                        <input
-                                                            type="text"
-                                                            className="form-control form-control-sm"
-                                                            value={part.unit}
-                                                            onChange={e => handleChange(idx, partIdx, "unit", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        />
-                                                    </div>
-                                                    <div className="col-lg-1">
-                                                        <label className="form-label text-sm">จำนวน <span style={{ color: "red" }}>*</span></label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control form-control-sm"
-                                                            value={part.qty}
-                                                            onChange={e => handleChange(idx, partIdx, "qty", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        />
-                                                    </div>
-                                                    <div className="col-lg-1">
-                                                        <label className="form-label text-sm">ส่วนลด</label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control form-control-sm"
-                                                            value={part.discount || ""}
-                                                            onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        />
-                                                    </div>
-                                                    <div className="col" style={{ flex: "0 0 7.5%", maxWidth: "7.5%" }}>
-                                                        <label className="form-label text-sm">VAT%</label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control form-control-sm"
-                                                            value={part.vat}
-                                                            onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
-                                                            disabled={!isEditing}
-                                                        />
-                                                    </div>
-                                                    <div className="col " style={{ flex: "0 0 12.5%", maxWidth: "12.5%" }}>
-                                                        <label className="form-label text-sm">ราคารวม</label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control form-control-sm"
-                                                            value={part.total || ""}
-                                                            disabled
-                                                        />
-                                                    </div>
+      <div className="part-col">
+        <label className="form-label compact-label">ระบบ</label>
+        <input
+          type="text"
+          className="form-control form-control-sm compact-input"
+          value={part.system_name}
+          onChange={e => handleChange(idx, partIdx, "system_name", e.target.value)}
+          disabled
+        />
+      </div>
 
-                                                    <div className="col" >
-                                                        <label className="form-label text-sm" htmlFor={`is_approved_part_${idx}_${partIdx}`}>
-                                                            <i className="bi bi-check2-circle"></i>
-                                                        </label>
-                                                        <input
-                                                            type="checkbox"
-                                                            className="form-check-input"
-                                                            id={`is_approved_part_${idx}_${partIdx}`}
-                                                            name={`is_approved_part_${idx}_${partIdx}`}
-                                                            checked={!!part.is_approved_part}
-                                                            onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
-                                                            style={{
-                                                                boxShadow: '0 0 5px #0000FF',
-                                                                borderRadius: '4px',
-                                                                padding: '8px',
-                                                                outline: 'none',
-                                                            }}
-                                                        />
-                                                    </div>
+      <div className="part-col" style={{ minWidth: "180px" }}>
+        <label className="form-label compact-label">อะไหล่ <span style={{ color: "red" }}>*</span></label>
+        <div className="input-group input-group-sm">
+          <input
+            type="text"
+            className="form-control compact-input"
+            value={part.part_name}
+            onChange={e => handleChange(idx, partIdx, "part_name", e.target.value)}
+            disabled={!isEditing}
+            placeholder="ค้นหาอะไหล่..."
+          />
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            type="button"
+            disabled={!isEditing}
+          >
+            <i className="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
 
-                                                </div>
-                                            ))}
+      <div className="part-col">
+        <label className="form-label compact-label">ประเภท *</label>
+        <select
+          className="form-select form-select-sm compact-select"
+          value={part.maintenance_type}
+          onChange={e => handleChange(idx, partIdx, "maintenance_type", e.target.value)}
+          disabled={!isEditing}
+        >
+          <option value=""></option>
+          <option value="CM">CM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
 
-                                            {isEditing && (
-                                                <div className="d-flex justify-content-end mb-3">
-                                                    <button
-                                                        className="btn btn-outline-primary"
-                                                        type="button"
-                                                        // onClick={() => handleAddPart(idx)}
-                                                        disabled={!isEditing}
-                                                    >
-                                                        เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
-                                                    </button>
-                                                </div>
-                                            )}
+      <div className="part-col">
+        <label className="form-label compact-label">ตัดรอบ PM *</label>
+        <select
+          className="form-select form-select-sm compact-select"
+          value={part.item_id}
+          onChange={(e) => handleChange(idx, partIdx, "item_id", e.target.value)}
+          disabled={!isEditing}
+        >
+          <option value=""></option>
+          {dataItem.map((row, ndx) => (
+            <option value={row.item_id} key={ndx}>{row.item_name}</option>
+          ))}
+          <option value="อื่นๆ">อื่นๆ</option>
+        </select>
+      </div>
 
-                                        </div>
+      <div className="part-col">
+        <label className="form-label compact-label">ราคา *</label>
+        <input
+          type="number"
+          className="form-control form-control-sm compact-input"
+          value={part.price}
+          onChange={e => handleChange(idx, partIdx, "price", e.target.value)}
+          disabled={!isEditing}
+        />
+      </div>
+
+      <div className="part-col">
+        <label className="form-label compact-label">หน่วย *</label>
+        <input
+          type="text"
+          className="form-control form-control-sm compact-input"
+          value={part.unit}
+          onChange={e => handleChange(idx, partIdx, "unit", e.target.value)}
+          disabled={!isEditing}
+        />
+      </div>
+
+      <div className="part-col">
+        <label className="form-label compact-label">จำนวน *</label>
+        <input
+          type="number"
+          className="form-control form-control-sm compact-input"
+          value={part.qty}
+          onChange={e => handleChange(idx, partIdx, "qty", e.target.value)}
+          disabled={!isEditing}
+        />
+      </div>
+
+      <div className="part-col">
+        <label className="form-label compact-label">ส่วนลด</label>
+        <input
+          type="number"
+          className="form-control form-control-sm compact-input"
+          value={part.discount || ""}
+          onChange={e => handleChange(idx, partIdx, "discount", e.target.value)}
+          disabled={!isEditing}
+        />
+      </div>
+
+      <div className="part-col" style={{ width: "60px" }}>
+        <label className="form-label compact-label">VAT%</label>
+        <input
+          type="number"
+          className="form-control form-control-sm compact-input"
+          value={part.vat}
+          onChange={e => handleChange(idx, partIdx, "vat", e.target.value)}
+          disabled={!isEditing}
+        />
+      </div>
+
+      <div className="part-col" style={{ width: "100px" }}>
+        <label className="form-label compact-label">ราคารวม</label>
+        <input
+          type="number"
+          className="form-control form-control-sm compact-input"
+          value={part.total || ""}
+          disabled
+        />
+      </div>
+
+      <div className="part-col d-flex align-items-center">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          checked={!!part.is_approved_part}
+          onChange={e => handleChange(idx, partIdx, "is_approved_part", e.target.checked)}
+          style={{
+            boxShadow: '0 0 5px #0000FF',
+            borderRadius: '4px',
+            padding: '8px',
+            outline: 'none',
+          }}
+        />
+      </div>
+    </div>
+  ))}
+
+  {isEditing && (
+    <div className="d-flex justify-content-end mb-3">
+      <button
+        className="btn btn-outline-primary"
+        type="button"
+        disabled={!isEditing}
+      >
+        เพิ่มรายการอะไหล่ <i className="bi bi-plus-square-fill"></i>
+      </button>
+    </div>
+  )}
+</div>
+
 
                                         <div className="text-end">
                                             {(() => {

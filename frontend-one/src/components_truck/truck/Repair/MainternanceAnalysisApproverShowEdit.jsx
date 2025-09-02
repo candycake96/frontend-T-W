@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 
-const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowData }) => {
+const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowData, hasPermission }) => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
@@ -25,6 +25,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
 
     const [isEditing, setIsEditing] = useState(false);
 
+
     const [isDataApprover, setDataApprover] = useState({
         analysis_id: "",
         approver_emp_id: "",
@@ -33,6 +34,9 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
         approval_status: "",
         approval_date: "",
         remark: "",
+
+
+        
     });
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
@@ -49,6 +53,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
             vendor_name: "",
             parts: [
                 {
+                    item_id: "",
                     request_id: "",
                     parts_used_id: "",
                     part_id: "",
@@ -95,6 +100,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                 quotation_vat: q.quotation_vat ?? "",
                 vendor_name: q.vendor_name || "",
                 parts: (q.parts || []).map(p => ({
+                    item_id: p.item_id,
                     quotation_parts_id: p.quotation_parts_id,
                     request_id: p.request_id || "",
                     parts_used_id: p.parts_used_id || "",
@@ -128,6 +134,29 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
         }));
     };
 
+    const [dataItem, setDataItem] = useState([]);
+
+    const fetchDataItem = async () => {
+        try {
+            const response = await axios.get(
+                `${apiUrl}/api/setting_mainternance_item_show`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+            setDataItem(response.data);
+        } catch (error) {
+            console.error("Error fetching parts:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataItem();
+    }, []);
+
+
     // ฟังก์ชันเปลี่ยนแปลงข้อมูลใบเสนอราคา
     const handleQuotationChange = (index, field, value) => {
         if (!isEditing) return;
@@ -141,6 +170,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
             return updated;
         });
     };
+
 
 
     const handleChange = (quotationIndex, partIndex, field, value) => {
@@ -283,6 +313,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                     <p className="mb-0 fw-bold text-dark ">รายการตรวจสอบการแจ้งซ่อมและใบเสนอราคาเพื่ออนุมัติ</p>
                     {!isEditing ? (
                         <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
+                            {hasPermission("ADD_TECH_APPROVAL") && (
                             <button
                                 type="button"
                                 className="btn btn-success btn-sm"
@@ -291,6 +322,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                             >
                                 <i className="bi bi-pencil-fill me-1"></i> แก้ไข
                             </button>
+                            )}
                         </div>
                     ) : (
                         <div className="col-lg-4 mb-3 d-flex justify-content-lg-end justify-content-start">
@@ -422,18 +454,6 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                             </div>
                                             <div className="col-lg-6 mb-3">
                                                 <label className="form-label">เอกสารแนบ</label>
-                                                {/* {isEditing && (
-                                                    <input
-                                                        type="file"
-                                                        className="form-control form-control-sm mb-2"
-                                                        onChange={e => {
-                                                            const file = e.target.files[0];
-                                                            if (file) {
-                                                                handleQuotationChange(idx, 'quotation_file', file);
-                                                            }
-                                                        }}
-                                                    />
-                                                )} */}
                                                 {/* แสดงชื่อไฟล์ใหม่ที่เลือก */}
                                                 {isEditing && q.quotation_file instanceof File && (
                                                     <div className="mb-2 text-success">
@@ -526,6 +546,24 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                             <option value="PM">PM</option>
                                                         </select>
                                                     </div>
+
+                                                    <div className="col-lg-2">
+                                                        <label className="form-label text-sm">ตัดรอบ PM <span className="" style={{ color: "red" }}>*</span></label>
+                                                        <select
+                                                            className="form-select  mb-3  form-select-sm"
+                                                            aria-label="Large select example"
+                                                            value={part.item_id}
+                                                            onChange={(e) => handleChange(idx, partIdx, "item_id", e.target.value)}
+                                                            disabled
+                                                        >
+                                                            <option value=""></option>
+                                                            {dataItem.map((row, ndx) => (
+                                                                <option value={row.item_id} key={ndx}> {row.item_name}</option>
+                                                            ))}
+                                                            <option value="อื่นๆ">อื่นๆ</option>
+                                                        </select>
+                                                    </div>
+
                                                     <div className="col-lg-1">
                                                         <label className="form-label text-sm">ราคา <span style={{ color: "red" }}>*</span></label>
                                                         <input
@@ -696,7 +734,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="approved"
                                                 checked={isDataApprover.approval_status === "approved"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
-                                                disabled = {!isEditing}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="approved">อนุมัติ</label>
                                         </div>
@@ -709,7 +747,7 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="rejected"
                                                 checked={isDataApprover.approval_status === "rejected"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
-                                                disabled = {!isEditing}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="rejected">ไม่อนุมัติ</label>
                                         </div>
@@ -722,24 +760,24 @@ const MainternanceAnalysisApproverShowEdit = ({ maintenanceJob, isApproverShowDa
                                                 value="revise"
                                                 checked={isDataApprover.approval_status === "revise"}
                                                 onChange={e => setDataApprover(prev => ({ ...prev, approval_status: e.target.value }))}
-                                                disabled = {!isEditing}
+                                                disabled={!isEditing}
                                             />
                                             <label className="form-check-label" htmlFor="revise">ส่งกลับแก้ไข</label>
                                         </div>
                                     </div>
                                 </div>
                                 {/* // ...existing code... */}
-                               {isEditing && (
-                                <div className="text-center">
-                                    <button
-                                        className="btn btn-primary w-25"
-                                        type="submit"
-                                        style={{ minWidth: 120 }}
-                                    >
-                                        อนุมัติ
-                                    </button>
-                                </div>
-                                )} 
+                                {isEditing && (
+                                    <div className="text-center">
+                                        <button
+                                            className="btn btn-primary w-25"
+                                            type="submit"
+                                            style={{ minWidth: 120 }}
+                                        >
+                                            อนุมัติ
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </form>
                     </div>
