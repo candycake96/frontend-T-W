@@ -198,7 +198,7 @@ const NavbarPage1 = ({ toggleSidebar }) => {
                   <i className="bi bi-person-circle me-2"></i> การตั้งค่าบัญชีผู้ใช้
                 </button>
               </li>
-              <li key="passwordChange">
+              <li key="singnager">
                 <button className="dropdown-item" onClick={() => handleOpenModalSignature(user)}>
                   <i class="bi bi-feather"></i> ตั้งค่าลายมือชื่อผู้ใช้
                 </button>

@@ -3,12 +3,17 @@ import React, { useEffect, useState } from "react";
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_Edit_Approval_End from "./Mobal/Modal_Edit_Approval_End";
 
-const MainternanceApprover_mgr_add = ({ maintenanceJob, user, hasPermission }) => {
+const MainternanceApprover_mgr_add = ({ maintenanceJob,  hasPermission }) => {
 
     const [isDataRequestAll, setDataRequestAll] = useState([]);
     const [quotations, setQuotations] = useState([]);
 
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) setUser(JSON.parse(userData));
+  }, []);
 
     const fetchDataRequestAll = async () => {
         try {
@@ -74,7 +79,7 @@ const MainternanceApprover_mgr_add = ({ maintenanceJob, user, hasPermission }) =
             };
 
             const response = await axios.post(
-                `${apiUrl}/api/approval_save/${user.id_emp}`,
+                `${apiUrl}/api/approval_save/${user?.id_emp}`,
                 payload,
                 {
                     headers: {

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Modal_UpdateTex from "../Vehicle/expanded/modal/Modal_UpdateTax";
 import { apiUrl } from "../../../config/apiConfig";
+import { Link, useLocation } from "react-router-dom";
 
 const CarTaxRenewal_Main = () => {
 
@@ -79,6 +80,12 @@ const CarTaxRenewal_Main = () => {
         }
     }
 
+    // ฟังก์ชัน format วันที่
+    const formatDate = (date) => {
+        if (!date) return "-";
+        return new Date(date).toLocaleDateString("th-TH", { year: "numeric", month: "short", day: "numeric" });
+    };
+
     return (
         <>
             <div className="container">
@@ -102,6 +109,7 @@ const CarTaxRenewal_Main = () => {
                                         value={searchRegNumber}
                                         onChange={(e) => setSearchRegNumber(e.target.value)}
                                     />
+                                    
                                 </div>
                                 <div className="col-lg-3">
                                     <p></p>
@@ -143,24 +151,28 @@ const CarTaxRenewal_Main = () => {
                                         filteredData.map((rowTax, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
-                                                <td>{rowTax.reg_number}</td>
-                                                <td>{rowTax.car_type_name}</td>
-                                                <td>{rowTax.tax_end_date}</td>
+                                                <td>{rowTax?.reg_number}</td>
+                                                <td>{rowTax?.car_type_name}</td>
+                                                <td>{formatDate(rowTax?.tax_date_end)}</td>
                                                 <td>
-                                                    {rowTax.status === "ทะเบียนหมดอายุ" ? (
-                                                        <p className="text-danger">{rowTax.status}</p>
-                                                    ) : rowTax.status === "ทะเบียนใกล้หมดอายุ" ? (
-                                                        <p className="text-warning">{rowTax.status}</p>
+                                                    {rowTax?.tax_status === "หมดอายุ" ? (
+                                                        <p className="text-danger">{rowTax?.tax_status}</p>
+                                                    ) : rowTax?.tax_status === "ใกล้หมดอายุ" ? (
+                                                        <p className="text-warning">{rowTax?.tax_status}</p>
+                                                    ) : rowTax?.tax_status === "ยังไม่มีข้อมูล" ? (
+                                                        <p className="text-gray">{rowTax?.tax_status}</p>
                                                     ) : (
-                                                        <p className="text-success">{rowTax.status}</p>
+                                                        <p className="text-success">{rowTax?.tax_status}</p>
                                                     )}
                                                 </td>
-                                                <td><button
+                                                <td>
+                                                    {/* <button
                                                     className="btn-circle"
                                                     onClick={() => handleOpenModalEditTax(rowTax)}
                                                 >
                                                     <i className="bi bi-pencil-fill"></i>
-                                                </button>
+                                                </button> */}
+                                                <Link to="/truck/VehicleShowDataDetails" state={rowTax} className="btn btn-primary btn-sm"><i className="bi bi-pencil-fill"></i></Link>
                                                 </td>
                                             </tr>
                                         ))
@@ -170,6 +182,7 @@ const CarTaxRenewal_Main = () => {
                                         </tr>
                                     )}
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>

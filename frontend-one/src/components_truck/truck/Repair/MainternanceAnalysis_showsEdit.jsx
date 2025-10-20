@@ -12,10 +12,10 @@ import '../Repair/MainternanceAnalysis_showsEdit.css'
 
 const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) => {
 
+    if (!data) return null;
+
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
-
-
 
     // ดึงข้อมูลผู้ใช้จาก localStorage
     const [user, setUser] = useState(null);  //token
@@ -27,22 +27,24 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
     }, []);
 
 
-    const [analysisData, setAnalysisData] = React.useState({
-        analysis_id: "", // PK
-        request_id: "", // รหัสคำขอซ่อม FK
-        analysis_emp_id: "", // รหัสพนักงานที่วิเคราะห์ FK
-        is_quotation_required: false, // ต้องการใบเสนอราคา
-        urgent_repair: false,   // ซ่อมด่วน
-        inhouse_repair: false, // ซ่อมในแผนก
-        send_to_garage: false, // ส่งอู่
-        plan_date: "",   // วันที่วางแผน
-        plan_time: "", // เวลาที่วางแผน 
-        remark: "",    // หมายเหตุ
-        is_pm: false,   // ซ่อมก่อนเสีย
-        is_cm: false,   // ซ่อมหลังเสีย
+    const [analysisData, setAnalysisData] = useState({
+        analysis_id: "",
+        request_id: "",
+        analysis_emp_id: "",
+        is_quotation_required: false,
+        urgent_repair: false,
+        inhouse_repair: false,
+        send_to_garage: false,
+        plan_date: "",
+        plan_time: "",
+        remark: "",
+        is_pm: false,
+        is_cm: false,
         fname: "",
-        lname: ""
+        lname: "",
     });
+
+    console.log("AnalysisData after set:", analysisData);
 
     // คอนฟิกข้อมูลที่จะส่งไปยัง API
     const dataToSend = {
@@ -68,19 +70,22 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
 
 
     useEffect(() => {
-        if (maintenanceJob) {
-            setAnalysisData({
+        if (maintenanceJob && user) {
+            setAnalysisData(prev => ({
+                ...prev, // เก็บค่าที่มีอยู่แล้ว
                 request_id: maintenanceJob.request_id || "",
-                analysis_emp_id: user ? user.id_emp : "", // ใช้รหัสพนักงานจากข้อมูลผู้ใช้
-            });
+                analysis_emp_id: user.id_emp || "",
+            }));
         }
     }, [maintenanceJob, user]);
+
 
 
     // เพิ่ม state สำหรับใบเสนอราคาแบบ array
     const [quotations, setQuotations] = useState([
         {
             quotation_id: "",
+            analysis_id: "",
             vendor_id: "",
             quotation_date: "",
             quotation_file: null,
@@ -100,6 +105,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
             ...quotations,
             {
                 quotation_id: "",
+                analysis_id: "",
                 vendor_id: "",
                 quotation_date: "",
                 quotation_file: null,
@@ -311,6 +317,39 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
         }
     };
 
+    useEffect(() => {
+        if (requestParts?.parts_used && requestParts.parts_used.length > 0) {
+            setQuotations(prev => {
+                const updated = [...prev];
+                // ถ้ามี quotation แรก ให้ใส่ parts เข้าไป
+                if (updated[0]) {
+                    updated[0].parts = requestParts.parts_used.map(item => {
+                        const price = parseFloat(item.repair_part_price) || 0;
+                        const qty = parseFloat(item.repair_part_qty) || 0;
+                        const vat = parseFloat(item.repair_part_vat) || 0;
+                        const subtotal = price * qty;
+                        const total = subtotal + (subtotal * vat / 100);
+                        return {
+                            item_id: item.item_id || "",
+                            parts_used_id: item.parts_used_id || "",
+                            part_id: item.part_id || "",
+                            system_name: item.system_name || "",
+                            part_name: item.repair_part_name || "",
+                            price: price.toString(),
+                            unit: item.repair_part_unit || "",
+                            maintenance_type: item.maintenance_type || "",
+                            qty: qty.toString(),
+                            discount: "",
+                            vat: vat.toString(),
+                            total: total.toFixed(2),
+                        };
+                    });
+                }
+                return updated;
+            });
+        }
+    }, [requestParts]);
+
 
     // Modal
     const [isOpenModalVehicleParteDtails, setOpenModalVehicleParteDtails] = useState(false);
@@ -376,137 +415,78 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
     };
 
 
-    // Edit
-
-
-    // Show {data} to input
-    useEffect(() => {
-        if (data) {
-            // กรณี data มีโครงสร้าง { analysis: {...}, quotations: [...] }
-            if (data.analysis) {
-                setAnalysisData({
-                    fname: data.analysis.fname || "",
-                    lname: data.analysis.lname || "",
-                    analysis_id: data.analysis.analysis_id || "",
-                    request_id: data.analysis.request_id || "",
-                    analysis_emp_id: data.analysis.analysis_emp_id || "",
-                    is_quotation_required: !!data.analysis.is_quotation_required,
-                    urgent_repair: !!data.analysis.urgent_repair,
-                    inhouse_repair: !!data.analysis.inhouse_repair,
-                    send_to_garage: !!data.analysis.send_to_garage,
-                    plan_date: data.analysis.plan_date ? data.analysis.plan_date.substring(0, 10) : "",
-                    plan_time: data.analysis.plan_time ? data.analysis.plan_time.substring(11, 16) : "",
-                    remark: data.analysis.remark || "",
-                    is_pm: !!data.analysis.is_pm,
-                    is_cm: !!data.analysis.is_cm,
-                });
-            }
-            if (Array.isArray(data.quotations)) {
-                setQuotations(
-                    data.quotations.map(q => ({
-                        quotation_id: q.quotation_id || "",
-                        vendor_id: q.vendor_id || "",
-                        garage_name: q.vendor_name || "",
-                        quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
-                        quotation_file: q.quotation_file || null,
-                        note: q.note || "",
-                        is_selected: !!q.is_selected,
-                        quotation_vat: q.quotation_vat || "",
-                        vendor_name: q.vendor_name || "",
-                        parts: Array.isArray(q.parts)
-                            ? q.parts.map(part => {
-                                const price = parseFloat(part.part_price) || 0;
-                                const qty = parseFloat(part.part_qty) || 0;
-                                const vat = parseFloat(part.part_vat) || 0;
-                                const discount = parseFloat(part.part_discount) || 0;
-                                const subtotal = price * qty - discount;
-                                const vatVal = subtotal * vat / 100;
-                                const total = subtotal + vatVal;
-                                return {
-                                    item_id: part.item_id || "",
-                                    quotation_parts_id: part.quotation_parts_id || "",
-                                    part_id: part.part_id || "",
-                                    system_name: part.system_name || "",
-                                    part_name: part.part_name || "",
-                                    price: part.part_price?.toString() || "",
-                                    unit: part.part_unit || "",
-                                    maintenance_type: part.maintenance_type || "",
-                                    qty: part.part_qty?.toString() || "",
-                                    discount: part.part_discount?.toString() || "",
-                                    vat: part.part_vat?.toString() || "",
-                                    total: total.toFixed(2), // set total ที่คำนวณแล้ว
-                                };
-                            })
-                            : [],
-                    }))
-                );
-            }
-        }
-    }, [data]);
-
-    // ...existing code...
-
+    console.log("DEBUG → data:", data);
+    console.log("DEBUG → data.analysis:", data?.analysis);
     // เพิ่มฟังก์ชันรีเซ็ตข้อมูล
-    const resetFormToInitial = () => {
-        if (data) {
-            if (data.analysis) {
-                setAnalysisData({
-                    fname: data.analysis.fname || "",
-                    lname: data.analysis.lname || "",
-                    request_id: data.analysis.request_id || "",
-                    analysis_emp_id: data.analysis.analysis_emp_id || "",
-                    is_quotation_required: !!data.analysis.is_quotation_required,
-                    urgent_repair: !!data.analysis.urgent_repair,
-                    inhouse_repair: !!data.analysis.inhouse_repair,
-                    send_to_garage: !!data.analysis.send_to_garage,
-                    plan_date: data.analysis.plan_date ? data.analysis.plan_date.substring(0, 10) : "",
-                    plan_time: data.analysis.plan_time ? data.analysis.plan_time.substring(11, 16) : "",
-                    remark: data.analysis.remark || "",
-                    is_pm: !!data.analysis.is_pm,
-                    is_cm: !!data.analysis.is_cm,
-                });
+    useEffect(() => {
+        if (!data) return;
+        const resetFormToInitial = () => {
+            if (data) {
+
+                if (data.analysis) {
+                    const a = data.analysis;
+                    setAnalysisData({
+                        analysis_id: a.analysis_id || "",
+                        request_id: a.request_id || "",
+                        analysis_emp_id: a.analysis_emp_id || (user ? user.id_emp : ""),
+                        is_quotation_required: !!a.is_quotation_required,
+                        urgent_repair: !!a.urgent_repair,
+                        inhouse_repair: !!a.inhouse_repair,
+                        send_to_garage: !!a.send_to_garage,
+                        plan_date: a.plan_date ? a.plan_date.substring(0, 10) : "",
+                        plan_time: a.plan_time ? a.plan_time.substring(11, 16) : "",
+                        remark: a.remark || "",
+                        is_pm: !!a.is_pm,
+                        is_cm: !!a.is_cm,
+                        fname: a.fname || "",
+                        lname: a.lname || "",
+                    });
+                }
+
+                if (Array.isArray(data?.quotations)) {
+                    setQuotations(
+                        data?.quotations.map(q => ({
+                            quotation_id: q.quotation_id || "",
+                            analysis_id: q.analysis_id || "",
+                            vendor_id: q.vendor_id || "",
+                            garage_name: q.vendor_name || "",
+                            quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
+                            quotation_file: q.quotation_file || null,
+                            note: q.note || "",
+                            is_selected: !!q.is_selected,
+                            quotation_vat: q.quotation_vat || "",
+                            vendor_name: q.vendor_name || "",
+                            parts: Array.isArray(q.parts)
+                                ? q.parts.map(part => {
+                                    const price = parseFloat(part.part_price) || 0;
+                                    const qty = parseFloat(part.part_qty) || 0;
+                                    const vat = parseFloat(part.part_vat) || 0;
+                                    const discount = parseFloat(part.part_discount) || 0;
+                                    const subtotal = price * qty - discount;
+                                    const vatVal = subtotal * vat / 100;
+                                    const total = subtotal + vatVal;
+                                    return {
+                                        item_id: part.item_id || "",
+                                        part_id: part.part_id || "",
+                                        system_name: part.system_name || "",
+                                        part_name: part.part_name || "",
+                                        price: part.part_price?.toString() || "",
+                                        unit: part.part_unit || "",
+                                        maintenance_type: part.maintenance_type || "",
+                                        qty: part.part_qty?.toString() || "",
+                                        discount: part.part_discount?.toString() || "",
+                                        vat: part.part_vat?.toString() || "",
+                                        total: total.toFixed(2),
+                                    };
+                                })
+                                : [],
+                        }))
+                    );
+                }
             }
-            if (Array.isArray(data.quotations)) {
-                setQuotations(
-                    data.quotations.map(q => ({
-                        quotation_id: q.quotation_id || "",
-                        vendor_id: q.vendor_id || "",
-                        garage_name: q.vendor_name || "",
-                        quotation_date: q.quotation_date ? q.quotation_date.substring(0, 10) : "",
-                        quotation_file: q.quotation_file || null,
-                        note: q.note || "",
-                        is_selected: !!q.is_selected,
-                        quotation_vat: q.quotation_vat || "",
-                        vendor_name: q.vendor_name || "",
-                        parts: Array.isArray(q.parts)
-                            ? q.parts.map(part => {
-                                const price = parseFloat(part.part_price) || 0;
-                                const qty = parseFloat(part.part_qty) || 0;
-                                const vat = parseFloat(part.part_vat) || 0;
-                                const discount = parseFloat(part.part_discount) || 0;
-                                const subtotal = price * qty - discount;
-                                const vatVal = subtotal * vat / 100;
-                                const total = subtotal + vatVal;
-                                return {
-                                    item_id: part.item_id || "",
-                                    part_id: part.part_id || "",
-                                    system_name: part.system_name || "",
-                                    part_name: part.part_name || "",
-                                    price: part.part_price?.toString() || "",
-                                    unit: part.part_unit || "",
-                                    maintenance_type: part.maintenance_type || "",
-                                    qty: part.part_qty?.toString() || "",
-                                    discount: part.part_discount?.toString() || "",
-                                    vat: part.part_vat?.toString() || "",
-                                    total: total.toFixed(2),
-                                };
-                            })
-                            : [],
-                    }))
-                );
-            }
-        }
-    };
+        };
+        resetFormToInitial(); // ✅ เรียกใช้งาน
+    }, [data]);
 
     // ...existing code...
     const [isEditing, setIsEditing] = useState(false);
@@ -589,6 +569,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
     return (
         <div className=" mb-4 ">
 
+            {analysisData ? (<><p>True</p></>) : (<><p>NO</p></>)}
             {/* Display success or error message */}
             {message && (
                 <div
@@ -611,6 +592,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                 {hasPermission("EDIT_CAR_CHECK") && (
                     !isEditing && (
                         <div className="">
+                            {/* <button className="btn btn-primary btn-sm">เพิ่มข้อมูลเพื่อขออนุมัติใหม่</button> */}
                             <button
                                 type="button"
                                 className="btn btn-success btn-sm"
@@ -632,7 +614,6 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
                     {/* ...ฟอร์มส่วนบน... */}
                     <div className="mb-3">
                         <div className="">
-
 
                             <div className="row mb-3 align-items-center" >
                                 <div className="col-lg-4 mb-3">

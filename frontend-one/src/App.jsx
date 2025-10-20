@@ -75,6 +75,12 @@ import RepairCloseList from "./components_truck/truck/Repair/CloseList/RepairClo
 import Vehicle_models from "./components_truck/truck/Vehicle/setting_vehicle/vehicle_models/vehicle_models";
 import Vehicle_pm_start from "./components_truck/truck/PreventiveMaintenance/Vehicle_pm/Vehicle_pm_start";
 import VehicleShowDataDetails from "./components_truck/truck/Vehicle/vehicle_details/VehicleShowDataDetails";
+import Mainternance_report from "./components_truck/truck/Repair/Mainternance_report/Mainternance_report";
+import ReportVehicleAndInsurancy from "./components_truck/truck/Report/ReportVehicleAndInsurancy/ReportVehicleAndInsurancy";
+import MainternanceInvoice_main from "./components_truck/truck/Repair/MainternanceInvoice_main";
+import MainternanceInvoice_detail from "./components_truck/truck/Repair/MainternanceInvoice_detail";
+import MainternanceInvoice_showEdit from "./components_truck/truck/Repair/MainternanceInvoice_showEdit";
+import MainternanceInvoice_showDetaile from "./components_truck/truck/Repair/MainternanceInvoice_showDetails";
 
 Modal.setAppElement("#root");
 
@@ -165,7 +171,12 @@ function App() {
           <Route path="Vehicle_models" element={<Vehicle_models/>} /> {/* ปิดงานซ่อม */}
           <Route path="Vehicle_pm_start" element={<Vehicle_pm_start/>} /> {/* เพิ่มข้อมูลรถ PM  */}
           <Route path="VehicleShowDataDetails" element={<VehicleShowDataDetails/>} /> {/* แสดงข้อมูลรถทั้งหมด รายละเอียดรถ */}
-          
+          <Route path="Mainternance_report" element={<Mainternance_report /> } />
+          <Route path="ReportVehicleAndInsurancy" element={<ReportVehicleAndInsurancy />} />  {/* รายงานรถและประกัน */}
+          <Route path="MainternanceInvoice_main" element={<MainternanceInvoice_main />} />  {/* ใบแจ้งหนี้ */}
+          <Route path="MainternanceInvoice_detail" element={<MainternanceInvoice_detail />} />  {/* สร้าง ใบแจ้งหนี้ */}
+          <Route path="MainternanceInvoice_showEdit" element={<MainternanceInvoice_showEdit />} />  {/* สร้าง ใบแจ้งหนี้ */}
+          <Route path="MainternanceInvoice_showDetails" element={<MainternanceInvoice_showDetaile />} />  {/* สร้าง ใบแจ้งหนี้ */}
           </Route> 
         </Routes> 
       </Router> 

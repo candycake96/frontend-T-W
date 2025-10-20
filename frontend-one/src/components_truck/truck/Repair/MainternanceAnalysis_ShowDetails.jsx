@@ -29,12 +29,10 @@ const MainternanceAnanlysis_ShowDetails = ({ maintenanceJob }) => {
       );
 
       setDataAnanlysis(response.data);
+const isValid = Boolean(
+  response.data?.analysis?.analysis_id || response.data?.quotations?.length
+);
 
-      const isValid = Array.isArray(response.data)
-        ? response.data.length > 0
-        : Boolean(
-            response.data?.analysis_id || response.data?.quotations?.length
-          );
 
       setHasAnalysis(isValid);
     } catch (error) {
@@ -50,58 +48,58 @@ const MainternanceAnanlysis_ShowDetails = ({ maintenanceJob }) => {
     if (maintenanceJob?.request_id) {
       fetchAnanlysisDetails();
     }
-  }, [maintenanceJob, hasAnalysis]); // 🔥 ตัด hasAnalysis ออก
+  }, [maintenanceJob]); // ✅ ไม่ต้องใช้ hasAnalysis
 
   if (loading) return <div>Loading...</div>;
 
   const permissions = user?.permission_codes || [];
   const hasPermission = (code) => permissions.includes(code);
 
-  // console.log("permissions from API:", permissions);
+  // -------- Logic --------
+  switch (maintenanceJob?.status) {
+    case "แจ้งซ่อม":
+      return <Status_Mainternance requestID={maintenanceJob} />;
 
+    case "จัดรถ":
+      if (hasPermission("ADD_CAR_CHECK")) {
+        return hasAnalysis ? (
+          <MainternanceAnalysis_showEdit
+            maintenanceJob={maintenanceJob}
+            data={dataAnanlysis}
+            hasPermission={hasPermission}
+          />
+        ) : (
+          <MainternanceAnanlysis_Add
+            maintenanceJob={maintenanceJob}
+            onSaved={(newData) => {
+              setDataAnanlysis(newData);
+              setHasAnalysis(true);
+            }}
+          />
+        );
+      } else {
+        return <Status_Mainternance requestID={maintenanceJob} />;
+      }
 
-  // -------- Logic แสดงผล --------
- // 1️⃣ ถ้ามีสิทธิ์ ADD_CAR_CHECK → แสดง Add/Edit เสมอ
-if (hasPermission("ADD_CAR_CHECK")) {
-  return hasAnalysis ? (
-    <MainternanceAnalysis_showEdit
-      maintenanceJob={maintenanceJob}
-      data={dataAnanlysis}
-      hasPermission={hasPermission}
-    />
-  ) : (
-    <MainternanceAnanlysis_Add
-      maintenanceJob={maintenanceJob}
-      onSaved={(newData) => {
-        setDataAnanlysis(newData);
-        setHasAnalysis(true);
-      }}
-    />
-  );
-}
+    case "ตรวจเช็ครถ":
+       return (
+        <MainternanceAnalysis_showEdit
+          maintenanceJob={maintenanceJob}
+          data={dataAnanlysis}
+          hasPermission={hasPermission}
+        />
+      );
 
-// 2️⃣ ถ้าไม่มีสิทธิ์ → แสดง Status สำหรับบาง status
-if (
-  (maintenanceJob?.status === "แจ้งซ่อม" || maintenanceJob?.status === "จัดรถ") &&
-  !hasPermission("ADD_CAR_CHECK")
-) {
-  return <Status_Mainternance requestID={maintenanceJob} />;
-}
-
-// 3️⃣ ถ้ามีข้อมูล analysis → แสดง Edit
-if (hasAnalysis) {
-  return (
-    <MainternanceAnalysis_showEdit
-      maintenanceJob={maintenanceJob}
-      data={dataAnanlysis}
-      hasPermission={hasPermission}
-    />
-  );
-}
-
-// 4️⃣ fallback → Status
-return <Status_Mainternance requestID={maintenanceJob} />;
-
+    default:
+      // 🚩 สถานะอื่น ๆ ทั้งหมด → แสดงข้อมูล analysis (ถ้ามี)
+      return (
+        <MainternanceAnalysis_showEdit
+          maintenanceJob={maintenanceJob}
+          data={dataAnanlysis}
+          hasPermission={hasPermission}
+        />
+      );
+  }
 };
 
 export default MainternanceAnanlysis_ShowDetails;

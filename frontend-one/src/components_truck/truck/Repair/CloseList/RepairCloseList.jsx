@@ -5,7 +5,7 @@ import { apiUrl } from "../../../../config/apiConfig";
 
 
 const RepairCloseList = () => {
-  const [isPendingTable, setPendingTable] = useState([]);
+    const [isPendingTable, setPendingTable] = useState([]);
     const [filterType, setFilterType] = useState("closeList");
     const [loading, setLoading] = useState(false);
 
@@ -90,7 +90,7 @@ const RepairCloseList = () => {
 
 
     return (
-       
+
         <div className="container py-3">
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">

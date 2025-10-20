@@ -1,12 +1,12 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import AnalysisApprover_table from "./AnalysisApprover_table";
+import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
-import MainternanceRequest_table from "./MainternanceRequest_table";
-import Modal_setting_doc_Repair from "./Mobal/Modal_setting_doc_Repair";
+import MainternanceInvoice_table from "./MainternanceInvoice_table";
+import Modal_Invoice_add from "./Mobal/Modal_Invoice_add";
+import Modal_setting_doc_invoice from "./Mobal/Modal_setting_doc_invoice";
 
-const MaintenanceRequest = () => {
-
+const MainternanceInvoice_main = () => {
     const [analysisData, setAnalysisData] = useState([]);
     const [filterType, setFilterType] = useState("pending");
     const [loading, setLoading] = useState(false);
@@ -22,13 +22,13 @@ const MaintenanceRequest = () => {
 
     const fetchAnalysisTable = async () => {
         let endpoint = "";
-        if (filterType === "pending") {
-            endpoint = "/api/repair_requests_detail";
-        } else if (filterType === "approved") {
-            endpoint = "/api/repair_requests_detail";
-        } else if (filterType === "finished") {
-            endpoint = "/api/closing_list_table";
-        }
+   if (filterType === "pending") {
+        endpoint = "/api/invoice_show_table";
+    } else if (filterType === "approved") { 
+        endpoint = "/api/invoice_show_table_approval";
+    } else if (filterType === "finished") {
+        endpoint = "/api/closing_list_table";
+    }
 
         setLoading(true);
         setAnalysisData([]);
@@ -83,45 +83,77 @@ const MaintenanceRequest = () => {
         setAppliedSearchTerm(searchTerm);
     };
 
-    const [isOpenModalSetting, setOpenModalSetting] = useState(false);
-    const handleOpenModalSetting = () => setOpenModalSetting(true);
-    const handleClossModalSetting = () => setOpenModalSetting(false);
+    const [isOpenModalInvoiceAdd, setOpenModalInvoiceAdd] = useState(false);
+    const [dataOpenModalInvoiceAdd, setDataOpenModalInvoiceAdd] = useState(null);
+    const handleOpenModalInvoiceAdd = (data) => {
+        setOpenModalInvoiceAdd(true);
+        setDataOpenModalInvoiceAdd(data);
+    };
+    const handleClonseModalInvoiceAdd = () => {
+        setOpenModalInvoiceAdd(false);
+        setDataOpenModalInvoiceAdd(null);
+    };
 
+    const [isOpenModalSettingInvoice, setOpenModalSettingInvoice] = useState(false);
+    const [dataOpenModalSettingInvoice, setDataOpenModalSettingInvoice] = useState(null);
+    const handleOpenModalSettingInvoice = (data) => {
+        setOpenModalSettingInvoice(true);
+    };
+    const handleClonseModalSettingInvoice = () => {
+        setOpenModalSettingInvoice(false);
+    };
 
     return (
         <div className="container py-3">
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
-                        <h5 className="fw-bold text-primary mb-1">แจ้งซ่อม / งานซ่อม</h5>
-                        <p className="text-muted mb-0">รายงานการแจ้งซ่อม</p>
+                        <h5 className="fw-bold text-primary mb-1">ใบแจ้งหนี้</h5>
+                        <p className="text-muted mb-0">
+                            รายงานใบแจ้งหนี้
+                        </p>
                     </div>
+                    <div className="" role="">
+                        <button
+                            className={`btn btn-sm btn-outline-success me-1`}
+                            onClick={() => handleOpenModalInvoiceAdd()}
+                        >
+                            <i className="bi bi-clock me-1"></i> เพิ่มใบแจ้งหนี้
+                        </button>
+                        <button
+                            className={`btn btn-sm btn-outline-success`}
+                            onClick={() => handleOpenModalSettingInvoice()}
+                        >
+                            <i class="bi bi-gear"></i> ตั้งค่า
+                        </button>
 
-                    <div className="d-flex gap-2 flex-wrap">
-                        {/* ปุ่มแจ้งซ่อม */}
+                    </div>
+                </div>
 
-                        <div className="btn-group" role="group">
-                            <button
-                                className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
-                                onClick={() => setFilterType("pending")}
-                            >
-                                <i className="bi bi-clock me-1"></i> รายการแจ้งซ่อม
-                            </button>
-                            
-                            <button
-                                className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
-                                onClick={() => setFilterType("finished")}
-                            >
-                                <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
-                            </button>
-                        </div>
-                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm "> <i className="bi bi-plus-circle me-1"></i> แจ้งซ่อม</Link>
-                        <Link to="/truck/RepairRequestForm" className="btn btn-primary btn-sm me-1"> <i className="bi bi-plus-circle me-1"></i> PM </Link>
-
-                        <button className="btn btn-secondary btn-sm" onClick={handleOpenModalSetting}> <i class="bi bi-gear"></i> ตั้งค่า</button>
+                <div className="d-flex justify-content-end">
+                    <div className="btn-group" role="group">
+                        <button
+                            className={`btn btn-sm ${filterType === "pending" ? "btn-success" : "btn-outline-success"}`}
+                        onClick={() => setFilterType("pending")}
+                        >
+                            <i className="bi bi-clock me-1"></i> รออนุมัติใบแจ้งหนี้
+                        </button>
+                        <button
+                            className={`btn btn-sm ${filterType === "approved" ? "btn-success" : "btn-outline-success"}`}
+                        onClick={() => setFilterType("approved")}
+                        >
+                            <i className="bi bi-check2-circle me-1"></i> อนุมัติแล้ว
+                        </button>
+                        {/* <button
+                            className={`btn btn-sm ${filterType === "finished" ? "btn-success" : "btn-outline-success"}`}
+                        onClick={() => setFilterType("finished")}
+                        >
+                            <i className="bi bi-archive me-1"></i> ประวัติงานที่จบ
+                        </button> */}
                     </div>
                 </div>
             </div>
+
 
             <div className="card-body">
                 <div className="row mb-3 g-2">
@@ -166,18 +198,19 @@ const MaintenanceRequest = () => {
                         กำลังโหลดข้อมูล...
                     </div>
                 ) : (
-                    <>
-                        <MainternanceRequest_table analysisData={filteredData} loading={loading} />
-                    </>
-
+                    <MainternanceInvoice_table analysisData={filteredData} loading={loading} />
                 )}
             </div>
 
-            {isOpenModalSetting && (
-                <Modal_setting_doc_Repair isOpen={isOpenModalSetting} onClose={handleClossModalSetting} />
+            {isOpenModalInvoiceAdd && (
+                <Modal_Invoice_add isOpen={isOpenModalInvoiceAdd} onClose={handleClonseModalInvoiceAdd} />
+            )}
+
+            {isOpenModalSettingInvoice && (
+                <Modal_setting_doc_invoice isOpen={isOpenModalSettingInvoice} onClose={handleClonseModalSettingInvoice} />
             )}
         </div>
     )
 }
 
-export default MaintenanceRequest;
+export default MainternanceInvoice_main;

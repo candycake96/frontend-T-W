@@ -5,6 +5,7 @@ import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_Check_PM from "./Mobal/Modal_Check_PM";
 import { useLocation } from "react-router-dom";
+import Modal_pm_show_all from "../PreventiveMaintenance/Modal/Modal_pm_show_all";
 
 const RepairRequestForm = () => {
 
@@ -470,7 +471,8 @@ const RepairRequestForm = () => {
             )}
 
             {isOpenCheckPM && (
-                <Modal_Check_PM isOpen={isOpenCheckPM} onClose={handleClossModalChackPM} />
+                <Modal_pm_show_all isOpen={isOpenCheckPM} onClose={handleClossModalChackPM} />
+                // <Modal_Check_PM isOpen={isOpenCheckPM} onClose={handleClossModalChackPM} />
             )}
         </div>
 

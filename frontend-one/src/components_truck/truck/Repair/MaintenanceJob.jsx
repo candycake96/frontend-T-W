@@ -221,7 +221,7 @@ const MaintenanceJob = () => {
         setLoading(true); // เริ่มโหลด
         try {
             const response = await axios.post(
-                `http://localhost:3333/api/report-createRepair/${dataRepairID?.request_id}`,
+                `${apiUrl}/api/report-createRepair/${dataRepairID?.request_id}`,
                 {},
                 { responseType: 'blob' }
             );
@@ -476,6 +476,7 @@ useEffect(() => {
                             ผู้จัดการอนุมัติ
                         </button>
                     </li>
+
                 </ul>
 
                 <div className="card shadow-sm border-0">
@@ -494,7 +495,6 @@ useEffect(() => {
                         {activeForm === 'PlanningForm' && (
                             <PlanningRepair 
                             maintenanceJob={formData} 
-                           
                             />
                         )}
 
