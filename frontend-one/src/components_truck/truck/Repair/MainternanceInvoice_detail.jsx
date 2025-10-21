@@ -424,6 +424,9 @@ const MainternanceInvoice_detail = () => {
                             รายงานใบแจ้งหนี้
                         </p>
                     </div>
+                    <div className="">
+                        <button className="btn btn-primary btn-sm">ข้อมูลไม่ตรงกับใบแจ้งหนี้ (Invoice)</button>
+                    </div>
                 </div>
             </div>
 

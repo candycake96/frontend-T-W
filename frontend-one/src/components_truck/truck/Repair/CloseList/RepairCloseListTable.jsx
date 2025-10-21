@@ -64,7 +64,7 @@ const RepairCloseListTable = ({ dataCloseList = [], loading = false }) => {
                                                 ? "bg-danger"
                                                 : "bg-success"
                                         }`}>
-                                        {data.status}
+                                        {data.status_display}
                                     </span>
                                       </td>
                                       <td>{data.reg_number}</td>

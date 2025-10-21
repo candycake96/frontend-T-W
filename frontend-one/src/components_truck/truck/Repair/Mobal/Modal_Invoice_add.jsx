@@ -84,6 +84,7 @@ const Modal_Invoice_add = ({ isOpen, onClose }) => {
                 <th className="px-4 py-2 text-left font-medium text-gray-700">เลขเอกสารแจ้งซ่อม</th>
                 <th className="px-4 py-2 text-left font-medium text-gray-700">วันที่แจ้งซ่อม</th>
                 <th className="px-4 py-2 text-left font-medium text-gray-700">ทะเบียนรถ</th>
+                {/* <th className="px-4 py-2 text-left font-medium text-gray-700">สถานะ</th> */}
                 <th className="px-4 py-2 text-center font-medium text-gray-700">จัดการ</th>
               </tr>
             </thead>
@@ -94,6 +95,7 @@ const Modal_Invoice_add = ({ isOpen, onClose }) => {
                     <td className="px-4 py-2">{item.request_no}</td>
                     <td className="px-4 py-2">{item.request_date}</td>
                     <td className="px-4 py-2">{item.reg_number}</td>
+                    {/* <td className="px-4 py-2"><p className="text-warning">ข้อมูลไม่ตรง</p></td> */}
                     <td className="px-4 py-2 text-center">
                       <Link
                         to={`/truck/MainternanceInvoice_detail`}
