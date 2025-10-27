@@ -136,6 +136,35 @@ const fetchVehicleImages = async () => {
     }
   };
 
+ 
+const DeleteImg = (id) => {
+  if (!id) return;
+
+  if (window.confirm("คุณต้องการลบรูปภาพนี้หรือไม่?")) {
+    axios
+      .delete(`${apiUrl}/api/img_vehicle_delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then((res) => {
+        alert(res.data.message || "ลบรูปภาพสำเร็จ");
+        // 🔁 โหลดข้อมูลใหม่
+        // fetchImages();
+      })
+      .catch((err) => {
+        console.error("Delete error:", err);
+        if (err.response?.status === 401) {
+          alert("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+          localStorage.removeItem("accessToken");
+          window.location.href = "/login";
+        } else {
+          alert("เกิดข้อผิดพลาดในการลบรูปภาพ");
+        }
+      });
+  }
+};
+
   return (
     <div className="p-4 container">
       {/* Vehicle Header */}
@@ -278,14 +307,19 @@ const fetchVehicleImages = async () => {
 
 
       {/* ปุ่มปิด */}
-      
-      <button
-        className="btn btn-light position-absolute top-0 end-12 m-2"
-        onClick={closeGallery}
-        style={{ zIndex: 10 }}
-      >
-        <i class="bi bi-trash3-fill"></i>
-      </button>
+    <button
+  className="btn btn-light position-absolute top-0 end-12 m-2"
+  onClick={() => {
+    const currentImg = vehicleData[0].images[currentIndex];
+    if (currentImg?.img_id) {
+      DeleteImg(currentImg.img_id);
+    }
+  }}
+  style={{ zIndex: 10 }}
+>
+  <i className="bi bi-trash3-fill"></i>
+</button>
+
             <button
         className="btn btn-light position-absolute top-0 end-0 m-2"
         onClick={closeGallery}
