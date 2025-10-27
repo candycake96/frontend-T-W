@@ -17,7 +17,6 @@ import MainternanceApprover_mgr_main from "./MainternanceApprover_mgr_main";
 
 const MaintenanceJob = () => {
 
-
     const [loading, setLoading] = useState(false);
     // ข้อมูลการปิดงานแจ้งซ่อม
     const [dataClosingJob, setdataClosingJob] = useState([]);
@@ -33,8 +32,6 @@ const MaintenanceJob = () => {
         lname: "",
         reg_number: "",
     });
-
-
 
     const location = useLocation();
     const [dataRepairID] = useState(location.state || {}); // รับค่าจาก state ที่ส่งมาผ่าน Link
@@ -369,6 +366,8 @@ useEffect(() => {
 
 
                             <div className=" gap-2">
+
+                                <Button className="btn btn-warning btn-sm me-1" style={{color: "#ffffff"}}>ขอแก้ไขข้อมูลตรวจเช็ครถ</Button>
 
                                 {hasPermission("ACCESS_BRANCH_BUTTON") && (
                                     <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>
