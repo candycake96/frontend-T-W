@@ -1,7 +1,7 @@
 import React from "react";
 import ReactModal from "react-modal";
 
-const Modal_invoice_mismatch = () => {
+const Modal_invoice_mismatch = ({isOpen, onClose}) => {
     return (
                 <ReactModal
                     isOpen={isOpen}
@@ -25,8 +25,8 @@ const Modal_invoice_mismatch = () => {
                 >
               {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 relative rounded-t-lg">
-        <h2 className="text-lg font-semibold">ข้อมูลไม่ตรง/แจ้งแก้ไข</h2>
-        <p className="text-blue-200 text-sm mt-1">เลือกรายการแจ้งซ่อมเพื่อสร้างใบแจ้งหนี้</p>
+        <h2 className="text-lg font-semibold">ข้อมูลไม่ตรง / แจ้งแก้ไข</h2>
+        <p className="text-blue-200 text-sm mt-1">ส่งข้อมูลแจ้งผู้เกี่ยวข้องเพื่อแก้ไขข้อมูลให้ถูกต้อง</p>
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-white hover:text-gray-200 text-sm"
@@ -34,7 +34,21 @@ const Modal_invoice_mismatch = () => {
           <i className="fas fa-times"></i>
         </button>
       </div>
+<div className="">
+      <div className="mb-3">
+                <label className="form-label">หมายเหตุ</label>
+                <textarea
+                    className="form-control"
+                    // rows={3}
+                    // value={dataApproval.remark}
+                    // onChange={(e) => handleChange("remark", e.target.value)}
+                />
+            </div>
 
+            <div className="">
+                <button className="btn btn-primary btn-sm">ส่งข้อมูล</button>
+            </div>
+</div>
 
         </ReactModal>
     )
