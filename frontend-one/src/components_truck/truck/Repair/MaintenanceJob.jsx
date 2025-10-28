@@ -333,6 +333,10 @@ useEffect(() => {
                     ))}
                 </p>
 
+                <div className="">
+                    <p className="">มีการส่งคำร้องขอการอนุมัติแก้ไขข้อมูลหลังการอนุมัติแจ้งซ่อม </p>
+                </div>
+
                 <hr className="mb-3" />
                 <div className="mb-2">
                     <div className="mb-2">

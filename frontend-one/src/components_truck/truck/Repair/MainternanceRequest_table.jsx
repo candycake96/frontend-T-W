@@ -73,7 +73,7 @@ const MainternanceRequest_table = ({ analysisData = [], loading = false }) => {
                                     <td className="text-center">
                                         <Link
                                             to="/truck/MaintenanceJob"
-                                            state={{ ...data, fromPage: 'SupervisorApprove' }}
+                                            state={{ ...data }}
                                             className="btn btn-sm btn-primary"
                                         >
                                             <i className="bi bi-eye me-1"></i> ตรวจสอบ
