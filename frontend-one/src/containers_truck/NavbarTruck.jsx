@@ -112,7 +112,7 @@ const NavbarPage1 = ({ toggleSidebar }) => {
     <div className="d-flex align-items-center ms-auto">
       
       {/* Notification อยู่ขวาชิดกับ User */}
-      <button className="navbar-brand custom-navbar-brand fw-bolder me-1">
+      <button className="navbar-brand custom-navbar-brand fw-bolder">
         <i className="bi bi-bell"></i>
         {notifications.length > 0 && (
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -129,9 +129,9 @@ const NavbarPage1 = ({ toggleSidebar }) => {
           id="userDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-        >
-          {profile ? `${profile.fname} ${profile.lname}` : 'Loading...'}
+        >          
           <i className="bi bi-person-fill ms-2"></i>
+          {profile ? `${profile.fname} ${profile.lname}` : 'Loading...'}
         </button>
 
         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style={{ minWidth: "320px" }}>
