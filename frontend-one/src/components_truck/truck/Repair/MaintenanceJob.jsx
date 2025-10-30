@@ -14,6 +14,7 @@ import { Table, Button, Spinner } from "react-bootstrap";
 import Modal_Closing from "./CloseList/modal/Modal_Closing";
 import Modal_repair_cancel_ganaral from "./Cancel/Modal/Modal_repair_canael_genaral";
 import MainternanceApprover_mgr_main from "./MainternanceApprover_mgr_main";
+import Modal_repair_change_approval from "./Mobal/Modal_repair_change_approval";
 
 const MaintenanceJob = () => {
 
@@ -282,6 +283,16 @@ const MaintenanceJob = () => {
     };
 
 
+    const [isOpenModalChangeApproval, setOpenModalChangeApproval] = useState(false);
+    const [dataOpenModalChangeApproval, setDataOpenModalChangeApproval] = useState(null);
+    const handleOpenModalChangeApproval = (data) => {
+        setOpenModalChangeApproval(true);
+        setDataOpenModalChangeApproval(data);
+    };
+    const handleClosModalChangeApproval = (data) => {
+        setOpenModalChangeApproval(false);
+        setDataOpenModalChangeApproval(null);
+    };
     // ข้อมูลการปิดงานแจ้งซ่อม
     const fetchDataClosingJob = async () => {
         try {
@@ -301,9 +312,9 @@ const MaintenanceJob = () => {
         fetchDataClosingJob()
     }, []);
 
-useEffect(() => {
-  console.log("dataClosingJob:", dataClosingJob);
-}, [dataClosingJob]);
+    useEffect(() => {
+        console.log("dataClosingJob:", dataClosingJob);
+    }, [dataClosingJob]);
 
 
     return (
@@ -333,9 +344,20 @@ useEffect(() => {
                     ))}
                 </p>
 
-                <div className="">
-                    <p className="">มีการส่งคำร้องขอการอนุมัติแก้ไขข้อมูลหลังการอนุมัติแจ้งซ่อม </p>
-                </div>
+<div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <p className="d-flex align-items-center gap-3 mb-2">
+    
+    <span>
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={() => handleOpenModalChangeApproval()}
+      >
+        คำขอแก้ไขใบแจ้งซ่อม
+      </button>
+    </span>
+  </p>
+</div>
+
 
                 <hr className="mb-3" />
                 <div className="mb-2">
@@ -371,7 +393,7 @@ useEffect(() => {
 
                             <div className=" gap-2">
 
-                                <Button className="btn btn-warning btn-sm me-1" style={{color: "#ffffff"}}>ขอแก้ไขข้อมูลตรวจเช็ครถ</Button>
+                                {/* <Button className="btn btn-warning btn-sm me-1" style={{ color: "#ffffff" }}>ขอแก้ไขข้อมูลตรวจเช็ครถ</Button> */}
 
                                 {hasPermission("ACCESS_BRANCH_BUTTON") && (
                                     <Button className="btn-primary btn-sm me-1" onClick={() => handleOpenModolClosing(dataRepairID)}>
@@ -496,8 +518,8 @@ useEffect(() => {
                         )}
 
                         {activeForm === 'PlanningForm' && (
-                            <PlanningRepair 
-                            maintenanceJob={formData} 
+                            <PlanningRepair
+                                maintenanceJob={formData}
                             />
                         )}
 
@@ -526,6 +548,13 @@ useEffect(() => {
             {isOpenModalCancelgenaral && (
                 <Modal_repair_cancel_ganaral isOpen={isOpenModalCancelgenaral} onClose={handleClosModalCancelgenaral} user={user} dataClosing={dataOpenModalCancelgenaral} />
             )}
+        
+            {isOpenModalChangeApproval && (
+                <Modal_repair_change_approval isOpen={isOpenModalChangeApproval} onClose={handleClosModalChangeApproval} />
+            )}
+
+
+
         </div>
 
 
