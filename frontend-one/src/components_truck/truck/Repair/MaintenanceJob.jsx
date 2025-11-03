@@ -15,6 +15,7 @@ import Modal_Closing from "./CloseList/modal/Modal_Closing";
 import Modal_repair_cancel_ganaral from "./Cancel/Modal/Modal_repair_canael_genaral";
 import MainternanceApprover_mgr_main from "./MainternanceApprover_mgr_main";
 import Modal_repair_change_approval from "./Mobal/Modal_repair_change_approval";
+import Modal_repair_change_approval_active from "./Mobal/Modal_repair_change_approval_active";
 
 const MaintenanceJob = () => {
 
@@ -293,6 +294,18 @@ const MaintenanceJob = () => {
         setOpenModalChangeApproval(false);
         setDataOpenModalChangeApproval(null);
     };
+
+    const [isOpenModalChangeApprovalActive, setOpenModalChangeApprovalActive] = useState(false);
+    const [dataOpenModalChangeApprovalActive, setDataOpenModalChangeApprovalActive] = useState(null);
+    const handleOpenModalChangeApprovalActive = (data) => {
+        setOpenModalChangeApprovalActive(true);
+        setDataOpenModalChangeApprovalActive(data);
+    };
+    const handleClosModalChangeApprovalActive = (data) => {
+        setOpenModalChangeApprovalActive(false);
+        setDataOpenModalChangeApprovalActive(null);
+    };
+
     // ข้อมูลการปิดงานแจ้งซ่อม
     const fetchDataClosingJob = async () => {
         try {
@@ -315,6 +328,31 @@ const MaintenanceJob = () => {
     useEffect(() => {
         console.log("dataClosingJob:", dataClosingJob);
     }, [dataClosingJob]);
+
+
+    const [requester, setRequester] = useState(null);
+
+    // ✅ ฟังก์ชันโหลดข้อมูลจาก backend
+    const fetchChangeRequest = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const res = await axios.get(`${apiUrl}/api/change_show_top/${dataRepairID?.request_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (res.data.data) {
+                setRequester(res.data.data); // ✅ รับ object เดียว
+            }
+        } catch (err) {
+            console.error("Error fetching change request:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (dataRepairID?.request_id) {
+            fetchChangeRequest();
+        }
+    }, [dataRepairID?.request_id]);
 
 
     return (
@@ -344,20 +382,43 @@ const MaintenanceJob = () => {
                     ))}
                 </p>
 
-<div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-  <p className="d-flex align-items-center gap-3 mb-2">
-    
-    <span>
-      <button
-        className="btn btn-primary btn-sm"
-        onClick={() => handleOpenModalChangeApproval()}
-      >
-        คำขอแก้ไขใบแจ้งซ่อม
-      </button>
-    </span>
-  </p>
-</div>
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <p className="d-flex align-items-center gap-3 mb-2">
 
+                        <span>
+                            <button
+                                className="btn btn-primary btn-sm"
+                                onClick={() => handleOpenModalChangeApproval(dataRepairID?.request_id)}
+                            >
+                                คำขอแก้ไขใบแจ้งซ่อม
+                            </button>
+                        </span>
+                        {requester && (<>
+                            <span>
+                                ข้อมูลคำขอแก้ไขล่าสุด
+                            </span>
+                            <span>
+                                ผู้ขอ: {requester.requester_name || "-"} วันที่: {new Date(requester.requester_date).toLocaleDateString()}
+                            </span>
+                            <span>
+                                <button
+                                    className="btn btn-warning btn-sm"
+                                    style={{
+                                        fontSize: "0.7rem",
+                                        borderRadius: "50px",
+                                        padding: "2px 10px",
+                                        marginBottom: "6px",
+                                        alignSelf: "flex-end",
+                                        color: "#060606"
+                                    }}
+                                    onClick={() => handleOpenModalChangeApprovalActive(requester.id)}
+                                >
+                                    รอการอนุมัติ
+                                </button>
+                            </span>
+                        </>)}
+                    </p>
+                </div>
 
                 <hr className="mb-3" />
                 <div className="mb-2">
@@ -540,6 +601,7 @@ const MaintenanceJob = () => {
                     </div>
                 </div>
             </div>
+
             {/* Modal */}
             {isOpenModolClosing && (
                 <Modal_Closing isOpen={isOpenModolClosing} onClose={handleCloseModolClosing} user={user} dataClosing={dataOpenModolClosing} />
@@ -548,13 +610,15 @@ const MaintenanceJob = () => {
             {isOpenModalCancelgenaral && (
                 <Modal_repair_cancel_ganaral isOpen={isOpenModalCancelgenaral} onClose={handleClosModalCancelgenaral} user={user} dataClosing={dataOpenModalCancelgenaral} />
             )}
-        
+
             {isOpenModalChangeApproval && (
-                <Modal_repair_change_approval isOpen={isOpenModalChangeApproval} onClose={handleClosModalChangeApproval} />
+                <Modal_repair_change_approval isOpen={isOpenModalChangeApproval} onClose={handleClosModalChangeApproval} repairId={dataOpenModalChangeApproval} />
             )}
 
 
-
+            {isOpenModalChangeApprovalActive && (
+                <Modal_repair_change_approval_active isOpen={isOpenModalChangeApprovalActive} onClose={handleClosModalChangeApprovalActive} changID={dataOpenModalChangeApprovalActive} />
+            )}
         </div>
 
 
