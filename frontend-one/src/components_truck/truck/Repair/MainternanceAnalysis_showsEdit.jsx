@@ -569,7 +569,7 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
     return (
         <div className=" mb-4 ">
 
-            {analysisData ? (<><p>True</p></>) : (<><p>NO</p></>)}
+            {/* {analysisData ? (<><p>True</p></>) : (<><p>NO</p></>)} */}
             {/* Display success or error message */}
             {message && (
                 <div
@@ -589,20 +589,45 @@ const MainternanceAnalysis_showEdit = ({ maintenanceJob, data, hasPermission }) 
 
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <p className="mb-0 fw-bold text-dark ">รายการตรวจเช็ครถและใบเสนอราคารายการซ่อม</p>
-                {hasPermission("EDIT_CAR_CHECK") && (
-                    !isEditing && (
-                        <div className="">
-                            {/* <button className="btn btn-primary btn-sm">เพิ่มข้อมูลเพื่อขออนุมัติใหม่</button> */}
+
+
+
+                {maintenanceJob?.request_informer_emp_id === user?.id_emp && (
+                    <>
+                        {/* ถ้าได้รับการอนุมัติจากผู้จัดการแล้ว */}
+                        {["ผู้จัดการอนุมัติ", "ใบแจ้งหนี้"].includes(maintenanceJob?.status) ? (
                             <button
-                                type="button"
-                                className="btn btn-success btn-sm"
-                                onClick={() => setIsEditing(true)}
-                                style={{ whiteSpace: 'nowrap' }}
+                                className="btn btn-secondary btn-sm"
+                                disabled
+                                title="ไม่สามารถแก้ไขได้เนื่องจากผู้จัดการอนุมัติแล้ว"
                             >
-                                <i className="bi bi-pencil-fill me-1"></i>  แก้ไข
+                                <i className="bi bi-lock-fill me-1"></i> แก้ไขไม่ได้
                             </button>
-                        </div>
-                    )
+                        ) : maintenanceJob?.status === 'รอคำขอแก้ไขหลังอนุมัติ' ? (
+                            <button className="btn btn-warning btn-sm" disabled>
+                                <i className="bi bi-hourglass-split me-1"></i> รออนุมัติคำขอแก้ไข
+                            </button>
+                        ) : (
+                            // ปุ่มแก้ไขปกติ
+                            <>
+                                {hasPermission("EDIT_CAR_CHECK") && (
+                                    !isEditing && (
+                                        <div className="">
+                                            {/* <button className="btn btn-primary btn-sm">เพิ่มข้อมูลเพื่อขออนุมัติใหม่</button> */}
+                                            <button
+                                                type="button"
+                                                className="btn btn-success btn-sm"
+                                                onClick={() => setIsEditing(true)}
+                                                style={{ whiteSpace: 'nowrap' }}
+                                            >
+                                                <i className="bi bi-pencil-fill me-1"></i>  แก้ไข
+                                            </button>
+                                        </div>
+                                    )
+                                )}
+                            </>
+                        )}
+                    </>
                 )}
             </div>
 

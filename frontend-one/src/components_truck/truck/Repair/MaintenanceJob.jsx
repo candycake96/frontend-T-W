@@ -401,20 +401,55 @@ const MaintenanceJob = () => {
                                 ผู้ขอ: {requester.requester_name || "-"} วันที่: {new Date(requester.requester_date).toLocaleDateString()}
                             </span>
                             <span>
-                                <button
-                                    className="btn btn-warning btn-sm"
-                                    style={{
-                                        fontSize: "0.7rem",
-                                        borderRadius: "50px",
-                                        padding: "2px 10px",
-                                        marginBottom: "6px",
-                                        alignSelf: "flex-end",
-                                        color: "#060606"
-                                    }}
-                                    onClick={() => handleOpenModalChangeApprovalActive(requester.id)}
-                                >
-                                    รอการอนุมัติ
-                                </button>
+                                {requester.approver_status === "approved" ? (
+                                    <button
+                                        className="btn w-100 btn-status btn-success btn-sm text-white d-flex align-items-center justify-content-center gap-2"
+                                        style={{
+                                            fontSize: "0.7rem",
+                                            borderRadius: "50px",
+                                            padding: "2px 10px",
+                                            marginBottom: "6px",
+                                            alignSelf: "flex-end",
+                                            color: "#060606"
+                                        }}
+                                        onClick={() => handleOpenModalChangeApprovalActive(requester.id)}
+                                    >
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        <span>อนุมัติ</span>
+                                    </button>
+                                ) : requester.approver_status === "rejected" ? (
+                                    <button
+                                        className="btn w-100 btn-status btn-danger btn-sm text-white d-flex align-items-center justify-content-center gap-2"
+                                        style={{
+                                            fontSize: "0.7rem",
+                                            borderRadius: "50px",
+                                            padding: "2px 10px",
+                                            marginBottom: "6px",
+                                            alignSelf: "flex-end",
+                                            color: "#060606"
+                                        }}
+                                        onClick={() => handleOpenModalChangeApprovalActive(requester.id)}
+                                    >
+                                        <i className="bi bi-x-circle-fill"></i>
+                                        <span>ไม่อนุมัติ</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="btn w-100 btn-status btn-warning btn-sm text-dark d-flex align-items-center justify-content-center gap-2"
+                                        style={{
+                                            fontSize: "0.7rem",
+                                            borderRadius: "50px",
+                                            padding: "2px 10px",
+                                            marginBottom: "6px",
+                                            alignSelf: "flex-end",
+                                            color: "#060606"
+                                        }}
+                                        onClick={() => handleOpenModalChangeApprovalActive(requester.id)}
+                                    >
+                                        <i className="bi bi-hourglass-split"></i>
+                                        <span>รอการอนุมัติ</span>
+                                    </button>
+                                )}
                             </span>
                         </>)}
                     </p>
@@ -481,15 +516,18 @@ const MaintenanceJob = () => {
                                 </Button>
 
                                 {dataClosingJob.length <= 0 ? (
-                                    <Button
-                                        className="btn-danger btn-sm me-1"
-                                        onClick={() => handleOpenModalCancelgenaral(dataRepairID)}
-                                    >
-                                        <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
-                                    </Button>
+                                    ["แจ้งซ่อม", "จัดรถ", "ตรวจเช็ครถ", "อนุมัติผลตรวจรถ", "แก้ไขข้อมูลหลังการอนุมัติ"].includes(formData?.status) && (
+                                        <Button
+                                            className="btn-danger btn-sm me-1"
+                                            onClick={() => handleOpenModalCancelgenaral(dataRepairID)}
+                                        >
+                                            <i className="bi bi-x-octagon-fill me-1"></i> ยกเลิก
+                                        </Button>
+                                    )
                                 ) : (
                                     <></>
                                 )}
+
 
                             </div>
 
