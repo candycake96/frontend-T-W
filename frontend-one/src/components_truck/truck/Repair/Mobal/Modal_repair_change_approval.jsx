@@ -153,6 +153,13 @@ const Modal_repair_change_approval = ({ isOpen, onClose, repairId }) => {
                 />
             </div>
 
+            <div className="text-end mb-3">
+                <button className="btn btn-primary btn-sm" onClick={handleSubmit}>
+                    ส่งข้อมูล
+                </button>
+            </div>
+
+
             <hr className="
 sm-3" />
             {/* ✅ ตารางประวัติคำขอเก่า */}
@@ -170,50 +177,45 @@ sm-3" />
                         </thead>
                         <tbody>
                             {isDataRequester.map((row, ndx) => (
-  <tr key={ndx}>
-    <td>{row.requester_name || "-"}</td>
-    <td>{row.requester_date?.split("T")[0]}</td>
-    <td>{row.requester_remark || "-"}</td>
-    <td>
-      {row.approver_status === "approved" ? (
-        <button
-          className="btn w-100 btn-status btn-success btn-sm text-white d-flex align-items-center justify-content-center gap-2"
-          onClick={() => handleOpenModalChangeApprovalActive(row.id)}
-        >
-          <i className="bi bi-check-circle-fill"></i>
-          <span>อนุมัติ</span>
-        </button>
-      ) : row.approver_status === "rejected" ? (
-        <button
-          className="btn w-100 btn-status btn-danger btn-sm text-white d-flex align-items-center justify-content-center gap-2"
-          onClick={() => handleOpenModalChangeApprovalActive(row.id)}
-        >
-          <i className="bi bi-x-circle-fill"></i>
-          <span>ไม่อนุมัติ</span>
-        </button>
-      ) : (
-        <button
-          className="btn w-100 btn-status btn-warning btn-sm text-dark d-flex align-items-center justify-content-center gap-2"
-          onClick={() => handleOpenModalChangeApprovalActive(row.id)}
-        >
-          <i className="bi bi-hourglass-split"></i>
-          <span>รอการอนุมัติ</span>
-        </button>
-      )}
-    </td>
-  </tr>
-))}
+                                <tr key={ndx}>
+                                    <td>{row.requester_name || "-"}</td>
+                                    <td>{row.requester_date?.split("T")[0]}</td>
+                                    <td>{row.requester_remark || "-"}</td>
+                                    <td>
+                                        {row.approver_status === "approved" ? (
+                                            <button
+                                                className="btn w-100 btn-status btn-success btn-sm text-white d-flex align-items-center justify-content-center gap-2"
+                                                onClick={() => handleOpenModalChangeApprovalActive(row.id)}
+                                            >
+                                                <i className="bi bi-check-circle-fill"></i>
+                                                <span>อนุมัติ</span>
+                                            </button>
+                                        ) : row.approver_status === "rejected" ? (
+                                            <button
+                                                className="btn w-100 btn-status btn-danger btn-sm text-white d-flex align-items-center justify-content-center gap-2"
+                                                onClick={() => handleOpenModalChangeApprovalActive(row.id)}
+                                            >
+                                                <i className="bi bi-x-circle-fill"></i>
+                                                <span>ไม่อนุมัติ</span>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="btn w-100 btn-status btn-warning btn-sm text-dark d-flex align-items-center justify-content-center gap-2"
+                                                onClick={() => handleOpenModalChangeApprovalActive(row.id)}
+                                            >
+                                                <i className="bi bi-hourglass-split"></i>
+                                                <span>รอการอนุมัติ</span>
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
 
                         </tbody>
                     </table>
                 </div>
             )}
 
-            <div className="text-end">
-                <button className="btn btn-primary btn-sm" onClick={handleSubmit}>
-                    ส่งข้อมูล
-                </button>
-            </div>
 
 
             {isOpenModalChangeApprovalActive && (

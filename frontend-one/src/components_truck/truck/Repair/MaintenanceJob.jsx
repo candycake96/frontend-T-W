@@ -386,12 +386,17 @@ const MaintenanceJob = () => {
                     <p className="d-flex align-items-center gap-3 mb-2">
 
                         <span>
-                            <button
-                                className="btn btn-primary btn-sm"
-                                onClick={() => handleOpenModalChangeApproval(dataRepairID?.request_id)}
-                            >
-                                คำขอแก้ไขใบแจ้งซ่อม
-                            </button>
+                            {["แจ้งซ่อม", "จัดรถ", "ตรวจเช็ครถ", "อนุมัติผลตรวจรถ"].includes(formData?.status) ? (
+                                <></>
+                            ) : (
+                                <button
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => handleOpenModalChangeApproval(dataRepairID?.request_id)}
+                                >
+                                    คำขอแก้ไขใบแจ้งซ่อม
+                                </button>
+                            )}
+                            
                         </span>
                         {requester && (<>
                             <span>
