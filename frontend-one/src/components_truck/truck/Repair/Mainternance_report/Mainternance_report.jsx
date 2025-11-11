@@ -1,9 +1,34 @@
 import React, { useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import Table_mainternance_timeline from "./table/Table_mainternance_Timeline";
+import { Modal } from "bootstrap/dist/js/bootstrap.bundle.min";
+import Modal_completed from "./Modal/Modal_completed";
+import Modal_pending from "./Modal/Moadal_pending";
 
 const Mainternance_report = () => {
   const [activeKey, setActiveKey] = useState("summary");
+
+  const [isOpenModalDataCompleted, setOpenModalDataCompleted] = useState(false);
+  const [dataOpenModalDataCompleted, setDataOpenModalDataCompleted] = useState(null);
+  const handleOpenModalDataCompleted = (data) => {
+    setOpenModalDataCompleted(true);
+    setDataOpenModalDataCompleted(data);
+  };
+  const handleCloseModalDataCompleted = () => {
+    setOpenModalDataCompleted(false);
+    setDataOpenModalDataCompleted(null);
+  };
+
+    const [isOpenModalDataPending, setOpenModalDataPending] = useState(false);
+  const [dataOpenModalDataPending, setDataOpenModalDataPending] = useState(null);
+  const handleOpenModalDataPending = (data) => {
+    setOpenModalDataPending(true);
+    setDataOpenModalDataPending(data);
+  };
+  const handleCloseModalDataPending = () => {
+    setOpenModalDataPending(false);
+    setDataOpenModalDataPending(null);
+  };
 
   return (
     <div className="container my-5">
@@ -16,8 +41,7 @@ const Mainternance_report = () => {
       {/* Date Filter + Export */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <input type="date" className="form-control d-inline-block me-2" />
-          <input type="date" className="form-control d-inline-block" />
+
         </div>
         <div>
           <button className="btn btn-outline-primary me-2">Export PDF</button>
@@ -31,20 +55,23 @@ const Mainternance_report = () => {
           <Nav.Item>
             <Nav.Link eventKey="summary">📌 สรุปทั้งหมด</Nav.Link>
           </Nav.Item>
-          <Nav.Item>
+          {/* <Nav.Item>
             <Nav.Link eventKey="pm">🛡️ Preventive (PM)</Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link eventKey="cm">⚙️ Corrective (CM)</Nav.Link>
-          </Nav.Item>
+          </Nav.Item> */}
         </Nav>
 
         <Tab.Content>
           {/* Summary */}
           <Tab.Pane eventKey="summary">
             <div className="row g-4 mb-3">
-              <div className="col-md-4">
-                <div className="card shadow-lg border-0 h-100">
+              <div className="col-md">
+                <div className="card shadow-lg border-0 h-100"
+                onClick={()=>handleOpenModalDataCompleted()}
+                 style={{ cursor: "pointer" }}
+                >
                   <div className="card-body text-center">
                     <h5 className="card-title text-success fw-bold">🛠️ เสร็จแล้ว</h5>
                     <h2 className="fw-bold text-success">128</h2>
@@ -52,16 +79,19 @@ const Mainternance_report = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="card shadow-lg border-0 h-100">
+              <div className="col-md">
+                <div className="card shadow-lg border-0 h-100"
+                onClick={()=>handleOpenModalDataPending()}
+                style={{ cursor: "pointer"}}
+                >
                   <div className="card-body text-center">
                     <h5 className="card-title text-warning fw-bold">⚡ กำลังทำ</h5>
                     <h2 className="fw-bold text-warning">42</h2>
-                    <p className="text-muted">In Progress</p>
+                    <p className="text-muted">กำลังดำเนินการอยู่</p>
                   </div>
                 </div>
               </div>
-              <div className="col-md-4">
+              {/* <div className="col-md-4">
                 <div className="card shadow-lg border-0 h-100">
                   <div className="card-body text-center">
                     <h5 className="card-title text-danger fw-bold">❌ ค้างอยู่</h5>
@@ -69,7 +99,7 @@ const Mainternance_report = () => {
                     <p className="text-muted">ยังไม่ได้เริ่ม</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
            <Table_mainternance_timeline />
           </Tab.Pane>
@@ -137,6 +167,9 @@ const Mainternance_report = () => {
           </Tab.Pane>
         </Tab.Content>
       </Tab.Container>
+
+      <Modal_completed isOpen={isOpenModalDataCompleted} onClose={handleCloseModalDataCompleted} />
+      <Modal_pending isOpen={isOpenModalDataPending} onClose={handleCloseModalDataPending} />
     </div>
   );
 };

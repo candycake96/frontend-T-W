@@ -7,6 +7,14 @@ const Table_mainternance_timeline = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 20;
 
+    function formatDateThai(dateStr) {
+        const date = new Date(dateStr);
+        const day = date.getDate();
+        const month = date.toLocaleString("th-TH", { month: "short" });
+        const year = date.getFullYear() ;
+        return `${day} ${month} ${year}`;
+    }
+
     useEffect(() => {
         axios
             .get("http://localhost:3333/api/mainternance_report_details_all", {
@@ -129,7 +137,7 @@ const Table_mainternance_timeline = () => {
                             <td>{renderRepairType(item)}</td>
                             <td>
                                 {item.request_date
-                                    ? new Date(item.request_date).toLocaleDateString("th-TH")
+                                    ? formatDateThai(item.request_date)
                                     : "-"}
                             </td>
                             <td>{item.reg_number}</td>
@@ -143,7 +151,7 @@ const Table_mainternance_timeline = () => {
                                     state={{ ...item, fromPage: 'SupervisorApprove' }}
                                     className="btn btn-sm btn-primary"
                                 >
-                                    <i className="bi bi-body-text"></i>
+                                    <i class="bi bi-three-dots-vertical"></i>
                                     {/* ตรวจสอบ */}
                                 </Link>
                             </td>
