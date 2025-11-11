@@ -8,30 +8,94 @@ const Table_mainternance_timeline = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 20;
 
+    // ✅ state สำหรับกรองข้อมูล
+    const [dataSearch, setDataSearch] = useState({
+        startDate: "",
+        endDate: "",
+        regNumber: "",
+        system: "",
+        garage: "",
+        paymentType: "",
+    });
+
+    // ✅ โหลดระบบรถ
+    const [isDataVehicleSystem, setDataVehicleSystem] = useState([]);
+
+    const fetchMainternanceVehicleSystem = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/api/systems_show_all`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            setDataVehicleSystem(response.data);
+        } catch (error) {
+            console.error("Error fetching system data:", error);
+        }
+    };
+
+    // ✅ โหลดข้อมูลทั้งหมดเริ่มต้น
+    const fetchAllData = async () => {
+        try {
+            const res = await axios.get(`${apiUrl}/api/mainternance_report_details_all`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            setData(res.data);
+        } catch (err) {
+            console.error("Error fetching data:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllData();
+        fetchMainternanceVehicleSystem();
+    }, []);
+
+    // ✅ ฟังก์ชันแปลงวันที่แบบไทย
     function formatDateThai(dateStr) {
         const date = new Date(dateStr);
         const day = date.getDate();
         const month = date.toLocaleString("th-TH", { month: "short" });
-        const year = date.getFullYear() ;
+        const year = date.getFullYear();
         return `${day} ${month} ${year}`;
     }
 
-    useEffect(() => {
-        axios
-            .get(`${apiUrl}/api/mainternance_report_details_all`, {
+    // ✅ ฟังก์ชันเปลี่ยนค่า input
+    const handleChange = (e) => {
+        setDataSearch({ ...dataSearch, [e.target.id]: e.target.value });
+    };
+
+    // ✅ ฟังก์ชันค้นหา
+    const handleSearch = async () => {
+        try {
+            const response = await axios.post(`${apiUrl}/api/mainternance_repair_search`, dataSearch, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
-            })
-            .then((res) => {
-                setData(res.data);
-            })
-            .catch((err) => {
-                console.error("Error fetching data:", err);
             });
-    }, []);
+            setData(response.data);
+            setCurrentPage(1);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-    // ฟังก์ชันช่วยแสดงประเภทซ่อม
+    // ✅ ฟังก์ชันล้างค่า
+    const handleClear = () => {
+        setDataSearch({
+            startDate: "",
+            endDate: "",
+            regNumber: "",
+            system: "",
+            garage: "",
+            paymentType: "",
+        });
+        fetchAllData();
+    };
+
+    // ✅ ประเภทซ่อม
     const renderRepairType = (item) => {
         const types = [];
         if (item.is_pm) types.push("PM");
@@ -39,35 +103,14 @@ const Table_mainternance_timeline = () => {
         return types.length > 0 ? types.join(", ") : "-";
     };
 
-    // แบ่งข้อมูลตามหน้า
+    // ✅ Pagination
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
-
     const totalPages = Math.ceil(data.length / rowsPerPage);
-
-  const [isDataVehicleSystem, setDataVehicleSystem] = useState([]);
-      // ✅ โหลดข้อมูลจาก API
-  const fetchMainternanceVehicleSystem = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/systems_show_all`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      setDataVehicleSystem(response.data);
-    } catch (error) {
-      console.error("Error fetching Analysis data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMainternanceVehicleSystem();
-  }, []);
 
     return (
         <>
-
             <div className="mb-3">
                 <div className="card shadow-sm border-0 rounded-3">
                     <div className="card-header bg-light fw-bold">
@@ -79,54 +122,92 @@ const Table_mainternance_timeline = () => {
                                 <label htmlFor="startDate" className="form-label">
                                     วันเริ่มต้น
                                 </label>
-                                <input type="date" id="startDate" className="form-control" />
+                                <input
+                                    type="date"
+                                    id="startDate"
+                                    className="form-control"
+                                    value={dataSearch.startDate}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className="col-lg-3">
                                 <label htmlFor="endDate" className="form-label">
                                     วันสิ้นสุด
                                 </label>
-                                <input type="date" id="endDate" className="form-control" />
+                                <input
+                                    type="date"
+                                    id="endDate"
+                                    className="form-control"
+                                    value={dataSearch.endDate}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className="col-lg-3">
                                 <label htmlFor="regNumber" className="form-label">
                                     เลขป้ายทะเบียน
                                 </label>
-                                <input type="text" id="regNumber" className="form-control" placeholder="เช่น 1กก1234" />
+                                <input
+                                    type="text"
+                                    id="regNumber"
+                                    className="form-control"
+                                    placeholder="เช่น 1กก1234"
+                                    value={dataSearch.regNumber}
+                                    onChange={handleChange}
+                                />
                             </div>
-                            <div className="col-lg-3">
+                            {/* <div className="col-lg-3">
                                 <label htmlFor="system" className="form-label">
                                     ระบบ
                                 </label>
-                                <select id="system" className="form-select">
+                                <select
+                                    id="system"
+                                    className="form-select"
+                                    value={dataSearch.system}
+                                    onChange={handleChange}
+                                >
                                     <option value="">-- เลือก --</option>
                                     {isDataVehicleSystem.map((row, ndx) => (
-                                        <option key={ndx} value={row.system_id}>{row.system_name}</option>
+                                        <option key={ndx} value={row.system_id}>
+                                            {row.system_name}
+                                        </option>
                                     ))}
                                 </select>
-                            </div>
-                            <div className="col-lg-3"> 
+                            </div> */}
+                            <div className="col-lg-3">
                                 <label htmlFor="garage" className="form-label">
                                     อู่ซ่อม/ร้าน
                                 </label>
-                                <input type="text" id="garage" className="form-control" placeholder="ค้นหาชื่ออู่" />
+                                <input
+                                    type="text"
+                                    id="garage"
+                                    className="form-control"
+                                    placeholder="ค้นหาชื่ออู่"
+                                    value={dataSearch.garage}
+                                    onChange={handleChange}
+                                />
                             </div>
-                            <div className="col-lg-3">
-                                <label htmlFor="system" className="form-label">
+                            {/* <div className="col-lg-3">
+                                <label htmlFor="paymentType" className="form-label">
                                     เคดิต/เงินสด
                                 </label>
-                                <select id="system" className="form-select">
+                                <select
+                                    id="paymentType"
+                                    className="form-select"
+                                    value={dataSearch.paymentType}
+                                    onChange={handleChange}
+                                >
                                     <option value="">-- เลือก --</option>
-                                    <option value="engine">เคดิต</option>
-                                    <option value="suspension">เงินสด</option>
+                                    <option value="credit">เคดิต</option>
+                                    <option value="cash">เงินสด</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="mt-3 d-flex justify-content-end gap-2">
-                            <button className="btn btn-outline-secondary">
+                            <button className="btn btn-outline-secondary" onClick={handleClear}>
                                 <i className="bi bi-x-circle"></i> ล้างค่า
                             </button>
-                            <button className="btn btn-primary">
+                            <button className="btn btn-primary" onClick={handleSearch}>
                                 <i className="bi bi-search"></i> ค้นหา
                             </button>
                         </div>
@@ -134,6 +215,7 @@ const Table_mainternance_timeline = () => {
                 </div>
             </div>
 
+            {/* ✅ ตารางข้อมูล */}
             <table className="table table-hover table-striped mb-0">
                 <thead className="table-info">
                     <tr>
@@ -150,37 +232,43 @@ const Table_mainternance_timeline = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentRows.map((item, index) => (
-                        <tr key={item.request_id}>
-                            <td>{indexOfFirstRow + index + 1}</td>
-                            <td>{item.request_no}</td>
-                            <td>{renderRepairType(item)}</td>
-                            <td>
-                                {item.request_date
-                                    ? formatDateThai(item.request_date)
-                                    : "-"}
-                            </td>
-                            <td>{item.reg_number}</td>
-                            <td>{item.car_type_name}</td>
-                            <td>{item.request_emp_name}</td>
-                            <td>{item.total_with_vat?.toLocaleString() ?? 0}</td>
-                            <td>{item.status}</td>
-                            <td>
-                                <Link
-                                    to="/truck/MaintenanceJob"
-                                    state={{ ...item, fromPage: 'SupervisorApprove' }}
-                                    className="btn btn-sm btn-primary"
-                                >
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                    {/* ตรวจสอบ */}
-                                </Link>
+                    {currentRows.length > 0 ? (
+                        currentRows.map((item, index) => (
+                            <tr key={item.request_id}>
+                                <td>{indexOfFirstRow + index + 1}</td>
+                                <td>{item.request_no}</td>
+                                <td>{renderRepairType(item)}</td>
+                                <td>{item.request_date ? formatDateThai(item.request_date) : "-"}</td>
+                                <td>{item.reg_number}</td>
+                                <td>{item.car_type_name}</td>
+                                <td>{item.request_emp_name}</td>
+                                <td>{item.total_with_vat?.toLocaleString() ?? 0}</td>
+                                <td>{item.status}</td>
+                                <td>
+                                    <Link
+                                        to="/truck/MaintenanceJob"
+                                        state={{ ...item, fromPage: "SupervisorApprove" }}
+                                        className="btn btn-sm btn-primary"
+                                    >
+                                        <i className="bi bi-three-dots-vertical"></i>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="10" className="text-center">
+                                ไม่พบข้อมูล
                             </td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
+
+
+
             </table>
 
-            {/* ปุ่ม pagination */}
+            {/* ✅ Pagination */}
             {totalPages > 1 && (
                 <div className="d-flex justify-content-center mt-3">
                     <nav>
@@ -207,8 +295,7 @@ const Table_mainternance_timeline = () => {
                                 </li>
                             ))}
                             <li
-                                className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                    }`}
+                                className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
                             >
                                 <button
                                     className="page-link"
