@@ -204,6 +204,10 @@ const Table_mainternance_timeline = () => {
                         </div>
 
                         <div className="mt-3 d-flex justify-content-end gap-2">
+
+                            <button className="btn btn-outline-primary me-2">Export PDF</button>
+                            <button className="btn btn-outline-success">Export Excel</button>
+
                             <button className="btn btn-outline-secondary" onClick={handleClear}>
                                 <i className="bi bi-x-circle"></i> ล้างค่า
                             </button>
