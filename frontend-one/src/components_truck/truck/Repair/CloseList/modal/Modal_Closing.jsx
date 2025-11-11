@@ -136,6 +136,7 @@ for (let [key, value] of form.entries()) {
                         onChange={handleChange}
                     >
                         <option value="">-- เลือกสถานะ --</option>
+                        <option value="ปิดงานซ่อม">ปิดงานซ่อม</option>
                         <option value="ซ่อมสำเร็จ">ซ่อมสำเร็จ</option>
                         <option value="ยกเลิกงาน">ยกเลิกงาน</option>
                         <option value="ซ่อมชั่วคราว">หยุดซ่อมชั่วคราว</option>
