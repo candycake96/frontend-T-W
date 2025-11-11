@@ -7,30 +7,30 @@ const Modal_pending = ({isOpen, onClose}) => {
       const [searchTerm, setSearchTerm] = useState("");
       const [startDate, setStartDate] = useState("");
       const [endDate, setEndDate] = useState("");
-      const [isDataCompleted, setDataCompleted] = useState([]);
+      const [isDataPending, setDataPending] = useState([]);
       const [currentPage, setCurrentPage] = useState(1);
       const rowsPerPage = 10;
     
       // ✅ โหลดข้อมูลจาก API
-      const fetchMainternanceCompleted = async () => {
+      const fetchMainternancePending = async () => {
         try {
-          const response = await axios.get(`${apiUrl}/api/mainternance_completed_show`, {
+          const response = await axios.get(`${apiUrl}/api/mainternance_pending_show`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
           });
-          setDataCompleted(response.data);
+          setDataPending(response.data);
         } catch (error) {
           console.error("Error fetching Analysis data:", error);
         }
       };
     
       useEffect(() => {
-        fetchMainternanceCompleted();
+        fetchMainternancePending();
       }, []);
     
       // ✅ ฟังก์ชันกรองข้อมูล
-      const filteredTasks = isDataCompleted.filter((task) => {
+      const filteredTasks = isDataPending.filter((task) => {
         const search = searchTerm.toLowerCase();
         const matchSearch =
           task.reg_number?.toLowerCase().includes(search) ||

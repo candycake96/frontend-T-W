@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import Table_mainternance_timeline from "./table/Table_mainternance_Timeline";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.min";
 import Modal_completed from "./Modal/Modal_completed";
 import Modal_pending from "./Modal/Moadal_pending";
+import axios from "axios";
+import { apiUrl } from "../../../../config/apiConfig";
 
 const Mainternance_report = () => {
   const [activeKey, setActiveKey] = useState("summary");
@@ -29,6 +31,44 @@ const Mainternance_report = () => {
     setOpenModalDataPending(false);
     setDataOpenModalDataPending(null);
   };
+
+    const [isDataCompleted, setDataCompleted] = useState([]);
+    const [isDataPending, setDataPending] = useState([]);
+    // ✅ โหลดข้อมูลจาก API
+  const fetchMainternanceCompleted = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/mainternance_completed_show`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setDataCompleted(response.data);
+    } catch (error) {
+      console.error("Error fetching Analysis data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMainternanceCompleted();
+  }, []);
+
+        // ✅ โหลดข้อมูลจาก API
+      const fetchMainternancePending = async () => {
+        try {
+          const response = await axios.get(`${apiUrl}/api/mainternance_pending_show`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          });
+          setDataPending(response.data);
+        } catch (error) {
+          console.error("Error fetching Analysis data:", error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchMainternancePending();
+      }, []);
 
   return (
     <div className="container my-5">
@@ -74,7 +114,7 @@ const Mainternance_report = () => {
                 >
                   <div className="card-body text-center">
                     <h5 className="card-title text-success fw-bold">🛠️ เสร็จแล้ว</h5>
-                    <h2 className="fw-bold text-success">128</h2>
+                    <h2 className="fw-bold text-success">{isDataCompleted.length}</h2>
                     <p className="text-muted">เดือนนี้</p>
                   </div>
                 </div>
@@ -86,7 +126,7 @@ const Mainternance_report = () => {
                 >
                   <div className="card-body text-center">
                     <h5 className="card-title text-warning fw-bold">⚡ กำลังทำ</h5>
-                    <h2 className="fw-bold text-warning">42</h2>
+                    <h2 className="fw-bold text-warning">{isDataPending.length}</h2>
                     <p className="text-muted">กำลังดำเนินการอยู่</p>
                   </div>
                 </div>
