@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { apiUrl } from "../../../../../config/apiConfig";
 
 const Table_mainternance_timeline = () => {
     const [data, setData] = useState([]);
@@ -17,7 +18,7 @@ const Table_mainternance_timeline = () => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:3333/api/mainternance_report_details_all", {
+            .get(`${apiUrl}/api/mainternance_report_details_all`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
@@ -44,6 +45,25 @@ const Table_mainternance_timeline = () => {
     const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
 
     const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  const [isDataVehicleSystem, setDataVehicleSystem] = useState([]);
+      // ✅ โหลดข้อมูลจาก API
+  const fetchMainternanceVehicleSystem = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/systems_show_all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setDataVehicleSystem(response.data);
+    } catch (error) {
+      console.error("Error fetching Analysis data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMainternanceVehicleSystem();
+  }, []);
 
     return (
         <>
@@ -79,12 +99,12 @@ const Table_mainternance_timeline = () => {
                                 </label>
                                 <select id="system" className="form-select">
                                     <option value="">-- เลือก --</option>
-                                    <option value="engine">เครื่องยนต์</option>
-                                    <option value="suspension">ช่วงล่าง</option>
-                                    <option value="electrical">ระบบไฟฟ้า</option>
+                                    {isDataVehicleSystem.map((row, ndx) => (
+                                        <option key={ndx} value={row.system_id}>{row.system_name}</option>
+                                    ))}
                                 </select>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3"> 
                                 <label htmlFor="garage" className="form-label">
                                     อู่ซ่อม/ร้าน
                                 </label>
