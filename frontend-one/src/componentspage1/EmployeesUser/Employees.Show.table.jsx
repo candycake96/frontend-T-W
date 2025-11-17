@@ -16,10 +16,21 @@ const EmployeesShowtable = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
+  const [user, setUser] = useState(null);
+  
+      // โหลดข้อมูลจาก localStorage
+      useEffect(() => {
+          const userData = localStorage.getItem('user');
+          if (userData) {
+              const parsed = JSON.parse(userData);
+              setUser(parsed); // เซ็ต user
+          }
+      }, []);
+  
   // Fetch Employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/getemployees`, {
+      const response = await axios.get(`${apiUrl}/api/getemployees/${user?.company_id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -52,7 +63,7 @@ const EmployeesShowtable = () => {
   useEffect(() => {
     fetchEmployees();
     Modal.setAppElement('#root'); // หรือใช้ ID ของ root element ของแอปคุณ
-  }, []);
+  }, [user?.company_id]);
 
   // Filter employees based on search terms
   const filteredEmployees = employees.filter((employee) => {

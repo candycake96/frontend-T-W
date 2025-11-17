@@ -82,9 +82,7 @@ const Department = ({ CompanyID, user }) => {
   const token = localStorage.getItem("accessToken");
   if (!token) {
       console.log("Token is missing");
-  } else {
-      console.log("Token:", token);
-  }
+  } 
 
   const handleDelete = async (id) => {
     try {
