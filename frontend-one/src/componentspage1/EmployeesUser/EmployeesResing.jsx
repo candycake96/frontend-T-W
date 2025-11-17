@@ -20,10 +20,21 @@ const EmployeesResing = () => {
   const totalPages = Math.ceil(employees.length / rowsPerPage);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
+    const [user, setUser] = useState(null);
+    
+        // โหลดข้อมูลจาก localStorage
+        useEffect(() => {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                const parsed = JSON.parse(userData);
+                setUser(parsed); // เซ็ต user
+            }
+        }, []);
+
   // Fetch Employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/getemployeesresing`, {
+      const response = await axios.get(`${apiUrl}/api/getemployeesresing/${user?.company_id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -38,7 +49,7 @@ const EmployeesResing = () => {
 
   useEffect(() => {
     fetchEmployees();
-  }, []);
+  }, [user?.company_id]);
 
   // Filter employees based on search terms
   const filteredEmployees = employees.filter((employee) => {

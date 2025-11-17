@@ -21,10 +21,11 @@ const VehicleTable = () => {
         }
     }, []);
 
+
     const fetchVehicleTable = async () => {
         try {
             const response = await axios.get(
-                `${apiUrl}/api/vehicleget`,
+                `${apiUrl}/api/vehicleget/${user?.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -39,7 +40,7 @@ const VehicleTable = () => {
 
     useEffect(() => {
         fetchVehicleTable();
-    }, []);
+    }, [user.company_id]);
 
     const toggleRow = (id) => {
         setExpandedRow(expandedRow === id ? null : id);
