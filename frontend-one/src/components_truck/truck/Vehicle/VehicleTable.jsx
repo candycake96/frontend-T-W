@@ -14,6 +14,7 @@ const VehicleTable = () => {
     const [searchCarType, setSearchCarType] = useState("");
     const [user, setUser] = useState(null);
 
+    // ✔ Load user
     useEffect(() => {
         const userData = localStorage.getItem('user');
         if (userData) {
@@ -21,11 +22,15 @@ const VehicleTable = () => {
         }
     }, []);
 
-
+    // ==========================
+    // 1) Fetch Vehicle Data
+    // ==========================
     const fetchVehicleTable = async () => {
+        if (!user?.company_id) return;  // ❗ ป้องกัน undefined
+
         try {
             const response = await axios.get(
-                `${apiUrl}/api/vehicleget/${user?.company_id}`,
+                `${apiUrl}/api/vehicleget/${user.company_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -40,14 +45,18 @@ const VehicleTable = () => {
 
     useEffect(() => {
         fetchVehicleTable();
-    }, [user.company_id]);
+    }, [user?.company_id]); // ❗ ต้องมี ? กัน error
 
+    // Expand row
     const toggleRow = (id) => {
         setExpandedRow(expandedRow === id ? null : id);
     };
 
+    // ==========================
+    // 2) Fetch Branches
+    // ==========================
     const fetchBranches = async () => {
-        if (!user) return;
+        if (!user?.company_id) return;
 
         try {
             const response = await axios.get(
@@ -66,8 +75,11 @@ const VehicleTable = () => {
 
     useEffect(() => {
         fetchBranches();
-    }, [user]);
+    }, [user?.company_id]);
 
+    // ==========================
+    // 3) Fetch Car Type
+    // ==========================
     const fetchCarType = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -83,10 +95,6 @@ const VehicleTable = () => {
             setCarType(response.data);
         } catch (error) {
             console.error("Error fetching detailscartype:", error);
-            if (error.response) {
-                console.error("Response Status:", error.response.status);
-                console.error("Response Data:", error.response.data);
-            }
         }
     };
 
@@ -94,18 +102,13 @@ const VehicleTable = () => {
         fetchCarType();
     }, []);
 
-    const handleBranchChange = (e) => {
-        setSearchBranch(e.target.value);
-    };
-
-    const handleCarTypeChange = (e) => {
-        setSearchCarType(e.target.value);
-    };
-
+    // ==========================
+    // ฟิลเตอร์ (ป้องกัน null)
+    // ==========================
     const filteredVehicleData = isVehicleDetails.filter((dataRow) => {
-        const reg_Number = dataRow.reg_number.toLowerCase();
-        const branchName = dataRow.branch_name.toLowerCase();
-        const carType = dataRow.car_type_name.toLowerCase();
+        const reg_Number = dataRow.reg_number?.toLowerCase() || "";
+        const branchName = dataRow.branch_name?.toLowerCase() || "";
+        const carType = dataRow.car_type_name?.toLowerCase() || "";
 
         return (
             reg_Number.includes(searchTerm.toLowerCase()) &&
@@ -134,22 +137,18 @@ const VehicleTable = () => {
                     </div>
 
                     <div className="col-lg-2">
-                        <select className="form-select" onChange={handleCarTypeChange}>
+                        <select className="form-select" onChange={(e) => setSearchCarType(e.target.value)}>
                             <option value="">เลือกหมวดหมู่รถ</option>
-                            {isCarType.length > 0 ? (
-                                isCarType.map((rowCarType) => (
-                                    <option key={rowCarType.car_type_id} value={rowCarType.car_type_name}>
-                                        {rowCarType.car_type_name}
-                                    </option>
-                                ))
-                            ) : (
-                                <option disabled>กำลังโหลด...</option>
-                            )}
+                            {isCarType.map((rowCarType) => (
+                                <option key={rowCarType.car_type_id} value={rowCarType.car_type_name}>
+                                    {rowCarType.car_type_name}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
                     <div className="col-lg-3">
-                        <select className="form-select" onChange={handleBranchChange}>
+                        <select className="form-select" onChange={(e) => setSearchBranch(e.target.value)}>
                             <option value="">เลือกสาขา</option>
                             {branches.map((br) => (
                                 <option key={br.id_branch} value={br.branch_name}>
@@ -177,7 +176,6 @@ const VehicleTable = () => {
                         <th>ประเภทรถ</th>
                         <th>สถานะ</th>
                         <th>สาขา</th>
-                        {/* <th>พขร.ขับล่าสุด</th> */}
                         <th>#</th>
                     </tr>
                 </thead>
@@ -185,28 +183,25 @@ const VehicleTable = () => {
                     {filteredVehicleData.map((rowVD, index) => (
                         <React.Fragment key={index}>
                             <tr>
-                                <td className="col-lg-1">{index + 1}</td>
-                                <td className="col-1">{rowVD.reg_number}</td>
+                                <td>{index + 1}</td>
+                                <td>{rowVD.reg_number}</td>
                                 <td>{rowVD.car_brand}</td>
                                 <td>{rowVD.model_no}</td>
                                 <td>{rowVD.car_type_name}</td>
-                                <td className="col-1">{rowVD.status}</td>
+                                <td>{rowVD.status}</td>
                                 <td>{rowVD.branch_name}</td>
-                                {/* <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                                    <span style={{ color: "Green", fontSize: "2rem", marginRight: "8px" }}>•</span>
-                                    xxxxx
-                                </td> */}
-                                <td className="col-lg-2 ">
-                                    <Link 
-                                    to={`/truck/VehicleShowDataDetails`}
-                                    state={rowVD}
-                                    className="btn btn-primary me-1"
+
+                                <td>
+                                    <Link
+                                        to={`/truck/VehicleShowDataDetails`}
+                                        state={rowVD}
+                                        className="btn btn-primary me-1"
                                     >
-                                       <i class="bi bi-car-front-fill"></i> 
+                                        <i className="bi bi-car-front-fill"></i>
                                     </Link>
+
                                     <button
                                         className="btn btn-primary"
-                                        // style={{ color: '#2980b9' }}
                                         onClick={() => toggleRow(rowVD.reg_id)}
                                     >
                                         {expandedRow === rowVD.reg_id ? (

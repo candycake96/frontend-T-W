@@ -74,6 +74,7 @@ const Company = ({user, CompanyID}) => {
                                     </div>
                                     <div className="col-lg-9">
                                         <p className="fs-4 fw-bolder mb-2">{rowCompany.company_name}</p>
+                                        <p className="fs-5 fw-bolder mb-2">{rowCompany.company_name_en}</p>
                                         <p className="">{rowCompany.company_address}</p>
                                     </div>
                                 </div>
