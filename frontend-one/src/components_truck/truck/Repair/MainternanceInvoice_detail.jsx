@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import Modal_quotation_part_details_job from "./Mobal/Modal_quotation_part_details_job";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { apiUrl } from "../../../config/apiConfig";
 import Modal_show_vehicle_details from "./Mobal/Modal_show_vehicle_details";
 import Modal_invoice_mismatch from "./Mobal/Modal_invoice_mismatch";
+
 
 const MainternanceInvoice_detail = () => {
     const fileInputRef = useRef(null);
@@ -356,6 +357,14 @@ const MainternanceInvoice_detail = () => {
 
             console.log("Response:", response.data);
             alert("ส่งข้อมูลเรียบร้อย!");
+
+              // ใช้ navigate พร้อม state
+        navigate("/MainternanceInvoice_showDetails", {
+            state: {
+                requestId: isInvoice.request_id,
+                invoiceID: response.data.invoice_id
+            }
+        });  
 
         } catch (error) {
             console.error("Error submitting form:", error);

@@ -32,9 +32,9 @@ const SidebarPage1 = ({ isSidebarOpen, toggleSidebar }) => {
           ],
           3: [
             { submenu_id: 6, submenu_name: "ข้อมูลรถ", path: "/truck/vehiclemanagement", code: "VEHICLE_VIEW" },
-            { submenu_id: 7, submenu_name: "ข้อมูลรถต่อ ภาษี", path: "/truck/CarTaxRenewal_Main", code: "TAX_VIEW" },
-            { submenu_id: 8, submenu_name: "ข้อมูลรถต่อ พรบ.", path: "/truck/CarCMI_Main", code: "CMI_VIEW" },
-            { submenu_id: 9, submenu_name: "ข้อมูลรถต่อ ประกัน", path: "/truck/CarInsurance_Main", code: "INSURANCE_VIEW" },
+            // { submenu_id: 7, submenu_name: "ข้อมูลรถต่อ ภาษี", path: "/truck/CarTaxRenewal_Main", code: "TAX_VIEW" },
+            // { submenu_id: 8, submenu_name: "ข้อมูลรถต่อ พรบ.", path: "/truck/CarCMI_Main", code: "CMI_VIEW" },
+            // { submenu_id: 9, submenu_name: "ข้อมูลรถต่อ ประกัน", path: "/truck/CarInsurance_Main", code: "INSURANCE_VIEW" },
             { submenu_id: 10, submenu_name: "รายงานเลขไมล์รถ", path: "/truck/CarMileageShow", code: "MILEAGES_VIEW" },
             { submenu_id: 11, submenu_name: "รายงานรถ ม.79/ม.89", path: "/truck/CarStopTaxRemittanc", code: "CAR_STOP_VIEW" },
             { submenu_id: 12, submenu_name: "ตั้งค่าข้อมูลรถ", path: "/truck/Vehicle_models", code: "" }, // รอ
