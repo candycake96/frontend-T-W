@@ -13,6 +13,49 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
     const [branches, setBranches] = useState([]);
     const [selectedCarType, setSelectedCarType] = useState(""); // เก็บค่าที่เลือก
 
+    const [thaiDate, setThaiDate] = useState(""); //แปลง พ.ศ.
+
+    const handleThaiDateChange = (e) => {
+  const { name, value } = e.target;
+
+  // เอาเฉพาะตัวเลข
+  let digits = value.replace(/\D/g, "");
+
+  // จำกัด 8 ตัวเลข (ddmmyyyy)
+  if (digits.length > 8) digits = digits.slice(0, 8);
+
+  let formatted = digits;
+
+  if (digits.length > 4) {
+    formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+  } else if (digits.length > 2) {
+    formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  }
+
+  // แสดงค่าที่ user เห็น (พ.ศ.)
+  setThaiDate(prev => ({
+    ...prev,
+    [name]: formatted
+  }));
+
+  // แปลงเป็น ค.ศ. เมื่อครบ
+  if (digits.length === 8) {
+    const day = digits.slice(0, 2);
+    const month = digits.slice(2, 4);
+    const yearBE = digits.slice(4, 8);
+    const yearCE = Number(yearBE) - 543;
+
+    if (!isNaN(yearCE)) {
+      setFormdata(prev => ({
+        ...prev,
+        [name]: `${yearCE}-${month}-${day}`
+      }));
+    }
+  }
+};
+
+
+
     const handleCarTypeChange = (e) => {
         const value = e.target.value;
         setSelectedCarType(value); // อัปเดตค่าที่เลือก
@@ -252,13 +295,14 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                             <div className="col-md-4 mb-3">
                                 <label htmlFor="input_reg_date" className="form-label fw-medium">วันที่จดทะเบียน  <span style={{ color: "red" }}> *</span></label>
                                 <input
-                                    type="date"
-                                    id="input_reg_date"
+                                    type="text"
                                     name="reg_date"
                                     className="form-control"
-                                    value={formData.reg_date}
-                                    onChange={(e) => setFormdata({ ...formData, reg_date: e.target.value })}
+                                    placeholder="dd/mm/พ.ศ."
+                                    value={thaiDate.reg_date || ""}
+                                    onChange={handleThaiDateChange}
                                 />
+
                                 {errors.reg_date && <p className="text-danger">{errors.reg_date}</p>}
                             </div>
 
@@ -493,7 +537,7 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                                     onChange={(e) => setFormdata({ ...formData, model_no: e.target.value })}
                                     placeholder=""
                                     disabled
-                                     />
+                                />
                                 {errors.model_no && <p className="text-danger">{errors.model_no}</p>}
                             </div>
                             <div className="col-lg-4">
@@ -713,13 +757,13 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                             <div className="col-lg-4">
                                 <label htmlFor="input_possession_date" className="form-label fw-medium">วัน เดือน ปี ที่ครอบครอง  <span style={{ color: "red" }}> *</span></label>
                                 <input
-                                    type="date"
+                                    type="text"
                                     name="possession_date"
-                                    id="input_possession_date"
                                     className="form-control"
-                                    value={formData.possession_date}
-                                    onChange={(e) => setFormdata({ ...formData, possession_date: e.target.value })}
-                                    placeholder="" />
+                                    placeholder="dd/mm/พ.ศ."
+                                    value={thaiDate.possession_date || ""}
+                                    onChange={handleThaiDateChange}
+                                />
                                 {errors.possession_date && <p className="text-danger">{errors.possession_date}</p>}
                             </div>
                         </div>
@@ -806,12 +850,12 @@ const VehicleForm = ({ formData, setFormdata, errors }) => {
                             <div className="col-lg-4">
                                 <label htmlFor="input_license_expiry" className="form-label fw-medium">วันสิ้นอายุใบอนุญาต  <span style={{ color: "red" }}> *</span></label>
                                 <input
-                                    type="date"
+                                    type="text"
                                     name="license_expiry"
-                                    id="input_license_expiry"
                                     className="form-control"
-                                    value={formData.license_expiry}
-                                    onChange={(e) => setFormdata({ ...formData, license_expiry: e.target.value })}
+                                    placeholder="dd/mm/พ.ศ."
+                                    value={thaiDate.license_expiry || ""}
+                                    onChange={handleThaiDateChange}
                                 />
                                 {errors.license_expiry && <p className="text-danger">{errors.license_expiry}</p>}
                             </div>

@@ -214,6 +214,15 @@ const RepairRequestForm = () => {
 
 
 
+const formatToThaiDate = (dateCE) => {
+  if (!dateCE) return "";
+
+  const [y, m, d] = dateCE.split("-");
+  return `${d}/${m}/${Number(y) + 543}`;
+};
+
+// ตัวอย่าง
+const thaiDateDisplay = formatToThaiDate(date); // date = 2024-09-01
 
 
     return (
@@ -268,7 +277,7 @@ const RepairRequestForm = () => {
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">วันที่แจ้ง</label>
-                                <input type="date" className="form-control" value={date} disabled />
+                                <input type="text" className="form-control" value={thaiDateDisplay} disabled />
                             </div>
                             <div className="col-lg-3 mb-3">
                                 <label className="form-label">ผู้แจ้ง</label>
